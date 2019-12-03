@@ -1,10 +1,23 @@
 from django.contrib import admin
-from .models import Conferencia, Valores, Hospedagem, Inscricao, Dependente
+from django.urls import reverse
+from django.utils.html import escape, mark_safe
+
+from .models import Conferencia, Dependente, Hospedagem, Inscricao, Valores
+
 
 @admin.register(Conferencia)
 class ConferenciaAdmin(admin.ModelAdmin):
-    list_display = ('titulo', 'max_inscr', 'data_abertura', 'data_encerramento', )
+    list_display = ('titulo', 'max_inscr', 'data_abertura', 'data_encerramento', 'pagina_inicial')
     search_fields = ('titulo', )
+    prepopulated_fields = {'titulo': ('titulo_slug',)}
+
+    def pagina_inicial(self, obj):
+        # link = reverse("admin:vtex_sku_changelist")
+        return mark_safe('<a href="/{}/dashboard" target="_blank">{}</a>'.format(obj.titulo_slug, "Página Inicial"))
+
+    pagina_inicial.allow_tags = True
+    pagina_inicial.short_description = "Página Inicial"
+
 
 @admin.register(Valores)
 class ValoresAdmin(admin.ModelAdmin):

@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% load static widget_tweaks render_helpers %}
+
+{% block content %}
+
+<div class="az-content az-content-dashboard-eight">
+    <div class="container d-block">
+        <h2 class="az-content-title tx-24 mg-b-5">Resumo da Inscrição</h2>
+        <p class="mg-b-20 mg-lg-b-25"></p>
+
+        <div class="row row-sm mg-b-20">
+
+            <div class="col-sm-12 mg-t-20">
+                <div class="card card-dashboard-twenty ht-md-100p">
+                    <div class="card-body">
+
+                        <div class="col-sm-12">
+                            <div id="error"></div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-2">
+                                        <label for="txtDataEmissao">CPF</label>
+                                        {% render_field form.cpf class+="form-control" %}
+                                        {{ form.cpf.errors|render_errors }}
+                                    </div>
+                                    <div class="col-sm-10">
+                                        <label>Nome Completo:</label>
+                                        {% render_field form.nome class+="form-control" style+="text-transform:uppercase" %}
+                                        {{ form.nome.errors|render_errors }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label for="txtDataEmissao">Nome no Crachá</label>
+                                        {% render_field form.nome_cracha class+="form-control" style+="text-transform:uppercase" %}
+                                        {{ form.nome_cracha.errors|render_errors }}
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-2">
+                                        <label for="txtCodCliente">Data Nascismento:</label>
+                                        {% render_field form.data_nascimento class+="form-control" %}
+                                        {{ form.data_nascimento.errors|render_errors }}
+                                    </div>
+
+                                    <div class="col-sm-10">
+                                        <label for="txtNomeAbrev">Email:</label>
+                                        {% render_field form.email class+="form-control" %}
+                                        {{ form.email.errors|render_errors }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-2">
+                                        <label for="txtCodCondPag">CEP:</label>
+                                        {% render_field form.cep class+="form-control" %}
+                                        {{ form.cep.errors|render_errors }}
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label for="txtCodCondPag">Endereço:</label>
+                                        {% render_field form.endereco class+="form-control" style+="text-transform:uppercase" %}
+                                        {{ form.endereco.errors|render_errors }}
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label for="txtCodCondPag">Numero:</label>
+                                        {% render_field form.numero class+="form-control" style+="text-transform:uppercase" %}
+                                        {{ form.numero.errors|render_errors }}
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label for="txtCodCondPag">Complemento:</label>
+                                        {% render_field form.complemento class+="form-control" style+="text-transform:uppercase" %}
+                                        {{ form.complemento.errors|render_errors }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <label for="txtCodCondPag">Bairro:</label>
+                                        {% render_field form.bairro class+="form-control" style+="text-transform:uppercase" %}
+                                        {{ form.bairro.errors|render_errors }}
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label for="txtLocEntrega">Cidade:</label>
+                                        {% render_field form.cidade class+="form-control" style+="text-transform:uppercase" %}
+                                        {{ form.cidade.errors|render_errors }}
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label for="txtDesLocEntrega">Estado:</label>
+
+                                        {% render_field form.uf class+="form-control" style+="text-transform:uppercase" %}
+                                        {{ form.uf.errors|render_errors }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+
+                                    <div class="col-sm-2">
+                                        <label for="txtCodCondPag">DDD:</label>
+                                        {% render_field form.ddd class+="form-control" style+="text-transform:uppercase" %}
+                                        {{ form.ddd.errors|render_errors }}
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label for="txtCodCondPag">Telefone:</label>
+                                        {% render_field form.telefone class+="form-control" style+="text-transform:uppercase" %}
+                                        {{ form.telefone.errors|render_errors }}
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label for="txtCodCondPag">Hospedagem:</label>
+                                        {% render_field form.hospedagem class+="form-control" style+="text-transform:uppercase" %}
+                                        {{ form.hospedagem.errors|render_errors }}
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <label>Observações:</label>
+                                        <input type="text" class="form-control" name="observacao" value="{{observacao}}"
+                                            style='text-transform:uppercase'>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="btn btn-success" id="btnSalvar">Salvar</div>
+                                        <button type="button" class="btn btn-info"
+                                            onclick="window.location = '/registration/resume'">Pagar
+                                            Inscrição</button>
+                                        <button type="button" class="btn btn-danger" onclick="deleteInscri();">Cancelar
+                                            Inscrição</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+
+                        </div>
+                    </div>
+                </div><!-- card -->
+            </div><!-- col-3 -->
+
+        </div>
+    </div><!-- container -->
+</div><!-- az-content -->
+
+{% endblock %}

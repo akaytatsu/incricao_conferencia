@@ -3,8 +3,8 @@ from django.db import models
 # Create your models here.
 class Conferencia(models.Model):
 
-    titulo = models.CharField(max_length=80, verbose_name="Titulo")
-    titulo_slug = models.SlugField(verbose_name="Slug", unique=True)
+    titulo = models.CharField(max_length=80, verbose_name="Titulo", help_text="Titulo do Evento")
+    titulo_slug = models.SlugField(verbose_name="Slug", unique=True, help_text="Esse campo é o codigo unico da conferencia, não alterar esse campo")
     max_inscr = models.IntegerField(default=500000, verbose_name="Maximo inscrições")
     data_abertura = models.DateTimeField(verbose_name="Data Abertura Inscrições")
     data_encerramento = models.DateTimeField(verbose_name="Data Encerramento Inscrições")
