@@ -12,6 +12,7 @@ from django.urls import reverse_lazy
 
 from apps.data.models import Inscricao, Conferencia
 from apps.data.forms import InscricaoForm
+from apps.accounts.forms import LoginForm
 
 class HomeView(LoginRequiredMixin, TemplateView):
     template_name = 'inscricao/dashboard.html'
@@ -24,7 +25,6 @@ class HomeView(LoginRequiredMixin, TemplateView):
         context['conferencia'] = Conferencia.objects.get(titulo_slug=kwargs.get('conferencia'))
         
         return context
-
 
 class inscricaoView(LoginRequiredMixin, UpdateView):
     login_url = '/login'
@@ -61,3 +61,53 @@ class inscricaoView(LoginRequiredMixin, UpdateView):
         conferencia = self.get_conferencia()
 
         return Inscricao.objects.filter(conferencia=conferencia).first()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['conferencia'] = self.get_conferencia()
+        
+        return context
+
+class LoginView(TemplateView):
+    template_name = 'inscricao/login.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['conferencia'] = Conferencia.objects.get(titulo_slug=kwargs.get('conferencia'))
+
+        form = LoginForm(self.request.POST or None)  # instance= None
+        context["form"] = form
+        context["redirect_to"] = self.request.GET.get("redirect_to", "None")
+        context["next"] = self.request.GET.get("next", "None")
+        
+        return context
+
+    def post(self, request, *args, **kwargs):
+        context = self.get_context_data()
+        context['not_found'] = None
+
+        form = LoginForm(request.POST)
+
+        if form.is_valid():
+            user = authenticate(
+                email=form.cleaned_data['email'], password=form.cleaned_data['password'])
+
+            if user is not None:
+                login(request, user)
+
+                redirect_to = request.POST.get("redirect_to", "")
+                next_page = request.POST.get("next", "")
+
+                if redirect_to != "None" and redirect_to is not None and len(redirect_to) > 3:
+                    return redirect(redirect_to)
+
+                elif next_page != "None" and next_page is not None and len(next_page) > 3:
+                    return redirect(next_page)
+
+                return redirect(reverse_lazy('my_account'))
+            else:
+                context['not_found'] = 'Usuario não encontrado.'
+
+        return super().render_to_response(context)
