@@ -1,4 +1,5 @@
 from django.db import models
+from apps.accounts.models import Account
 
 # Create your models here.
 class Conferencia(models.Model):
@@ -79,6 +80,40 @@ class Inscricao(models.Model):
 
     def __str__(self):
         return "{} - {} - {}".format(self.conferencia, self.cpf, self.nome)
+    
+    def unmask(self, value):
+
+        options = ["/", "-", " ", ".", ",", "_", "(", ")", "$", "*"]
+        
+        for op in options:
+            value = value.replace(op, "")
+
+        return value
+
+    def cleanned_cpf(self):
+        return self.unmask( self.cpf )
+
+    def cleanned_cep(self):
+        return self.unmask( self.cep )
+
+    def create_account(self):
+        try:
+            user = Account.objects.get(cpf=self.cleanned_cpf())
+            return user
+        except Account.DoesNotExist:
+            user = Account()
+        
+        user.name = self.nome
+        user.email = self.email
+        user.username = self.cleanned_cpf()
+        user.cpf = self.cleanned_cpf()
+        user.data_nascimento = self.data_nascimento
+        user.save()
+        user.set_password("{}".format(self.cleanned_cpf))
+        user.save()
+        
+        return user
+
 
 class Dependente(models.Model):
 

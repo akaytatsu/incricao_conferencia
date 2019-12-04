@@ -37,10 +37,11 @@ class InscricaoForm(forms.ModelForm):
     ]
 
     uf = forms.ChoiceField(choices=[(doc.get("value"), doc.get("label")) for doc in _UF])
+    email = forms.EmailField()
 
     class Meta:
         model = Inscricao
-        exclude = ('idade', 'valor', 'valor_total')
+        exclude = ('idade', 'valor', 'valor_total', 'conferencia')
 
     def __init__(self, conferencia, *args, **kwargs):
         super(InscricaoForm, self).__init__(*args, **kwargs)

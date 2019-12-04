@@ -8,7 +8,9 @@
 
     <!-- Meta -->
     <meta name="description" content="Sistema de incrição em conferencias">
-    <meta name="author" content="Thiago Freitas">
+    <meta name="author" content="Igreja em Contagem">
+
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" />
 
     <title>{{ conferencia.titulo }}</title>
 
@@ -26,7 +28,7 @@
     <div class="az-header az-header-primary">
       <div class="container" style="justify-content: center;">
         <div style="align-self: center;">
-          <span style="color: white; font-size: x-large;">Inscrições - {{ conferencia.titulo }}</span>
+          <span style="color: white; font-size: x-large;">Inscrição - {{ conferencia.titulo }}</span>
         </div><!-- az-header-left -->
       </div><!-- container -->
     </div><!-- az-header -->
@@ -41,10 +43,19 @@
         <ul class="nav">
           <li class="nav-label">Main Menu</li>
           <li class="nav-item active">
-            <a href="index.html" class="nav-link"><i class="typcn typcn-clipboard"></i>Resumo</a>
+            <a href="{% url 'dashboard' conferencia=conferencia.titulo_slug %}" class="nav-link"><i class="typcn typcn-clipboard"></i>Resumo</a>
           </li><!-- nav-item -->
           <li class="nav-item">
-            <a href="index.html" class="nav-link"><i class="far fa-calendar-check"></i>Pagamento</a>
+            <a href="{% url 'inscricao' conferencia=conferencia.titulo_slug %}" class="nav-link"><i class="far fa-calendar-check"></i>Inscrição</a>
+          </li><!-- nav-item -->
+          <li class="nav-item">
+            <a href="{% url 'inscricao' conferencia=conferencia.titulo_slug %}" class="nav-link"><i class="far fa-address-book"></i>Pagar Inscrição</a>
+          </li><!-- nav-item -->
+          <li class="nav-item">
+            <a href="{% url 'inscricao' conferencia=conferencia.titulo_slug %}" class="nav-link"><i class="typcn typcn-mail"></i>Contato</a>
+          </li><!-- nav-item -->
+          <li class="nav-item">
+            <a href="{% url 'inscricao' conferencia=conferencia.titulo_slug %}" class="nav-link"><i class="typcn typcn-arrow-back-outline"></i>Sair</a>
           </li><!-- nav-item -->
         </ul><!-- nav -->
       </div><!-- container -->

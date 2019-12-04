@@ -46,6 +46,8 @@ class Account(AbstractUser):
     email = models.CharField(max_length=120, unique=True,verbose_name=_("email"), blank=True, null=True)
     username = models.CharField(max_length=30, unique=True, verbose_name=_("User Name"), blank=True, null=True)
     registration_date = models.DateTimeField(auto_now_add=True, verbose_name=_("registration date"))
+    cpf = models.CharField(max_length=11, verbose_name="CPF", null=True, unique=True, default=None)
+    data_nascimento = models.DateField(verbose_name="Data Nascimento", null=True, default=None)
 
     objects = UserManager()
 

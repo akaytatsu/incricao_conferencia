@@ -1,0 +1,42 @@
+{% load static widget_tweaks render_helpers %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Meta -->
+    <meta name="description" content="Sistema de incrição em conferencias">
+    <meta name="author" content="Igreja em Contagem">
+
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" />
+
+    <title>{{ conferencia.titulo }}</title>
+
+    <link href="{% static 'lib/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static '/css/azia.css' %}">
+
+  </head>
+  <body class="az-body">
+
+    <div class="az-signup-wrapper" style="max-height: 100px;">
+        <div style="display: flex; flex-direction: row; justify-content: center; flex: 1;">
+            <h1 class="az-logo" style="align-self: center !important; font-size: xx-large !important;">inscrições <span>{{conferencia.titulo}}</span></h1>
+        </div>
+    </div>
+
+    {% block content %}
+    {% endblock %}
+
+    <div class="az-signup-wrapper" style="max-height: 80px;">
+        <div style="display: flex; flex-direction: row; justify-content: center; flex: 1; text-align: center;">
+            <h5 style="align-self: center;">Desenvolvido pelos irmãos na Igreja em Contagem</h5>
+        </div>
+    </div>
+
+    <script src="{% static 'lib/jquery/jquery.min.js' %}"></script>
+    {% include 'inscricao/mask_input.html' %}
+
+  </body>
+</html>

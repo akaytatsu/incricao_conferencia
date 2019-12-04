@@ -7,7 +7,7 @@ from .models import Conferencia, Dependente, Hospedagem, Inscricao, Valores
 
 @admin.register(Conferencia)
 class ConferenciaAdmin(admin.ModelAdmin):
-    list_display = ('titulo', 'max_inscr', 'data_abertura', 'data_encerramento', 'pagina_inicial')
+    list_display = ('titulo', 'titulo_slug', 'max_inscr', 'data_abertura', 'data_encerramento', 'pagina_inicial')
     search_fields = ('titulo', )
     prepopulated_fields = {'titulo': ('titulo_slug',)}
 

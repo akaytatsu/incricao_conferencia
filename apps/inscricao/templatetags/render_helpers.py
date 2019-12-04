@@ -12,7 +12,7 @@ def render_errors(value):
     ret = ""
     for val in value:
         ret = ret + '<div>'
-        ret = ret + '<div class="field_error">{}</div>'.format(val)
+        ret = ret + '<div style="color: red">{}</div>'.format(val)
         ret = ret + '</div>'
 
     return mark_safe(ret)
