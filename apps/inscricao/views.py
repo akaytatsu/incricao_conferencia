@@ -23,7 +23,11 @@ class HomeView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['conferencia'] = Conferencia.objects.get(titulo_slug=kwargs.get('conferencia'))
+        conferencia = Conferencia.objects.get(titulo_slug=kwargs.get('conferencia'))
+        inscricao = Inscricao.objects.get(conferencia=conferencia, cpf=self.request.user.cpf)
+
+        context['conferencia'] = conferencia
+        context['inscricao'] = inscricao
         
         return context
 

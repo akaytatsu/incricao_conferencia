@@ -10,177 +10,34 @@
 
         <div class="row row-sm mg-b-20">
 
-            <div class="col-sm-12 mg-t-20">
+            <div class="col-sm-12">
                 <div class="card card-dashboard-twenty ht-md-100p">
                     <div class="card-body">
                         
+                        <div class="row">
+                            <div class="col-sm-12"> Nome Completo: {{ inscricao.nome }} </div>
+                            <div class="col-sm-12"> Data Nascimento: {{ inscricao.data_nascimento }} </div>
+
+                            {% if inscricao.total_dependentes > 0 %}
+                                <div class="col-sm-12"> Dependentes: {{ inscricao.total_dependentes }} </div>
+                            {% endif %}
+
+                            <div class="col-sm-12"> Valor Unitário: R$ {{ inscricao.valor }} </div>
+                            <div class="col-sm-12"> Valor Total: R$ {{ inscricao.valor_total }} </div>
+                        </div>
+
+                        <div class="row">
                             <div class="col-sm-12">
-                                    <div id="error"></div>
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <div class="col-sm-2">
-                                                <label for="txtDataEmissao">CPF</label>
-                                                <input type="text" class="form-control" id="cpf" name="cpf" value="{{cpf}}">
-                                            </div>
-                                            <div class="col-sm-10">
-                                                <label>Nome Completo:</label>
-                                                <input type="text" class="form-control" id="nome_resp" name="nome_resp"
-                                                    value="{{nome}}" required="" style='text-transform:uppercase'>
-                                            </div>
-                                        </div>
-                                    </div>
-        
-                                    <div class="form-group">
-        
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <label for="txtDataEmissao">Nome no Crachá</label>
-                                                <input type="text" class="form-control" maxlength="22"
-                                                    placeholder="maximo de 22 caracteres" id="nickname" name="nickname"
-                                                    value="{{nickname}}">
-                                            </div>
-                                        </div>
-        
-                                    </div>
-        
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <div class="col-sm-2">
-                                                <label for="txtCodCliente">Data Nascismento:</label>
-                                                <input type="text" class="form-control" name="dtNascResp" id="dtNascResp"
-                                                    value="{{dt_nascimento}}">
-                                            </div>
-        
-                                            <div class="col-sm-10">
-                                                <label for="txtNomeAbrev">Email:</label>
-                                                <input type="text" class="form-control" name="email" value="{{email}}">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <div class="col-sm-2">
-                                                <label for="txtCodCondPag">CEP:</label>
-                                                <input type="text" class="form-control" name="cep" value="{{cep}}" id="cep">
-                                            </div>
-                                            <div class="col-sm-4">
-                                                <label for="txtCodCondPag">Endereço:</label>
-                                                <input type="text" class="form-control" name="endereco" id="endereco"
-                                                    value="{{endereco}}" style='text-transform:uppercase'>
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <label for="txtCodCondPag">Numero:</label>
-                                                <input type="text" class="form-control" name="numero" value="{{numero}}"
-                                                    style='text-transform:uppercase'>
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <label for="txtCodCondPag">Complemento:</label>
-                                                <input type="text" class="form-control" name="complemento"
-                                                    value="{{complemento}}" style='text-transform:uppercase'>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <div class="col-sm-5">
-                                                <label for="txtCodCondPag">Bairro:</label>
-                                                <input type="text" class="form-control" name="bairro" id="bairro"
-                                                    value="{{bairro}}" style='text-transform:uppercase'>
-                                            </div>
-                                            <div class="col-sm-4">
-                                                <label for="txtLocEntrega">Cidade:</label>
-                                                <input type="text" class="form-control" name="cidade" id="cidade"
-                                                    value="{{cidade}}" style='text-transform:uppercase'>
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <label for="txtDesLocEntrega">Estado:</label>
-        
-                                                <select name="estado" id="estado" class="form-control">
-                                                    <option value="">Selecione ...</option>
-                                                    <option value="AC">Acre</option>
-                                                    <option value="AL">Alagoas</option>
-                                                    <option value="AP">Amapá</option>
-                                                    <option value="AM">Amazonas</option>
-                                                    <option value="BA">Bahia</option>
-                                                    <option value="CE">Ceará</option>
-                                                    <option value="DF">Distrito Federal</option>
-                                                    <option value="GO">Goiás</option>
-                                                    <option value="ES">Espírito Santo</option>
-                                                    <option value="MA">Maranhão</option>
-                                                    <option value="MT">Mato Grosso</option>
-                                                    <option value="MS">Mato Grosso do Sul</option>
-                                                    <option value="MG">Minas Gerais</option>
-                                                    <option value="PA">Pará</option>
-                                                    <option value="PB">Paraiba</option>
-                                                    <option value="PR">Paraná</option>
-                                                    <option value="PE">Pernambuco</option>
-                                                    <option value="PI">Piauí­</option>
-                                                    <option value="RJ">Rio de Janeiro</option>
-                                                    <option value="RN">Rio Grande do Norte</option>
-                                                    <option value="RS">Rio Grande do Sul</option>
-                                                    <option value="RO">Rondônia</option>
-                                                    <option value="RR">Roraima</option>
-                                                    <option value="SP">São Paulo</option>
-                                                    <option value="SC">Santa Catarina</option>
-                                                    <option value="SE">Sergipe</option>
-                                                    <option value="TO">Tocantins</option>
-                                                    <option value="EX">Exterior</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="row">
-        
-                                            <div class="col-sm-2">
-                                                <label for="txtCodCondPag">DDD:</label>
-                                                <input type="text" class="form-control" name="ddd" id="ddd" value="{{ddd}}">
-                                            </div>
-                                            <div class="col-sm-4">
-                                                <label for="txtCodCondPag">Telefone:</label>
-                                                <input type="text" class="form-control" name="telefone" id="telefone"
-                                                    value="{{telefone}}">
-                                            </div>
-                                            <div class="col-sm-4">
-                                                <label for="txtCodCondPag">Hospedagem:</label>
-                                                <select name="hospedagem" id="hospedagem" class="form-control">
-        
-                                                    <option value="nao_necessita">N&atilde;o Necessito de Hospedagem</option>
-        
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="row">
-                                                <div class="col-sm-12">
-                                                    <label>Observações:</label>
-                                                    <input type="text" class="form-control" name="observacao"
-                                                        value="{{observacao}}" style='text-transform:uppercase'>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="row">
-                                                <div class="col-sm-12">
-                                                    <div class="btn btn-success" id="btnSalvar">Salvar</div>
-                                                    <button type="button" class="btn btn-info"
-                                                        onclick="window.location = '/registration/resume'">Pagar
-                                                        Inscrição</button>
-                                                    <button type="button" class="btn btn-danger"
-                                                        onclick="deleteInscri();">Cancelar Inscrição</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        </fieldset>
-                                    </div>
-                                    </script>
-        
-                                </div>
+                                <br><h4>Dependentes</h4>
+                            </div>
+                        </div>
+
                     </div>
-                </div><!-- card -->
-            </div><!-- col-3 -->
+                </div>
+            </div>
 
         </div>
-    </div><!-- container -->
-</div><!-- az-content -->
+    </div>
+</div>
 
 {% endblock %}
