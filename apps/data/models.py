@@ -6,6 +6,17 @@ def calculate_age(born):
     today = date.today()
     return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
 
+def busca_valor(idade, conferencia):
+    valor = Valores.objects.filter(conferencia=conferencia)
+    valor = valor.filter(idade_inicial__lte=idade)
+    valor = valor.filter(idade_final__gte=idade)
+
+    if valor.exists():
+        valor = valor.first()
+        return valor.valor
+    
+    return 0
+
 # Create your models here.
 class Conferencia(models.Model):
 
@@ -85,6 +96,12 @@ class Inscricao(models.Model):
 
     def __str__(self):
         return "{} - {} - {}".format(self.conferencia, self.cpf, self.nome)
+
+    def save(self, *args, **kwargs):
+        self.idade = self.calc_idade()
+        self.valor = busca_valor(self.idade, self.conferencia)
+        self.valor_total = self.busca_valor_total()
+        super(Inscricao, self).save(*args, **kwargs)
     
     def unmask(self, value):
 
@@ -119,11 +136,22 @@ class Inscricao(models.Model):
         
         return user
     
+    def calc_idade(self):
+        return calculate_age(self.data_nascimento)
+    
     def num_dependentes(self):
         return Dependente.objects.filter(inscricao=self).count()
 
-    def atualiza_valores(self):
-        pass
+    def busca_valor_total(self):
+        total = 0
+        total = self.valor
+
+        dependentes = Dependente.objects.filter(inscricao=self)
+
+        for dep in dependentes:
+            total = total + dep.valor
+        
+        return total
 
 
 class Dependente(models.Model):
@@ -153,34 +181,18 @@ class Dependente(models.Model):
     
     def save(self, *args, **kwargs):
         self.idade = self.calc_idade()
+        self.valor = busca_valor(self.idade, self.inscricao.conferencia)
         super(Dependente, self).save(*args, **kwargs)
-    
-    def salva_valores(self):
-        valor = Valores.objects.filter(conferencia=inscricao.conferencia)
+
+        self.inscricao.save()
     
     def calc_idade(self):
         return calculate_age(self.data_nascimento)
     
     def grau_display(self):
-
-        print("self._GRAU")
-        print(self._GRAU)
-
         for g in self._GRAU:
-            print(g)
-            print(type(g[0]))
-            print(type(self.grau))
-            print(g[0] == self.grau)
             if g[0] == self.grau:
                 return g[1]
         
         return ""
 
-
-
-# class Valores(models.Model):
-
-#     conferencia = models.ForeignKey(Conferencia, on_delete=models.CASCADE, verbose_name="Conferência")
-#     idade_inicial = models.IntegerField(default=0, verbose_name="Idade Inicial")
-#     idade_final = models.IntegerField(default=120, verbose_name="Idade Final")
-#     valor = models.DecimalField(decimal_places=2, max_digits=10, default=0, verbose_name="Valor Inscrição")
