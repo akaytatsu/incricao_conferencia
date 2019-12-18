@@ -110,11 +110,6 @@ class LoginView(TemplateView):
         form = LoginForm(request.POST)
 
         if form.is_valid():
-
-            print("65555555555555555")
-            print(form.cleaned_data['cpf'])
-            print(form.cleaned_data['data_nascimento'])
-
             cpf = form.cleaned_data['cpf'].replace(".", "").replace("-", "")
             data_nascimento = form.cleaned_data['data_nascimento']
 
@@ -202,12 +197,16 @@ class PagarView(TemplateView):
         return conferencia
 
 class ContatoView(TemplateView):
-    template_name = 'inscricao/dashboard.html'
+    template_name = 'inscricao/contato.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['conferencia'] = Conferencia.objects.get(titulo_slug=kwargs.get('conferencia'))
+        conferencia = Conferencia.objects.get(titulo_slug=kwargs.get('conferencia'))
+        inscricao = Inscricao.objects.get(conferencia=conferencia, cpf=self.request.user.cpf, data_nascimento=self.request.user.data_nascimento)
+
+        context['conferencia'] = conferencia
+        context['inscricao'] = inscricao
         context['menu'] = "contato"
         
         return context

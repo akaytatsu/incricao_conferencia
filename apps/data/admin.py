@@ -2,7 +2,8 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import escape, mark_safe
 
-from .models import Conferencia, Dependente, Hospedagem, Inscricao, Valores
+from .models import (Conferencia, Contato, Dependente, Hospedagem, Inscricao,
+                     Valores)
 
 
 @admin.register(Conferencia)
@@ -42,3 +43,12 @@ class DependenteAdmin(admin.ModelAdmin):
     list_display = ('inscricao', 'nome', 'nome_cracha', 'data_nascimento', 'grau', 'valor', )
     search_fields = ('inscricao', 'nome', )
     list_filter = ('inscricao', 'grau', )
+
+@admin.register(Contato)
+class ContatoAdmin(admin.ModelAdmin):
+    list_display = ('conferencia', 'inscricao', 'nome', 'email', 'data_contato',)
+    search_fields = ('nome', 'email', 'descricao')
+    list_filter = ('conferencia', )
+
+    def get_readonly_fields(self, request, obj=None):
+        return [f.name for f in self.model._meta.fields]

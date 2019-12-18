@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static widget_tweaks render_helpers %}
+
+{% block content %}
+
+<div id="contato">
+
+    <div class="az-content az-content-dashboard-eight">
+        <div class="container d-block">
+            <h2 class="az-content-title tx-24 mg-b-5">Contato</h2>
+            <p class="mg-b-20 mg-lg-b-25"></p>
+
+            <div class="row row-sm mg-b-20">
+                <div class="col-sm-12">
+                    <div class="card card-dashboard-twenty ht-md-100p">
+                        <div class="card-body">
+
+                            <input type="hidden" id="inscricao_id" value="{{ inscricao.id }}">
+                            <input type="hidden" id="conferencia_id" value="{{ conferencia.id }}">
+
+                            
+                            <div class="col-sm-12">
+                                <div id="error"></div>
+
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label for="txtDataEmissao">Nome</label>
+                                            <input type="text" class="form-control" v-model="inscricao.nome">
+                                            <span v-if="errors.nome != undefined && errors.nome.length > 0" style="color: red;">[[ errors.nome[0] ]]</span>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label for="txtDataEmissao">E-mail</label>
+                                            <input type="text" class="form-control" v-model="inscricao.email">
+                                            <span v-if="errors.email != undefined && errors.email.length > 0" style="color: red;">[[ errors.email[0] ]]</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <label for="txtDataEmissao">Assunto</label>
+                                            <input type="text" class="form-control" v-model="inscricao.assunto">
+                                            <span v-if="errors.assunto != undefined && errors.assunto.length > 0" style="color: red;">[[ errors.assunto[0] ]]</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <label for="txtDataEmissao">Descrição</label>
+                                            <Textarea class="form-control" rows="6" v-model="inscricao.descricao"></Textarea>
+                                            <span v-if="errors.descricao != undefined && errors.descricao.length > 0" style="color: red;">[[ errors.descricao[0] ]]</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <button class="btn btn-success" type="submit" v-on:click="enviaContato()">Entrar em Contato</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+<script src="{% static 'js/vue.js' %}"></script>
+<script src="{% static 'js/axios.js' %}"></script>
+<script src="{% static 'components/contato.js' %}"></script>
+
+{% endblock %}

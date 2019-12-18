@@ -95,7 +95,7 @@ class Inscricao(models.Model):
         verbose_name_plural = 'Inscrições'
 
     def __str__(self):
-        return "{} - {} - {}".format(self.conferencia, self.cpf, self.nome)
+        return "{} - {}".format(self.conferencia, self.nome)
 
     def save(self, *args, **kwargs):
         self.idade = self.calc_idade()
@@ -196,3 +196,20 @@ class Dependente(models.Model):
         
         return ""
 
+class Contato(models.Model):
+
+    conferencia = models.ForeignKey(Conferencia, on_delete=models.CASCADE, verbose_name="Conferência")
+    inscricao = models.ForeignKey(Inscricao, on_delete=models.CASCADE, verbose_name="Inscrição")
+    nome = models.CharField(max_length=100, verbose_name="Nome")
+    email = models.CharField(max_length=120, verbose_name="Email")
+    assunto = models.CharField(max_length=120, verbose_name="Assunto")
+    data_contato = models.DateTimeField(auto_now_add=True, verbose_name="Data Contato")
+    descricao = models.TextField(verbose_name="Descrição")
+    
+    class Meta:
+        db_table = "contato"
+        verbose_name = 'Contato'
+        verbose_name_plural = 'Contatos'
+
+    def __str__(self):
+        return "{} - {}".format(self.conferencia.titulo, self.nome)
