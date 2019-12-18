@@ -26,11 +26,13 @@
                             <div class="col-sm-12"> Valor Total: R$ {{ inscricao.valor_total }} </div>
                         </div>
 
+                        {% if inscricao.num_dependentes > 0 %}
                         <div class="row">
                             <div class="col-sm-12">
                                 <br><h4>Dependentes</h4>
                             </div>
                         </div>
+                        {% endif %}
 
                     </div>
                 </div>

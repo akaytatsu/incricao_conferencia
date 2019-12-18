@@ -72,6 +72,7 @@ class inscricaoView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['conferencia'] = self.get_conferencia()
+        context['inscricao'] = self.get_object()
         context['edicao'] = True
 
         return context
@@ -124,7 +125,7 @@ class LoginView(TemplateView):
 class NovaInscricaoView(FormView):
     redirect_field_name = 'redirect_to'
     template_name = 'inscricao/nova_inscricao.html'
-    form_class = InscricaoForm
+    form_class = InscricaoForm 
 
     def post(self, request, *args, **kwargs):
         context = self.get_context_data()
@@ -135,9 +136,13 @@ class NovaInscricaoView(FormView):
         data_copy['cep'] = data_copy['cep'].replace(".", "").replace("-", "")
 
         conferencia = self.get_conferencia()
+
+        data_copy['conferencia'] = conferencia.id
+
         form = InscricaoForm(conferencia, data=data_copy)
 
         if form.is_valid():
+
             inscricao = form.save(commit=False)
             inscricao.conferencia = self.get_conferencia()
             inscricao.save()

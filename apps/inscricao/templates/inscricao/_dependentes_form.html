@@ -1,0 +1,133 @@
+{% load static widget_tweaks render_helpers %}
+
+<div id="dependentes">
+
+    <div class="az-content az-content-dashboard-eight">
+        <div class="container d-block">
+            <h2 class="az-content-title tx-24 mg-b-5">Dependentes</h2>
+            <p class="mg-b-20 mg-lg-b-25"></p>
+
+            <input type="hidden" id="inscricao_id" value="{{ inscricao.id }}">
+
+            <div class="row row-sm mg-b-20">
+                <div class="col-sm-12">
+                    <div class="card card-dashboard-twenty ht-md-100p">
+                        <div class="card-body">
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <button type="button" class="btn btn-info" v-on:click="dependentesModal()">Adicionar Dependente</button>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="row" v-if="dependentes.length == 0">
+                                <div class="col-sm-12 text-center">
+                                    nenhum dependente cadastrado
+                                </div>
+                            </div>
+                            <div class="row" v-else>
+                                <div class="col-sm-12">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <td>Nome</td>
+                                                <td>Grau</td>
+                                                <td>Nome Cracha</td>
+                                                <td>Data Nascimento</td>
+                                                <td>Idade</td>
+                                                <td>Valor</td>
+                                                <td></td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="dep in dependentes">
+                                                <td>[[ dep.nome ]]</td>
+                                                <td>[[ dep.grau ]]</td>
+                                                <td>[[ dep.nome_cracha ]]</td>
+                                                <td>[[ dep.data_nascimento ]]</td>
+                                                <td>[[ dep.idade ]]</td>
+                                                <td>[[ dep.valor ]]</td>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div><!-- card -->
+                </div><!-- col-3 -->
+
+            </div>
+        </div>
+    </div>
+
+    <div id="dependente_form" class="modal">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content modal-content-demo">
+                <div class="modal-header">
+                    <h6 class="modal-title">Dependente</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <form action="" method="post">
+                        <div class="col-sm-12">
+                            <div id="error"></div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label for="txtDataEmissao">Nome</label>
+                                        <input type="text" class="form-control" v-model="dependente.nome">
+                                        <span v-if="dependente_error.nome" style="color: red;">nome não informado</span>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label for="txtDataEmissao">Nome Crachá</label>
+                                        <input type="text" class="form-control" v-model="dependente.nome_cracha">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label for="txtDataEmissao">Grau</label>
+                                        <select class="form-control" v-model="dependente.grau">
+                                            <option value="">Selecione...</option>
+                                            <option value="1">Conjugue</option>
+                                            <option value="2">Filho(a)</option>
+                                            <option value="3">Pai/Mãe</option>
+                                            <option value="4">Outro</option>
+                                        </select>
+                                        <span v-if="dependente_error.grau" style="color: red;">selecione um grau de parentesco</span>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label for="txtDataEmissao">Data Nascimento</label>
+                                        <input type="text" class="form-control" v-model="dependente.data_nascimento" id="id_data_nascimento_dep">
+                                        <span v-if="dependente_error.data_nascimento" style="color: red;">data de nascimento não informado</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-indigo" v-on:click="salvaDependente()">Salvar</button>
+                    <button type="button" class="btn btn-outline-light" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="{% static 'js/vue.js' %}"></script>
+<script src="{% static 'js/axios.js' %}"></script>
+<script src="{% static 'components/dependentes.js' %}"></script>

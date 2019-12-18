@@ -12,6 +12,7 @@ admin.site.index_title = "Sistema de Inscrição Igreja em Contagem"
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('<conferencia>/', include('apps.inscricao.urls')),
+    path('api/', include('apps.data.urls')),
 ]
 
 urlpatterns = urlpatterns + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

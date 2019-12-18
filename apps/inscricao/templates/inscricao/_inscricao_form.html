@@ -22,7 +22,7 @@
                                             {% if edicao %}
                                                 {% render_field form.cpf class+="form-control" disabled+="true" readonly+="true" %}
                                             {% else %}
-                                                {% render_field form.cpf class+="form-control" disabled+="true" readonly+="true" %}
+                                                {% render_field form.cpf class+="form-control" %}
                                             {% endif %}
                                             {{ form.cpf.errors|render_errors }}
                                         </div>
@@ -144,6 +144,10 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                {% if edicao %}
+                                    {% include 'inscricao/_dependentes_form.html' %}
+                                {% endif %}
 
                                 <div class="form-group">
                                     <div class="row">

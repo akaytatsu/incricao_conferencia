@@ -41,8 +41,22 @@ class InscricaoForm(forms.ModelForm):
 
     class Meta:
         model = Inscricao
-        exclude = ('idade', 'valor', 'valor_total', 'conferencia')
+        exclude = ('idade', 'valor', 'valor_total', )
 
     def __init__(self, conferencia, *args, **kwargs):
         super(InscricaoForm, self).__init__(*args, **kwargs)
         self.fields['hospedagem'].queryset = Hospedagem.objects.filter(conferencia_id=conferencia, ativo=True)
+
+    def clean_email(self):
+        data = self.cleaned_data['email']
+
+        if Inscricao.objects.filter(email=data, conferencia=self.data.get("conferencia")).count() > 0:
+            raise forms.ValidationError("E-mail já cadastrado")
+        return data
+
+    def clean_cpf(self):
+        data = self.cleaned_data['cpf']
+
+        if Inscricao.objects.filter(cpf=data, conferencia=self.data.get("conferencia")).count() > 0:
+            raise forms.ValidationError("CPF já cadastrado")
+        return data

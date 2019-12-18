@@ -13,7 +13,7 @@ class ConferenciaAdmin(admin.ModelAdmin):
 
     def pagina_inicial(self, obj):
         # link = reverse("admin:vtex_sku_changelist")
-        return mark_safe('<a href="/{}/dashboard" target="_blank">{}</a>'.format(obj.titulo_slug, "Página Inicial"))
+        return mark_safe('<a href="/{}/" target="_blank">{}</a>'.format(obj.titulo_slug, "Página Inicial"))
 
     pagina_inicial.allow_tags = True
     pagina_inicial.short_description = "Página Inicial"

@@ -1,5 +1,10 @@
 from django.db import models
 from apps.accounts.models import Account
+from datetime import date
+
+def calculate_age(born):
+    today = date.today()
+    return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
 
 # Create your models here.
 class Conferencia(models.Model):
@@ -113,6 +118,12 @@ class Inscricao(models.Model):
         user.save()
         
         return user
+    
+    def num_dependentes(self):
+        return Dependente.objects.filter(inscricao=self).count()
+
+    def atualiza_valores(self):
+        pass
 
 
 class Dependente(models.Model):
@@ -127,10 +138,10 @@ class Dependente(models.Model):
     inscricao = models.ForeignKey(Inscricao, on_delete=models.CASCADE, verbose_name="Inscrição")
     nome = models.CharField(max_length=100, verbose_name="Nome Completo")
     grau = models.CharField(choices=_GRAU, max_length=30, verbose_name="Grau Parentesco")
-    nome_cracha = models.CharField(max_length=100, verbose_name="Nome Crachá")
+    nome_cracha = models.CharField(max_length=100, verbose_name="Nome Crachá", blank=True)
     data_nascimento = models.DateField(verbose_name="Data Nascimento")
     idade = models.IntegerField(default=0, verbose_name="Idade")
-    valor = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor Inscrição")
+    valor = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor Inscrição", default=0)
 
     class Meta:
         db_table = "dependente"
@@ -139,3 +150,22 @@ class Dependente(models.Model):
 
     def __str__(self):
         return "{} - {} - {}".format(self.inscricao, self.grau, self.nome)
+    
+    def save(self, *args, **kwargs):
+        self.idade = self.calc_idade()
+        super(Dependente, self).save(*args, **kwargs)
+    
+    def salva_valores(self):
+        valor = Valores.objects.filter(conferencia=inscricao.conferencia)
+    
+    def calc_idade(self):
+        return calculate_age(self.data_nascimento)
+
+
+
+# class Valores(models.Model):
+
+#     conferencia = models.ForeignKey(Conferencia, on_delete=models.CASCADE, verbose_name="Conferência")
+#     idade_inicial = models.IntegerField(default=0, verbose_name="Idade Inicial")
+#     idade_final = models.IntegerField(default=120, verbose_name="Idade Final")
+#     valor = models.DecimalField(decimal_places=2, max_digits=10, default=0, verbose_name="Valor Inscrição")
