@@ -22,7 +22,15 @@ var dependentes = new Vue({
         this.getData();
     },
     methods: {
-
+        
+        cleanErrors: function(){
+            this.errors = {
+                nome: [],
+                email: [],
+                descricao: [],
+                assunto: []
+            }
+        },
         getData: function(){
             _this = this;
             let inscricao_id = document.getElementById("inscricao_id").value;
@@ -45,7 +53,9 @@ var dependentes = new Vue({
             };
 
             axios.post("/api/contato", params ).then((response) => {
-                
+                _this.getData();
+                _this.cleanErrors();
+                alert("Recebemos seus dados. Em breve entraremos em contato.");
             }).catch((error) => {
                 _this.errors = error.response.data;
             });
