@@ -13,3 +13,4 @@ django-widget-tweaks
 xmltodict
 django-debug-toolbar
 django-localflavor
+pagseguro

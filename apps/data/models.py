@@ -28,6 +28,8 @@ class Conferencia(models.Model):
     data_cadastro = models.DateTimeField(auto_now_add=True)
     endereco = models.CharField(max_length=320, blank=True, verbose_name="Endereço (googlemaps)")
     informacoes = models.TextField(blank=True, verbose_name="Informações Gerais")
+    pagseguro_token = models.CharField(max_length=120, blank=True, verbose_name="Token PagSeguro")
+    pagseguro_email = models.CharField(max_length=120, blank=True, verbose_name="Email PagSeguro")
 
     class Meta:
         db_table = "conferencia"
@@ -122,6 +124,9 @@ class Inscricao(models.Model):
 
     def cleanned_cep(self):
         return self.unmask( self.cep )
+
+    def cleanned_telefone(self):
+        return self.unmask( self.telefone )
 
     def create_account(self):
         try:

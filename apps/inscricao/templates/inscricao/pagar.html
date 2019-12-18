@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static widget_tweaks render_helpers %}
+
+{% block css %}
+
+<style>
+    .margin_div {
+        margin-top: 20px;
+    }
+</style>
+
+
+{% endblock %}
+
+{% block content %}
+
+<div id="pagar">
+    <div class="az-content az-content-dashboard-eight">
+        <div class="container d-block">
+            <h2 class="az-content-title tx-24 mg-b-5">Resumo para Pagemento</h2>
+            <p class="mg-b-20 mg-lg-b-25"></p>
+
+            <input type="hidden" id="inscricao_id" value="{{ inscricao.id }}">
+            <input type="hidden" id="conferencia_id" value="{{ conferencia.id }}">
+    
+            <div class="row row-sm mg-b-20">
+    
+                <div class="col-sm-12">
+                    <div class="card card-dashboard-twenty ht-md-100p">
+                        <div class="card-body">
+    
+                            <div class="row">
+                                <div class="col-sm-6"> Nome Completo: <b>{{ inscricao.nome|upper }}</b> </div>
+                                <div class="col-sm-6"> Data Nascimento: <b>{{ inscricao.data_nascimento }}</b> </div>
+                            </div>
+                            <div class="margin_div"></div>
+    
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    Observações: <b>{{ inscricao.observacao }}</b>
+                                </div>
+                            </div>
+                            <div class="margin_div"></div>
+    
+                            <div class="row">
+    
+                                {% if inscricao.num_dependentes > 0 %}
+                                <div class="col-sm-4"> Dependentes: <b>{{ inscricao.num_dependentes }}</b> </div>
+                                {% endif %}
+    
+                                <div class="col-sm-4"> Valor: <b>R$ {{ inscricao.valor }}</b> </div>
+                                <div class="col-sm-4"> Valor Total: <b>R$ {{ inscricao.valor_total }}</b> </div>
+                            </div>
+                            <div class="margin_div"></div>
+    
+                            {% if inscricao.num_dependentes > 0 %}
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <br>
+                                    <h4>Dependentes</h4>
+                                </div>
+                            </div>
+    
+                            <hr>
+    
+                            {% for dep in dependentes %}
+    
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    Nome: <b>{{ dep.nome|upper }}</b>
+                                </div>
+                                <div class="col-sm-6">
+                                    Nome Crachá: <b>{{ dep.nome_cracha|upper }}</b>
+                                </div>
+                            </div>
+                            <div class="margin_div"></div>
+    
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    Grau: <b>{{ dep.grau_display }}</b>
+                                </div>
+                                <div class="col-sm-4">
+                                    Data nascimento: <b>{{ dep.data_nascimento }}</b>
+                                </div>
+                                <div class="col-sm-4">
+                                    Idade: <b>{{ dep.idade }}</b>
+                                </div>
+                            </div>
+                            <div class="margin_div"></div>
+    
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    Valor: R$ <b>{{ dep.valor }}</b>
+                                </div>
+                            </div>
+    
+                            <hr>
+    
+                            {% endfor %}
+                            {% endif %}
+    
+                            <hr>
+    
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <button class="btn btn-danger" v-on:click="buscaCodigo()">Pagar Inscrição</button>
+                                </div>
+                            </div>
+    
+                        </div>
+                    </div>
+                </div>
+    
+            </div>
+        </div>
+    
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+<script src="{% static 'js/vue.js' %}"></script>
+<script src="{% static 'js/axios.js' %}"></script>
+<script type="text/javascript"
+    src="https://stc.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.lightbox.js"></script>
+<script src="{% static 'components/pagar.js' %}"></script>
+
+{% endblock %}

@@ -180,12 +180,18 @@ class NovaInscricaoView(FormView):
         return context
 
 class PagarView(TemplateView):
-    template_name = 'inscricao/dashboard.html'
+    template_name = 'inscricao/pagar.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['conferencia'] = Conferencia.objects.get(titulo_slug=kwargs.get('conferencia'))
+        conferencia = Conferencia.objects.get(titulo_slug=kwargs.get('conferencia'))
+        inscricao = Inscricao.objects.get(conferencia=conferencia, cpf=self.request.user.cpf)
+        dependentes = Dependente.objects.filter(inscricao=inscricao)
+
+        context['conferencia'] = conferencia
+        context['inscricao'] = inscricao
+        context['dependentes'] = dependentes
         context['menu'] = "pagar"
         
         return context

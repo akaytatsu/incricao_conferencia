@@ -16,6 +16,9 @@ class ConferenciaAdmin(admin.ModelAdmin):
         (None, {
             'fields': ('titulo', 'titulo_slug', 'max_inscr', 'data_abertura', 'data_encerramento', )
         }),
+        ('Financeiro', {
+            'fields': ('pagseguro_token', 'pagseguro_email')
+        }),
         ('Informações', {
             'fields': ('endereco', 'informacoes')
         })

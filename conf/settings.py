@@ -147,3 +147,6 @@ STATICFILES_DIRS = [
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+NOTIFICATION_URL=config('NOTIFICATION_URL')
+BASE_URL=config('BASE_URL')

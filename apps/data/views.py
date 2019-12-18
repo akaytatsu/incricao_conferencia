@@ -7,6 +7,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .serializers import ContatoSerializer, DependentesSerializer, InscricaoSerializer
+from pagseguro import PagSeguro
+from django.urls import reverse_lazy
+
+from django.conf import settings
 
 
 class DependentesApiView(APIView):
@@ -81,3 +85,67 @@ class ContatoApiView(APIView):
             return Response({}, status=200)
 
         return Response(serializer.errors, status=400)
+
+class PagamentoApiView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, format=None):
+
+        conferencia_pk = request.data.get("conferencia")
+        inscricao_pk = request.data.get("inscricao")
+
+        inscricao = Inscricao.objects.get(pk=inscricao_pk, conferencia_id=conferencia_pk)
+        conferencia = inscricao.conferencia 
+
+        config = { 'sandbox': False }
+
+        pg = PagSeguro(email="iec@igrejaemcontagem.com.br", token="A30E6EFB03214526BA670F6C1ACE3EBA",)
+
+        pg.sender = {
+            "name": inscricao.nome,
+            "area_code": inscricao.ddd,
+            "phone": inscricao.cleanned_telefone(),
+            "email": inscricao.email,
+        }
+
+        pg.shipping = {
+            "type": pg.NONE,
+            "street": inscricao.endereco,
+            "number": inscricao.numero,
+            "complement": inscricao.complemento,
+            "district": inscricao.bairro,
+            "postal_code": inscricao.cep,
+            "city": inscricao.cidade,
+            "state": inscricao.uf,
+            "country": "BRA"
+        }
+
+        pg.reference_prefix = "REFID_"
+        pg.reference = inscricao.pk
+
+        pg.items = [
+            {
+                "id": "0001", 
+                "description": conferencia.titulo, 
+                "amount": inscricao.valor_total, 
+                "quantity": 1,
+            },
+        ]
+
+        url_base = reverse_lazy('home', kwargs={"conferencia": conferencia.titulo_slug})
+
+        redirect_url = "{}{}".format(settings.BASE_URL, url_base)
+
+        pg.redirect_url = redirect_url
+        pg.notification_url = settings.NOTIFICATION_URL
+
+        response = pg.checkout()
+
+        return Response({
+            "code": response.code,
+            "transaction": response.transaction,
+            "date": response.date,
+            "payment_url": response.payment_url,
+            "payment_link": response.payment_link,
+            "errors": response.errors,
+        })
