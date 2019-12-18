@@ -12,6 +12,15 @@ class ConferenciaAdmin(admin.ModelAdmin):
     search_fields = ('titulo', )
     prepopulated_fields = {'titulo': ('titulo_slug',)}
 
+    fieldsets = (
+        (None, {
+            'fields': ('titulo', 'titulo_slug', 'max_inscr', 'data_abertura', 'data_encerramento', )
+        }),
+        ('Informações', {
+            'fields': ('endereco', 'informacoes')
+        })
+    )
+
     def pagina_inicial(self, obj):
         # link = reverse("admin:vtex_sku_changelist")
         return mark_safe('<a href="/{}/" target="_blank">{}</a>'.format(obj.titulo_slug, "Página Inicial"))

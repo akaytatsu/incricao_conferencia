@@ -26,6 +26,8 @@ class Conferencia(models.Model):
     data_abertura = models.DateTimeField(verbose_name="Data Abertura Inscrições")
     data_encerramento = models.DateTimeField(verbose_name="Data Encerramento Inscrições")
     data_cadastro = models.DateTimeField(auto_now_add=True)
+    endereco = models.CharField(max_length=320, blank=True, verbose_name="Endereço (googlemaps)")
+    informacoes = models.TextField(blank=True, verbose_name="Informações Gerais")
 
     class Meta:
         db_table = "conferencia"
@@ -34,6 +36,9 @@ class Conferencia(models.Model):
 
     def __str__(self):
         return self.titulo
+    
+    def informacoes_as_html(self):
+        return self.informacoes.replace("\n", "<br>")
 
 class Valores(models.Model):
 

@@ -3,11 +3,27 @@
 
 {% block css %}
 
-    <style>
-        .margin_div {
-            margin-top: 20px;
-        }
-    </style>
+<style>
+    .margin_div {
+        margin-top: 20px;
+    }
+</style>
+
+<style>
+    .mapouter {
+        position: relative;
+        text-align: right;
+        height: 500px;
+        width: 100%;
+    }
+
+    .gmap_canvas {
+        overflow: hidden;
+        background: none !important;
+        height: 500px;
+        width: 100%;
+    }
+</style>
 
 {% endblock %}
 
@@ -36,11 +52,11 @@
                             </div>
                         </div>
                         <div class="margin_div"></div>
-                        
+
                         <div class="row">
-                            
+
                             {% if inscricao.num_dependentes > 0 %}
-                                <div class="col-sm-4"> Dependentes: <b>{{ inscricao.num_dependentes }}</b> </div>
+                            <div class="col-sm-4"> Dependentes: <b>{{ inscricao.num_dependentes }}</b> </div>
                             {% endif %}
 
                             <div class="col-sm-4"> Valor: <b>R$ {{ inscricao.valor }}</b> </div>
@@ -49,48 +65,49 @@
                         <div class="margin_div"></div>
 
                         {% if inscricao.num_dependentes > 0 %}
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <br><h4>Dependentes</h4>
-                                </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <br>
+                                <h4>Dependentes</h4>
                             </div>
+                        </div>
 
-                            <hr>
+                        <hr>
 
-                            {% for dep in dependentes %}
+                        {% for dep in dependentes %}
 
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        Nome: <b>{{ dep.nome|upper }}</b>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        Nome Crachá: <b>{{ dep.nome_cracha|upper }}</b>
-                                    </div>
-                                </div>
-                                <div class="margin_div"></div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                Nome: <b>{{ dep.nome|upper }}</b>
+                            </div>
+                            <div class="col-sm-6">
+                                Nome Crachá: <b>{{ dep.nome_cracha|upper }}</b>
+                            </div>
+                        </div>
+                        <div class="margin_div"></div>
 
-                                <div class="row">
-                                    <div class="col-sm-4">
-                                        Grau: <b>{{ dep.grau_display }}</b>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        Data nascimento: <b>{{ dep.data_nascimento }}</b>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        Idade: <b>{{ dep.idade }}</b>
-                                    </div>
-                                </div>
-                                <div class="margin_div"></div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                Grau: <b>{{ dep.grau_display }}</b>
+                            </div>
+                            <div class="col-sm-4">
+                                Data nascimento: <b>{{ dep.data_nascimento }}</b>
+                            </div>
+                            <div class="col-sm-4">
+                                Idade: <b>{{ dep.idade }}</b>
+                            </div>
+                        </div>
+                        <div class="margin_div"></div>
 
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        Valor: R$ <b>{{ dep.valor }}</b>
-                                    </div>
-                                </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                Valor: R$ <b>{{ dep.valor }}</b>
+                            </div>
+                        </div>
 
-                                <hr>
+                        <hr>
 
-                            {% endfor %}
+                        {% endfor %}
                         {% endif %}
 
                     </div>
@@ -99,6 +116,74 @@
 
         </div>
     </div>
+
+    {% if inscricao.conferencia.endereco|length > 5 %}
+
+    <div class="container d-block">
+        <h2 class="az-content-title tx-24 mg-b-5">Endereço</h2>
+        <p class="mg-b-20 mg-lg-b-25"></p>
+
+        <div class="row row-sm mg-b-20">
+
+            <div class="col-sm-12">
+                <div class="card card-dashboard-twenty ht-md-100p">
+                    <div class="card-body">
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h4>Endereço: <b>{{ inscricao.conferencia.endereco }}</b></h4>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="mapouter">
+                                    <div class="gmap_canvas"><iframe width="100%" height="500" id="gmap_canvas"
+                                            src="https://maps.google.com/maps?q={{ inscricao.conferencia.endereco|urlencode }}&t=&z=17&ie=UTF8&iwloc=&output=embed"
+                                            frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    {% endif %}
+
+    {% if inscricao.conferencia.informacoes|length > 5 %}
+
+    <div class="container d-block">
+        <h2 class="az-content-title tx-24 mg-b-5">Informações Gerais</h2>
+        <p class="mg-b-20 mg-lg-b-25"></p>
+
+        <div class="row row-sm mg-b-20">
+
+            <div class="col-sm-12">
+                <div class="card card-dashboard-twenty ht-md-100p">
+                    <div class="card-body">
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                {{ inscricao.conferencia.informacoes_as_html|safe }}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    {% endif %}
+
 </div>
 
 {% endblock %}
