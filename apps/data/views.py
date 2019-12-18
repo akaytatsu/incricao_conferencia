@@ -17,6 +17,15 @@ class DependentesApiView(APIView):
 
         return Response(serializer.data)
 
+class DependenteApiView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        queryset = Dependente.objects.get(id=request.GET.get("id"), inscricao_id=request.GET.get("inscricao_id"))
+        serializer = DependentesSerializer(queryset)
+
+        return Response(serializer.data)
+
     def post(self, request, format=None):
 
         if request.data.get("id") is None or request.data.get("id") == "":
@@ -31,3 +40,14 @@ class DependentesApiView(APIView):
             return Response( serializer.data, status=200 )
 
         return Response(serializer.errors, status=400)
+
+    def delete(self, request, format=None):
+
+        try:
+            dependente = Dependente.objects.get(id=request.GET.get("id"), inscricao_id=request.GET.get("inscricao"))
+        except Dependente.DoesNotExist:
+            return Response({}, status=400)
+
+        dependente.delete()
+
+        return Response({}, status=200 )

@@ -1,8 +1,9 @@
 from django.conf import settings
 from django.urls import path
 
-from .views import DependentesApiView
+from .views import DependentesApiView, DependenteApiView
 
 urlpatterns = [
-    path('dependentes', DependentesApiView.as_view(), name="dependentes_api")
+    path('dependente', DependenteApiView.as_view(), name="dependente_api"),
+    path('dependentes', DependentesApiView.as_view(), name="dependentes_api"),
 ]

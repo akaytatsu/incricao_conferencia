@@ -137,7 +137,7 @@ class Dependente(models.Model):
 
     inscricao = models.ForeignKey(Inscricao, on_delete=models.CASCADE, verbose_name="Inscrição")
     nome = models.CharField(max_length=100, verbose_name="Nome Completo")
-    grau = models.CharField(choices=_GRAU, max_length=30, verbose_name="Grau Parentesco")
+    grau = models.IntegerField(choices=_GRAU, verbose_name="Grau Parentesco")
     nome_cracha = models.CharField(max_length=100, verbose_name="Nome Crachá", blank=True)
     data_nascimento = models.DateField(verbose_name="Data Nascimento")
     idade = models.IntegerField(default=0, verbose_name="Idade")
@@ -160,6 +160,21 @@ class Dependente(models.Model):
     
     def calc_idade(self):
         return calculate_age(self.data_nascimento)
+    
+    def grau_display(self):
+
+        print("self._GRAU")
+        print(self._GRAU)
+
+        for g in self._GRAU:
+            print(g)
+            print(type(g[0]))
+            print(type(self.grau))
+            print(g[0] == self.grau)
+            if g[0] == self.grau:
+                return g[1]
+        
+        return ""
 
 
 

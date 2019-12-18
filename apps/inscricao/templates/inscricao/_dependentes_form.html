@@ -44,12 +44,15 @@
                                         <tbody>
                                             <tr v-for="dep in dependentes">
                                                 <td>[[ dep.nome ]]</td>
-                                                <td>[[ dep.grau ]]</td>
+                                                <td>[[ dep.grau_parentesco ]]</td>
                                                 <td>[[ dep.nome_cracha ]]</td>
-                                                <td>[[ dep.data_nascimento ]]</td>
+                                                <td>[[ usToBr(dep.data_nascimento) ]]</td>
                                                 <td>[[ dep.idade ]]</td>
                                                 <td>[[ dep.valor ]]</td>
-                                                <td></td>
+                                                <td>
+                                                    <button type="button" class="btn btn-success" v-on:click="buscaDependente(dep.id)">Editar</button>
+                                                    <button type="button" class="btn btn-danger" v-on:click="removeDependente(dep.id)">Remover</button>
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -57,8 +60,8 @@
                             </div>
 
                         </div>
-                    </div><!-- card -->
-                </div><!-- col-3 -->
+                    </div>
+                </div>
 
             </div>
         </div>

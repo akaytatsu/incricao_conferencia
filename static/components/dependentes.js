@@ -11,6 +11,7 @@ var dependentes = new Vue({
           nome_cracha: "",
           grau: "",
           data_nascimento: "",
+          id: null
       },
       dependente_error: {
           nome: false,
@@ -21,28 +22,79 @@ var dependentes = new Vue({
     mounted: function(){
         axios.defaults.xsrfCookieName = "csrftoken";
         axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
-        this.getData();
+        this.getAllDependentes();
     },
     methods: {
 
-        getData: function(){
+        getAllDependentes: function(){
             _this = this;
             let inscricao_id = document.getElementById("inscricao_id").value;
             axios.get("/api/dependentes", { params: { inscricao_id: inscricao_id } }).then((response) => {
                 _this.dependentes = response.data;
             });
         },
+        brToUs: function(data){
+            data = data.split("/");
+
+            return data[2] + "-" + data[1] + "-" + data[0];
+        },
+        usToBr: function(data){
+            data = data.split("-");
+
+            return data[1] + "/" + data[1] + "/" + data[0];
+        },
+        removeDependente: function(id){
+            var _this = this;
+            var params = {
+                inscricao: document.getElementById("inscricao_id").value,
+                id: id,
+            };
+
+            if(confirm("Deseja remover esse dependente?")){
+                axios.delete("/api/dependente", { params: params }).then((response) => {
+                    _this.getAllDependentes();
+                });
+            }
+        },
+        buscaDependente: function(id){
+            _this = this;
+            let inscricao_id = document.getElementById("inscricao_id").value;
+            var params = {
+                inscricao_id: inscricao_id,
+                id: id
+            }
+            axios.get("/api/dependente", { params: params }).then((response) => {
+                _this.dependente = response.data;
+                _this.dependente.data_nascimento = _this.usToBr(_this.dependente.data_nascimento);
+                $("#dependente_form").modal();
+            });
+        },
         salvaDependente: function(){
             
             this.limpaErrors();
             var _this = this;
-            var params = this.dependente;
+            var params = {
+                nome: this.dependente.nome,
+                nome_cracha: this.dependente.nome_cracha,
+                grau: this.dependente.grau,
+                data_nascimento: this.dependente.data_nascimento,
+            };
+            params['data_nascimento'] = this.brToUs(this.dependente.data_nascimento);
             params['inscricao'] = document.getElementById("inscricao_id").value;
-            axios.post("/api/dependentes", params).then((response) => {
 
-                if( response.status == 400 ){
-                    console.log(response.data);
+            if(this.dependente.id != null && this.dependente.id != undefined){
+                params['id'] = this.dependente.id;
+            }
+
+            axios.post("/api/dependente", params).then((response) => {
+
+                if(response.status == 200){
+                    _this.getAllDependentes();
+                    _this.limpaDependente();
+                    _this.limpaErrors();
+                    $("#dependente_form").modal('hide');
                 }
+
             }).catch( (error) => {      
           
                 if( error.response.status == 400 ){
