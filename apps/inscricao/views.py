@@ -10,7 +10,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.generic import TemplateView, UpdateView, FormView
 from django.urls import reverse_lazy
 
-from apps.data.models import Inscricao, Conferencia
+from apps.data.models import Inscricao, Conferencia, Dependente
 from apps.data.forms import InscricaoForm
 from apps.accounts.forms import LoginForm
 from apps.accounts.models import Account
@@ -25,9 +25,12 @@ class HomeView(LoginRequiredMixin, TemplateView):
 
         conferencia = Conferencia.objects.get(titulo_slug=kwargs.get('conferencia'))
         inscricao = Inscricao.objects.get(conferencia=conferencia, cpf=self.request.user.cpf)
+        dependentes = Dependente.objects.filter(inscricao=inscricao)
 
         context['conferencia'] = conferencia
         context['inscricao'] = inscricao
+        context['dependentes'] = dependentes
+        context['menu'] = "dashboard"
         
         return context
 
@@ -74,6 +77,7 @@ class inscricaoView(LoginRequiredMixin, UpdateView):
         context['conferencia'] = self.get_conferencia()
         context['inscricao'] = self.get_object()
         context['edicao'] = True
+        context['menu'] = "inscricao"
 
         return context
 
@@ -107,10 +111,16 @@ class LoginView(TemplateView):
 
         if form.is_valid():
 
+            print("65555555555555555")
+            print(form.cleaned_data['cpf'])
+            print(form.cleaned_data['data_nascimento'])
+
             cpf = form.cleaned_data['cpf'].replace(".", "").replace("-", "")
             data_nascimento = form.cleaned_data['data_nascimento']
 
             try:
+                print( Account.objects.filter(cpf=cpf, data_nascimento=data_nascimento).query )
+
                 user = Account.objects.get(cpf=cpf, data_nascimento=data_nascimento)
             except Account.DoesNotExist:
                 context['not_found'] = True
@@ -173,3 +183,47 @@ class NovaInscricaoView(FormView):
         context['conferencia'] = self.get_conferencia()
 
         return context
+
+class PagarView(TemplateView):
+    template_name = 'inscricao/dashboard.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['conferencia'] = Conferencia.objects.get(titulo_slug=kwargs.get('conferencia'))
+        context['menu'] = "pagar"
+        
+        return context
+
+    def get_conferencia(self):
+        slug = self.kwargs.get("conferencia")
+        conferencia = Conferencia.objects.get(titulo_slug=slug)
+        
+        return conferencia
+
+class ContatoView(TemplateView):
+    template_name = 'inscricao/dashboard.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['conferencia'] = Conferencia.objects.get(titulo_slug=kwargs.get('conferencia'))
+        context['menu'] = "contato"
+        
+        return context
+
+    def get_conferencia(self):
+        slug = self.kwargs.get("conferencia")
+        conferencia = Conferencia.objects.get(titulo_slug=slug)
+        
+        return conferencia
+
+class LogoutView(TemplateView):
+    template_name = 'inscricao/dashboard.html'
+
+    def get(self, request, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        conferencia = Conferencia.objects.get(titulo_slug=kwargs.get('conferencia'))
+        
+        return redirect( reverse_lazy('home', kwargs={"conferencia": conferencia.titulo_slug}) )

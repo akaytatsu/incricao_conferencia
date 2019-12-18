@@ -22,6 +22,9 @@
     <!-- azia CSS -->
     <link rel="stylesheet" href="{% static 'css/azia.css' %}">
 
+    {% block css %}
+    {% endblock %}
+
   </head>
   <body class="az-body az-dashboard-eight">
 
@@ -42,20 +45,20 @@
         </div><!-- az-navbar-search -->
         <ul class="nav">
           <li class="nav-label">Main Menu</li>
-          <li class="nav-item active">
+          <li class="nav-item {% if menu == 'dashboard' %}active{% endif %}">
             <a href="{% url 'dashboard' conferencia=conferencia.titulo_slug %}" class="nav-link"><i class="typcn typcn-clipboard"></i>Resumo</a>
           </li><!-- nav-item -->
-          <li class="nav-item">
+          <li class="nav-item {% if menu == 'inscricao' %}active{% endif %}">
             <a href="{% url 'inscricao' conferencia=conferencia.titulo_slug %}" class="nav-link"><i class="far fa-calendar-check"></i>Inscrição</a>
           </li><!-- nav-item -->
-          <li class="nav-item">
-            <a href="{% url 'inscricao' conferencia=conferencia.titulo_slug %}" class="nav-link"><i class="far fa-address-book"></i>Pagar Inscrição</a>
+          <li class="nav-item {% if menu == 'pagar' %}active{% endif %}">
+            <a href="{% url 'pagar_inscricao' conferencia=conferencia.titulo_slug %}" class="nav-link"><i class="far fa-address-book"></i>Pagar Inscrição</a>
           </li><!-- nav-item -->
-          <li class="nav-item">
-            <a href="{% url 'inscricao' conferencia=conferencia.titulo_slug %}" class="nav-link"><i class="typcn typcn-mail"></i>Contato</a>
+          <li class="nav-item {% if menu == 'contato' %}active{% endif %}">
+            <a href="{% url 'contato' conferencia=conferencia.titulo_slug %}" class="nav-link"><i class="typcn typcn-mail"></i>Contato</a>
           </li><!-- nav-item -->
-          <li class="nav-item">
-            <a href="{% url 'inscricao' conferencia=conferencia.titulo_slug %}" class="nav-link"><i class="typcn typcn-arrow-back-outline"></i>Sair</a>
+          <li class="nav-item {% if menu == 'sair' %}active{% endif %}">
+            <a href="{% url 'logout' conferencia=conferencia.titulo_slug %}" class="nav-link"><i class="typcn typcn-arrow-back-outline"></i>Sair</a>
           </li><!-- nav-item -->
         </ul><!-- nav -->
       </div><!-- container -->

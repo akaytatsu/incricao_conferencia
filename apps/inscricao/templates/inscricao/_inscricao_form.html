@@ -50,11 +50,7 @@
                                     <div class="row">
                                         <div class="col-sm-2">
                                             <label for="txtCodCliente">Data Nascismento:</label>
-                                            {% if edicao %}
-                                                {% render_field form.data_nascimento class+="form-control" disabled+="true" readonly+="true" %}
-                                            {% else %}
-                                                {% render_field form.data_nascimento class+="form-control" %}
-                                            {% endif %}
+                                            {% render_field form.data_nascimento class+="form-control" %}
                                             {{ form.data_nascimento.errors|render_errors }}
                                         </div>
 
