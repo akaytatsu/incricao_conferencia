@@ -6,16 +6,30 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
-from django.views.decorators.http import require_http_methods
-from django.views.generic import TemplateView, UpdateView, FormView
 from django.urls import reverse_lazy
+from django.views.decorators.http import require_http_methods
+from django.views.generic import FormView, TemplateView, UpdateView
 
-from apps.data.models import Inscricao, Conferencia, Dependente
-from apps.data.forms import InscricaoForm
 from apps.accounts.forms import LoginForm
 from apps.accounts.models import Account
+from apps.data.forms import InscricaoForm
+from apps.data.models import Conferencia, Dependente, Inscricao
 
-class HomeView(LoginRequiredMixin, TemplateView):
+
+class RedirectMixin(LoginRequiredMixin):
+
+    def get_conferencia(self):
+        slug = self.kwargs.get("conferencia")
+        conferencia = Conferencia.objects.get(titulo_slug=slug)
+        
+        return conferencia
+
+    def get_login_url(self, *args, **kwargs):
+        conferencia = self.get_conferencia()
+        
+        return reverse_lazy('home', kwargs={"conferencia": conferencia.titulo_slug})
+
+class HomeView(RedirectMixin, TemplateView):
     template_name = 'inscricao/dashboard.html'
     login_url = '/login'
     redirect_field_name = 'redirect_to'
@@ -34,7 +48,7 @@ class HomeView(LoginRequiredMixin, TemplateView):
         
         return context
 
-class inscricaoView(LoginRequiredMixin, UpdateView):
+class inscricaoView(RedirectMixin, UpdateView):
     login_url = '/login'
     redirect_field_name = 'redirect_to'
     model = Inscricao
@@ -179,7 +193,7 @@ class NovaInscricaoView(FormView):
 
         return context
 
-class PagarView(TemplateView):
+class PagarView(RedirectMixin, TemplateView):
     template_name = 'inscricao/pagar.html'
 
     def get_context_data(self, **kwargs):
@@ -202,7 +216,7 @@ class PagarView(TemplateView):
         
         return conferencia
 
-class ContatoView(TemplateView):
+class ContatoView(RedirectMixin, TemplateView):
     template_name = 'inscricao/contato.html'
 
     def get_context_data(self, **kwargs):
@@ -228,6 +242,8 @@ class LogoutView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        logout_user(request)
 
         conferencia = Conferencia.objects.get(titulo_slug=kwargs.get('conferencia'))
         
