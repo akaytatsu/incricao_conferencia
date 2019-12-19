@@ -148,15 +148,15 @@
                                 <div class="form-group">
                                     <div class="row">
                                         <div class="col-sm-12">
-                                            <button class="btn btn-success" type="submit">Salvar</button>
                                             
                                             {% if edicao %}
-                                            <button type="button" class="btn btn-info"
-                                                onclick="window.location = '/registration/resume'">Pagar
-                                                Inscrição</button>
-                                            <button type="button" class="btn btn-danger"
-                                                onclick="deleteInscri();">Cancelar
-                                                Inscrição</button>
+                                                {% if inscricao.status == 1 %}
+                                                    <button class="btn btn-success" type="submit">Salvar</button>
+                                                    <button type="button" class="btn btn-info" onclick="window.location = '/registration/resume'">Pagar Inscrição</button>
+                                                    <button type="button" class="btn btn-danger" onclick="deleteInscri();">Cancelar Inscrição</button>
+                                                {% endif %}
+                                            {% else %}
+                                                <button class="btn btn-success" type="submit">Salvar</button>
                                             {% endif %}
                                         </div>
                                     </div>

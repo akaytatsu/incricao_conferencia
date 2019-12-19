@@ -7,6 +7,12 @@ class InscricaoSerializer(serializers.ModelSerializer):
         model = Inscricao
         fields = '__all__'
 
+class InscricaoPagSeguroTransactionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Inscricao
+        fields = ('pagseguro_transaction_id', 'status', )
+
 class DependentesSerializer(serializers.ModelSerializer):
 
     grau_parentesco = serializers.SerializerMethodField()

@@ -28,7 +28,26 @@ var pagamento = new Vue({
                 _this.lightBox( response.data.code );
             });
         },
+        atualizaPagSeguro: function(codigoTransacao, atualiza = true){
+            let inscricao_id = document.getElementById("inscricao_id").value;
+            let conferencia_id = document.getElementById("conferencia_id").value;
+
+            var params = {
+                inscricao: parseInt(inscricao_id),
+                conferencia: parseInt(conferencia_id),
+                status: 4,
+                pagseguro_transaction_id: codigoTransacao
+
+            };
+            axios.post('/api/transacao_pagseguro', params).then(response => {
+                if(atualiza == true){
+                    document.location.reload(true);
+                }
+            });
+        },
         lightBox: function(codigo){
+
+            var _this = this;
 
             var code = codigo;
             var callback = {
@@ -36,6 +55,7 @@ var pagamento = new Vue({
                     //Insira os comandos para quando o usuário finalizar o pagamento. 
                     //O código da transação estará na variável "transactionCode"
                     console.log("Compra feita com sucesso, código de transação: " + transactionCode);
+                    _this.atualizaPagSeguro(transactionCode, true);
                 },
                 abort : function() {
                     //Insira os comandos para quando o usuário abandonar a tela de pagamento.

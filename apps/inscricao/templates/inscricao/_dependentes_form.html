@@ -16,7 +16,9 @@
 
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <button type="button" class="btn btn-info" v-on:click="dependentesModal()">Adicionar Dependente</button>
+                                    {% if edicao and inscricao.status == 1 %}
+                                        <button type="button" class="btn btn-info" v-on:click="dependentesModal()">Adicionar Dependente</button>
+                                    {% endif %}
                                 </div>
                             </div>
 
@@ -50,8 +52,10 @@
                                                 <td>[[ dep.idade ]]</td>
                                                 <!-- <td class="text-right">R$ [[ dep.valor ]]</td> -->
                                                 <td>
-                                                    <button type="button" class="btn btn-success" v-on:click="buscaDependente(dep.id)">Editar</button>
-                                                    <button type="button" class="btn btn-danger" v-on:click="removeDependente(dep.id)">Remover</button>
+                                                    {% if edicao and inscricao.status == 1 %}
+                                                        <button type="button" class="btn btn-success" v-on:click="buscaDependente(dep.id)">Editar</button>
+                                                        <button type="button" class="btn btn-danger" v-on:click="removeDependente(dep.id)">Remover</button>
+                                                    {% endif %}
                                                 </td>
                                             </tr>
                                         </tbody>

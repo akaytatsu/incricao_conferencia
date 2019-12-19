@@ -11,5 +11,16 @@
 {% block js %}
 
     {% include 'inscricao/mask_input.html' %}
+    {% if edicao and inscricao.status != 1 %}
+
+        <script>
+            
+            $('input').attr('disabled', true);
+            $('select').attr('disabled', true);
+            $('textarea').attr('disabled', true);
+            
+        </script>
+
+    {% endif %}
 
 {% endblock %}

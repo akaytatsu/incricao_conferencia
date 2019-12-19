@@ -28,8 +28,6 @@ class Conferencia(models.Model):
     data_cadastro = models.DateTimeField(auto_now_add=True)
     endereco = models.CharField(max_length=320, blank=True, verbose_name="Endereço (googlemaps)")
     informacoes = models.TextField(blank=True, verbose_name="Informações Gerais")
-    pagseguro_token = models.CharField(max_length=120, blank=True, verbose_name="Token PagSeguro")
-    pagseguro_email = models.CharField(max_length=120, blank=True, verbose_name="Email PagSeguro")
 
     class Meta:
         db_table = "conferencia"
@@ -74,6 +72,13 @@ class Hospedagem(models.Model):
 
 class Inscricao(models.Model):
 
+    _STATUS = (
+        (1, 'Pendente'),
+        (2, 'Pago'),
+        (3, 'Cancelado'),
+        (4, 'Aguardando Confirmação Pagamento'),
+    )
+
     conferencia = models.ForeignKey(Conferencia, on_delete=models.CASCADE, verbose_name="Conferência")
     cpf = models.CharField(max_length=11, verbose_name="CPF")
     nome = models.CharField(max_length=100, verbose_name="Nome Completo")
@@ -94,6 +99,11 @@ class Inscricao(models.Model):
     valor = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor Inscrição", default=0)
     valor_total = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor Total Inscrição", default=0)
     idade = models.IntegerField(default=0, verbose_name="Idade")
+    pagseguro_code = models.CharField(max_length=120, verbose_name="Token PagSeguro", blank=True)
+    payment_reference = models.CharField(max_length=120, verbose_name="Referencia Pagamento", blank=True)
+    status = models.IntegerField(choices=_STATUS, default=1, verbose_name="Status")
+    sit_pagseguro = models.IntegerField(verbose_name="Status PagSeguro", blank=True, null=True)
+    pagseguro_transaction_id = models.CharField(max_length=120, verbose_name="Transação PagSeguro", blank=True)
     
     class Meta:
         unique_together = [['conferencia', 'cpf']]
@@ -162,6 +172,13 @@ class Inscricao(models.Model):
             total = total + dep.valor
         
         return total
+    
+    def status_display(self):
+        for g in self._STATUS:
+            if g[0] == self.status:
+                return g[1]
+        
+        return ""
 
 
 class Dependente(models.Model):

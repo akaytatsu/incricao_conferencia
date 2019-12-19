@@ -1,16 +1,17 @@
+from django.conf import settings
 from django.contrib.auth.models import User
+from django.urls import reverse_lazy
 
-from apps.data.models import Contato, Dependente, Inscricao, Conferencia
+from apps.data.models import Conferencia, Contato, Dependente, Inscricao
+from pagseguro import PagSeguro
 from rest_framework import authentication, permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import ContatoSerializer, DependentesSerializer, InscricaoSerializer
-from pagseguro import PagSeguro
-from django.urls import reverse_lazy
-
-from django.conf import settings
+from .serializers import (ContatoSerializer, DependentesSerializer,
+                          InscricaoPagSeguroTransactionSerializer,
+                          InscricaoSerializer)
 
 
 class DependentesApiView(APIView):
@@ -86,6 +87,27 @@ class ContatoApiView(APIView):
 
         return Response(serializer.errors, status=400)
 
+class InscricaoStatusPagSeguroApiView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, format=None):
+
+        data = request.data.copy()
+
+        inscricao = Inscricao.objects.get(pk=data['inscricao'])
+        conferencia = Conferencia.objects.get(pk=data['conferencia'])
+
+        data['inscricao'] = inscricao.pk
+        data['conferencia'] = conferencia.pk
+
+        serializer = InscricaoPagSeguroTransactionSerializer(inscricao, data=data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response({}, status=200)
+
+        return Response(serializer.errors, status=400)
+
 class PagamentoApiView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -99,7 +121,7 @@ class PagamentoApiView(APIView):
 
         config = { 'sandbox': False }
 
-        pg = PagSeguro(email="iec@igrejaemcontagem.com.br", token="A30E6EFB03214526BA670F6C1ACE3EBA",)
+        pg = PagSeguro(email=settings.PAGSEGURO_EMAIL, token=settings.PAGSEGURO_TOKEN,)
 
         pg.sender = {
             "name": inscricao.nome,
@@ -141,6 +163,10 @@ class PagamentoApiView(APIView):
 
         response = pg.checkout()
 
+        inscricao.payment_reference = "{}{}".format(pg.reference_prefix, pg.reference)
+        inscricao.status = 1
+        inscricao.save()
+
         return Response({
             "code": response.code,
             "transaction": response.transaction,
@@ -149,3 +175,19 @@ class PagamentoApiView(APIView):
             "payment_link": response.payment_link,
             "errors": response.errors,
         })
+
+def notification_view(request):
+    notification_code = request.POST['notificationCode']
+    pg = PagSeguro(email=settings.PAGSEGURO_EMAIL, token=settings.PAGSEGURO_TOKEN,)
+    notification_data = pg.check_notification(notification_code)
+
+    inscricao = Inscricao.objects.get(payment_reference=notification_data.get("reference"))
+    
+    inscricao.sit_pagseguro = notification_data.get("status")
+
+    if notification_data.get("status") == 3:
+        inscricao.status = 2
+    
+    inscricao.save()
+
+    return Response({}, status=200)

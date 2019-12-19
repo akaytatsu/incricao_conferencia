@@ -8,7 +8,7 @@ from .models import (Conferencia, Contato, Dependente, Hospedagem, Inscricao,
 
 @admin.register(Conferencia)
 class ConferenciaAdmin(admin.ModelAdmin):
-    list_display = ('titulo', 'titulo_slug', 'max_inscr', 'data_abertura', 'data_encerramento', 'pagina_inicial')
+    list_display = ('titulo', 'titulo_slug', 'max_inscr', 'data_abertura', 'data_encerramento', 'pagina_inicial', )
     search_fields = ('titulo', )
     prepopulated_fields = {'titulo': ('titulo_slug',)}
 
@@ -46,9 +46,19 @@ class HospedagemAdmin(admin.ModelAdmin):
 
 @admin.register(Inscricao)
 class InscricaoAdmin(admin.ModelAdmin):
-    list_display = ('conferencia', 'cpf', 'nome', 'nome_cracha', 'data_nascimento', 'email', 'idade', 'hospedagem', 'valor', 'valor_total', )
+    list_display = ('conferencia', 'cpf', 'nome', 'nome_cracha', 'data_nascimento', 'email', 'idade', 'hospedagem', 'valor', 'valor_total', 'status', 'payment_reference' )
     search_fields = ('conferencia', 'cpf', 'nome', 'email')
-    list_filter = ('conferencia', 'hospedagem', 'idade', )
+    list_filter = ('conferencia', 'hospedagem', 'status', )
+
+    def get_readonly_fields(self, request, obj=None):
+
+        response = []
+
+        for f in self.model._meta.fields:
+            if f.name != "status":
+                response.append( f.name )
+
+        return response
 
 @admin.register(Dependente)
 class DependenteAdmin(admin.ModelAdmin):
