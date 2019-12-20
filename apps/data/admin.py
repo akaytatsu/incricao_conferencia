@@ -46,16 +46,16 @@ class HospedagemAdmin(admin.ModelAdmin):
 
 @admin.register(Inscricao)
 class InscricaoAdmin(admin.ModelAdmin):
-    list_display = ('conferencia', 'cpf', 'nome', 'nome_cracha', 'data_nascimento', 'email', 'idade', 'hospedagem', 'valor', 'valor_total', 'status', 'payment_reference' )
+    list_display = ('conferencia', 'cpf', 'nome', 'nome_cracha', 'data_nascimento', 'email', 'idade', 'cidade', 'hospedagem', 'valor', 'valor_total', 'status', 'payment_reference' )
     search_fields = ('conferencia', 'cpf', 'nome', 'email')
-    list_filter = ('conferencia', 'hospedagem', 'status', )
+    list_filter = ('conferencia', 'hospedagem', 'status', 'cidade', )
 
     def get_readonly_fields(self, request, obj=None):
 
         response = []
 
         for f in self.model._meta.fields:
-            if f.name != "status":
+            if f.name not in [ "status", ]:
                 response.append( f.name )
 
         return response

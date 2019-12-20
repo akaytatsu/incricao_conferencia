@@ -1,8 +1,8 @@
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.urls import reverse_lazy
+from django.core import serializers
 from django.db.models import Count
-
+from django.urls import reverse_lazy
 
 from apps.data.models import Conferencia, Contato, Dependente, Inscricao
 from pagseguro import PagSeguro
@@ -183,16 +183,39 @@ def notification_view(request):
 ## RELATORIOS
 ################
 
+def sortByQuantity(e):
+    return e['inscricao__count'] + e['dependentes__count']
+
 class RelatorioCidadesApiView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
 
-        conferencia_id = request.data.get("conferencia_id")
+        querystr = """
+            select
+                1 as id,
+                i.cidade,
+                ( (select count(*) from dependente dep join inscricao subi on subi.id = dep.inscricao_id where subi.cidade = i.cidade) ) dependentes__count,
+                ( select count(*) from inscricao subi where subi.cidade = i.cidade  ) inscricao__count
+            from
+                inscricao i
+            where
+                i.conferencia_id = {}
+            group by
+                i.cidade
+        """.format(request.data.get("conferencia_id"))
 
-        queryset = Inscricao.objects.filter(conferencia_id=conferencia_id)
-        queryset = queryset.aggregate(Count("cidade"))
+        queryset = Inscricao.objects.raw(querystr)
 
-        # print(queryset.query)
+        response = []
 
-        return Response({})
+        for data in queryset:
+            response.append({
+                "cidade": data.cidade,
+                "dependentes__count": data.dependentes__count,
+                "inscricao__count": data.inscricao__count,
+            })
+
+        response.sort(reverse=True, key=sortByQuantity)
+
+        return Response(response)

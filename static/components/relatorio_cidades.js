@@ -7,6 +7,7 @@ var processo = new Vue({
     data: function () {
         return {
             conferencias: [],
+            registros: [],
             conferencia_id: null
         }
     },
@@ -25,8 +26,13 @@ var processo = new Vue({
             };
 
             axios.post("/api/relatorios/cidades", params).then(function (response) {
-                
+                _this.registros = response.data;
             });
+        },
+        getLink: function(nomeCidade){
+            var response = "/admin/data/inscricao/?cidade="+nomeCidade+"&conferencia_id=" + this.conferencia_id;
+
+            return encodeURI(response);
         }
     },
 
