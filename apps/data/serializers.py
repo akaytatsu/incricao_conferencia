@@ -1,4 +1,4 @@
-from apps.data.models import Contato, Dependente, Inscricao
+from apps.data.models import Contato, Dependente, Inscricao, Conferencia
 from rest_framework import serializers
 
 class InscricaoSerializer(serializers.ModelSerializer):
@@ -26,9 +26,13 @@ class DependentesSerializer(serializers.ModelSerializer):
         return obj.grau_display()
 
 class ContatoSerializer(serializers.ModelSerializer):
-
     email = serializers.EmailField()
 
     class Meta:
         model = Contato
         fields = ('inscricao', 'conferencia', 'nome', 'email', 'assunto', 'descricao', )
+
+class ConferenciaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Conferencia
+        fields = '__all__'

@@ -1,0 +1,79 @@
+{% extends "admin/change_list.html" %}
+{% load i18n admin_urls static %}
+{% block extrastyle %}
+    {{ block.super }}
+    <!-- <link rel="stylesheet" type="text/css" href="{% static 'admin/relatorio/css/style_rep_admin.css' %}"/> -->
+
+    <style>
+        [v-cloak] > * { display:none }
+        [v-cloak]::before { content: "loading…" }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    
+<main id="relatorio_cidade" v-cloak>
+
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="form-group">
+                <select class="form-control" v-model="conferencia_id">
+                    <option v-for="conf in conferencias" :value="conf.id" >[[ conf.titulo ]]</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <button class="btn btn-info" v-on:click="buscaDados()">Filtrar</button>
+            </div>
+        </div>
+        <div class="col-sm-6"></div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <table class="table table-responsive">
+                <!-- <thead>
+                    <tr>
+                        <td>Pedido</td>
+                        <td>Loja</td>
+                        <td>Cliente</td>
+                        <td>Data Pedido</td>
+                        <td>Data Pagamento</td>
+                        <td>Data Disponivel Retirada</td>
+                        <td>Data Entrega</td>
+                        <td>Tempo Pedido -> Loja (horas)</td>
+                        <td>Tempo Loja -> Entrega (horas)</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="order in orders">
+                        <td>[[ order.vtex_id ]]</td>
+                        <td>[[ order.loja_nome ]]</td>
+                        <td>[[ order.name ]]</td>
+                        <td>[[ localeDate(order.create_date) ]]</td>
+                        <td>[[ localeDate(order.payment_date) ]]</td>
+                        <td>[[ localeDate(order.pickuppoint_two_datetime) ]]</td>
+                        <td>[[ localeDate(order.pickuppoint_three_datetime) ]]</td>
+                        <td>[[ getHours(order.pickuppoint_one_two_median) ]]</td>
+                        <td>[[ getHours(order.pickuppoint_two_three_median) ]]</td>
+                    </tr>
+                    <tr>
+                        <td colspan="7">Média Total</td>
+                        <td>[[ getHours(median.one_two) ]]</td>
+                        <td>[[ getHours(median.two_three) ]]</td>
+                    </tr>
+                </tbody> -->
+            </table>
+        </div>
+    </div>
+
+</main>
+
+<script src="{% static 'js/vue.js' %}"></script>
+<script src="{% static 'js/axios.js' %}"></script>
+<script src="{% static 'components/relatorio_cidades.js' %}"></script>
+   
+{% endblock %}
+

@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
+from django.db.models import Count
+
 
 from apps.data.models import Conferencia, Contato, Dependente, Inscricao
 from pagseguro import PagSeguro
@@ -9,7 +11,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import (ContatoSerializer, DependentesSerializer,
+from .serializers import (ConferenciaSerializer, ContatoSerializer,
+                          DependentesSerializer,
                           InscricaoPagSeguroTransactionSerializer,
                           InscricaoSerializer)
 
@@ -33,31 +36,14 @@ class DependenteApiView(APIView):
 
         return Response(serializer.data)
 
-    def post(self, request, format=None):
+class ConferenciaApiView(APIView):
+    permission_classes = [IsAuthenticated]
 
-        if request.data.get("id") is None or request.data.get("id") == "":
-            serializer = DependentesSerializer( data=request.data )
-        else:
-            queryset = Dependente.objects.get(id=request.data.get("id"))
-            serializer = DependentesSerializer( queryset, data=request.data )
+    def get(self, request, format=None):
+        queryset = Conferencia.objects.all()
+        serializer = ConferenciaSerializer(queryset, many=True)
 
-        
-        if serializer.is_valid():
-            serializer.save()
-            return Response( serializer.data, status=200 )
-
-        return Response(serializer.errors, status=400)
-
-    def delete(self, request, format=None):
-
-        try:
-            dependente = Dependente.objects.get(id=request.GET.get("id"), inscricao_id=request.GET.get("inscricao"))
-        except Dependente.DoesNotExist:
-            return Response({}, status=400)
-
-        dependente.delete()
-
-        return Response({}, status=200 )
+        return Response(serializer.data)
 
 class InscricaoApiView(APIView):
     permission_classes = [IsAuthenticated]
@@ -191,3 +177,22 @@ def notification_view(request):
     inscricao.save()
 
     return Response({}, status=200)
+
+
+################
+## RELATORIOS
+################
+
+class RelatorioCidadesApiView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, format=None):
+
+        conferencia_id = request.data.get("conferencia_id")
+
+        queryset = Inscricao.objects.filter(conferencia_id=conferencia_id)
+        queryset = queryset.aggregate(Count("cidade"))
+
+        # print(queryset.query)
+
+        return Response({})
