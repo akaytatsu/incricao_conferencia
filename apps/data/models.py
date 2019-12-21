@@ -1,6 +1,8 @@
 from django.db import models
 from apps.accounts.models import Account
-from datetime import date
+from datetime import date, datetime
+import pytz
+utc=pytz.UTC
 
 def calculate_age(born):
     today = date.today()
@@ -28,6 +30,7 @@ class Conferencia(models.Model):
     data_cadastro = models.DateTimeField(auto_now_add=True)
     endereco = models.CharField(max_length=320, blank=True, verbose_name="Endereço (googlemaps)")
     informacoes = models.TextField(blank=True, verbose_name="Informações Gerais")
+    inscricoes_abertas = models.BooleanField(default=True, verbose_name="Inscrições Abertas?")
 
     class Meta:
         db_table = "conferencia"
@@ -39,6 +42,27 @@ class Conferencia(models.Model):
     
     def informacoes_as_html(self):
         return self.informacoes.replace("\n", "<br>")
+
+    def total_inscricoes(self):
+        total_inscricoes = Inscricao.objects.filter(conferencia=self).count()
+        total_dependentes = Dependente.objects.filter(inscricao__conferencia=self).count()
+
+        return total_inscricoes + total_dependentes
+
+    def is_active(self):
+        if self.total_inscricoes() >= self.max_inscr:
+            return False
+        
+        if self.inscricoes_abertas is False:
+            return False
+
+        now_dt = datetime.now()
+
+        if self.data_abertura.replace(tzinfo=None) > now_dt or self.data_encerramento.replace(tzinfo=None) < now_dt:
+            return False
+
+        return True
+
 
 class Valores(models.Model):
 

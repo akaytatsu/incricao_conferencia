@@ -9,6 +9,14 @@
 
 {% block js %}
 
-    {% include 'inscricao/mask_input.html' %}
+    {% if conferencia.is_active is False %}
+
+        <script>
+        
+            window.location.href = '/{{ conferencia.titulo_slug }}/'
+            
+        </script>
+
+    {% endif %}
 
 {% endblock %}

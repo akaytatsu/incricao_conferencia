@@ -39,17 +39,33 @@
 
     <div class="az-column-signup" style="width: 50% !important; justify-content: center !important;">
 
-        <div style="max-width: 500px !important; align-self: center;">
-            <div class="az-signup-header">
-                <h5>Ainda não fez sua incrição? </h5>
-                <p>
-                    Você pode fazer clicando no botão abaixo. Lembre-se, as incrições estão abertas até o dia
-                    <b>{{ conferencia.data_encerramento|date:'d/m/Y' }}</b> <b>ou enquanto houver vagas</b>.
-                </p>
-                <a href="{% url 'nova_inscricao' conferencia=conferencia.titulo_slug %}"
-                    class="btn btn-outline-indigo btn-block">Realizar Nova Inscrição</a>
+        {% if conferencia.is_active %}
+
+            <div style="max-width: 500px !important; align-self: center;">
+                <div class="az-signup-header">
+                    <h5>Ainda não fez sua incrição? </h5>
+                    <p>
+                        Você pode fazer clicando no botão abaixo. Lembre-se, as incrições estão abertas até o dia
+                        <b>{{ conferencia.data_encerramento|date:'d/m/Y' }}</b> <b>ou enquanto houver vagas</b>.
+                    </p>
+                    <a href="{% url 'nova_inscricao' conferencia=conferencia.titulo_slug %}"
+                        class="btn btn-outline-indigo btn-block">Realizar Nova Inscrição</a>
+                </div>
             </div>
-        </div>
+
+        {% else %}
+
+            <div style="max-width: 500px !important; align-self: center;">
+                <div class="az-signup-header text-center">
+                    <h5>Inscrições Encerradas</h5>
+                    <p>
+                        Novas inscrições para foram encerradas.
+                    </p>
+                </div>
+            </div>
+
+        {% endif %}
+
     </div>
 
 

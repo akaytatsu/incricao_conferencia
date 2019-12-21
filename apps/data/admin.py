@@ -8,16 +8,16 @@ from .models import (Conferencia, Contato, Dependente, Hospedagem, Inscricao,
 
 @admin.register(Conferencia)
 class ConferenciaAdmin(admin.ModelAdmin):
-    list_display = ('titulo', 'titulo_slug', 'max_inscr', 'data_abertura', 'data_encerramento', 'pagina_inicial', )
+    list_display = ('titulo', 'titulo_slug', 'max_inscr', 'data_abertura', 'data_encerramento', 'inscricoes_abertas', 'pagina_inicial', )
     search_fields = ('titulo', )
     prepopulated_fields = {'titulo': ('titulo_slug',)}
 
     fieldsets = (
         (None, {
-            'fields': ('titulo', 'titulo_slug', 'max_inscr', 'data_abertura', 'data_encerramento', )
+            'fields': ('titulo', 'titulo_slug', )
         }),
-        ('Financeiro', {
-            'fields': ('pagseguro_token', 'pagseguro_email')
+        ('Limite Conferencia', {
+            'fields': ('inscricoes_abertas', 'max_inscr', 'data_abertura', 'data_encerramento',)
         }),
         ('Informações', {
             'fields': ('endereco', 'informacoes')

@@ -29,6 +29,21 @@ class RedirectMixin(LoginRequiredMixin):
         
         return reverse_lazy('home', kwargs={"conferencia": conferencia.titulo_slug})
 
+class StartView(TemplateView):
+    template_name = 'inicio/inicio.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        conferencia = Conferencia.objects.get()
+
+        context['conferencia'] = conferencia
+        context['inscricao'] = inscricao
+        context['dependentes'] = dependentes
+        context['menu'] = "dashboard"
+        
+        return context
+
 class HomeView(RedirectMixin, TemplateView):
     template_name = 'inscricao/dashboard.html'
     login_url = '/login'
@@ -128,8 +143,6 @@ class LoginView(TemplateView):
             data_nascimento = form.cleaned_data['data_nascimento']
 
             try:
-                print( Account.objects.filter(cpf=cpf, data_nascimento=data_nascimento).query )
-
                 user = Account.objects.get(cpf=cpf, data_nascimento=data_nascimento)
             except Account.DoesNotExist:
                 context['not_found'] = True
