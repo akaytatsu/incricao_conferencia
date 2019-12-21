@@ -4,14 +4,24 @@ volumes:
   data:
 
 services:
-  mysql:
-    image: mysql:5.6
-    ports:
-      - "3306:3306"
+  db:
+    image: postgres:10
+    # volumes:
+    # - ./db/:/db
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_USER=root
-      - MYSQL_DATABASE=inscricao
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: inscricao
+    ports:
+      - 5432:5432
+  # mysql:
+  #   image: mysql:5.6
+  #   ports:
+  #     - "3306:3306"
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=root
+  #     - MYSQL_USER=root
+  #     - MYSQL_DATABASE=inscricao
   app:
     build: ./
     command: >
@@ -23,6 +33,6 @@ services:
     ports:
       - "9000:9000"
     links:
-      - mysql
+      - db
     depends_on:
-      - mysql
+      - db
