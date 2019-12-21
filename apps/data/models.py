@@ -94,7 +94,7 @@ class Valores(models.Model):
 class Hospedagem(models.Model):
 
     conferencia = models.ForeignKey(Conferencia, on_delete=models.CASCADE, verbose_name="Conferência")
-    nome = models.CharField(max_length=9, verbose_name="Nome Hospedagem")
+    nome = models.CharField(max_length=60, verbose_name="Nome Hospedagem")
     limite = models.IntegerField(default=0, verbose_name="Limite de Hospedes")
     ativo = models.BooleanField(default=True, verbose_name="Ativo?")
 
