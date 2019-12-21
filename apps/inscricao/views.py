@@ -32,16 +32,18 @@ class RedirectMixin(LoginRequiredMixin):
 class StartView(TemplateView):
     template_name = 'inicio/inicio.html'
 
+    def get(self, request):
+        conferencias = Conferencia.get_all_active()
+
+        if len(conferencias) == 1:
+            conf = conferencias[0]
+            return redirect( reverse_lazy('home', kwargs={"conferencia": conf.titulo_slug}) )
+        # elif len(conferencias) > 1:
+
+        return super(StartView, self).get(request, lang)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        conferencia = Conferencia.objects.get()
-
-        context['conferencia'] = conferencia
-        context['inscricao'] = inscricao
-        context['dependentes'] = dependentes
-        context['menu'] = "dashboard"
-        
         return context
 
 class HomeView(RedirectMixin, TemplateView):

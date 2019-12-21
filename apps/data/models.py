@@ -63,6 +63,18 @@ class Conferencia(models.Model):
 
         return True
 
+    @staticmethod
+    def get_all_active():
+        conferencias = []
+
+        queryset = Conferencia.objects.all()
+
+        for conf in queryset:
+            if conf.is_active():
+                conferencias.append(conf)
+
+        return conferencias
+
 
 class Valores(models.Model):
 
