@@ -104,7 +104,7 @@ class Hospedagem(models.Model):
         verbose_name_plural = 'Hospedagem Conferência'
 
     def __str__(self):
-        return "{} - {}".format(self.conferencia, self.nome)
+        return "{}".format(self.nome)
 
 class Inscricao(models.Model):
 
