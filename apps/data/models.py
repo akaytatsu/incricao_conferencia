@@ -139,7 +139,7 @@ class Inscricao(models.Model):
     payment_reference = models.CharField(max_length=120, verbose_name="Referencia Pagamento", blank=True)
     status = models.IntegerField(choices=_STATUS, default=1, verbose_name="Status")
     sit_pagseguro = models.IntegerField(verbose_name="Status PagSeguro", blank=True, null=True)
-    pagseguro_transaction_id = models.CharField(max_length=120, verbose_name="Transação PagSeguro", blank=True)
+    pagseguro_transaction_id = models.CharField(max_length=120, verbose_name="Transação PagSeguro", blank=True, null=True)
     
     class Meta:
         unique_together = [['conferencia', 'cpf']]
