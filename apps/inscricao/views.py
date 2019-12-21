@@ -40,7 +40,7 @@ class StartView(TemplateView):
             return redirect( reverse_lazy('home', kwargs={"conferencia": conf.titulo_slug}) )
         # elif len(conferencias) > 1:
 
-        return super(StartView, self).get(request, lang)
+        return super(StartView, self).get(request)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
