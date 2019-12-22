@@ -41,7 +41,7 @@ class InscricaoForm(forms.ModelForm):
 
     class Meta:
         model = Inscricao
-        exclude = ('idade', 'valor', 'valor_total', )
+        exclude = ('idade', 'valor', 'valor_total', 'status', 'pagseguro_code', 'payment_reference', 'sit_pagseguro', 'pagseguro_transaction_id', )
 
     def __init__(self, conferencia, *args, **kwargs):
         super(InscricaoForm, self).__init__(*args, **kwargs)
