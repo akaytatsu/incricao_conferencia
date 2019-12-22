@@ -51,6 +51,17 @@ class DependenteApiView(APIView):
 
         return Response(serializer.errors, status=400)
 
+    def delete(self, request, format=None):
+
+        try:
+            dependente = Dependente.objects.get(id=request.GET.get("id"), inscricao_id=request.GET.get("inscricao"))
+        except Dependente.DoesNotExist:
+            return Response({}, status=400)
+
+        dependente.delete()
+
+        return Response({}, status=200 )
+
 class ConferenciaApiView(APIView):
     permission_classes = [IsAuthenticated]
 
