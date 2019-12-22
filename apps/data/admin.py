@@ -20,7 +20,7 @@ class ConferenciaAdmin(admin.ModelAdmin):
             'fields': ('inscricoes_abertas', 'max_inscr', 'data_abertura', 'data_encerramento',)
         }),
         ('Informações', {
-            'fields': ('endereco', 'informacoes')
+            'fields': ('endereco', 'informacoes', 'informacoes_arquivo', )
         })
     )
 
