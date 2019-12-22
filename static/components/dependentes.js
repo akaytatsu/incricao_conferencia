@@ -86,7 +86,7 @@ var dependentes = new Vue({
                 params['id'] = this.dependente.id;
             }
 
-            axios.post("/api/dependente", params).then((response) => {
+            axios.post("/api/dependente", params).then((response) => { 
 
                 if(response.status == 200){
                     _this.getAllDependentes();

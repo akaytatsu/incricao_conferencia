@@ -36,6 +36,21 @@ class DependenteApiView(APIView):
 
         return Response(serializer.data)
 
+    def post(self, request, format=None):
+
+        if request.data.get("id") is None or request.data.get("id") == "":
+            serializer = DependentesSerializer( data=request.data )
+        else:
+            queryset = Dependente.objects.get(id=request.data.get("id"))
+            serializer = DependentesSerializer( queryset, data=request.data )
+
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response( serializer.data, status=200 )
+
+        return Response(serializer.errors, status=400)
+
 class ConferenciaApiView(APIView):
     permission_classes = [IsAuthenticated]
 
