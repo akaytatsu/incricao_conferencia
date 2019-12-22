@@ -14,7 +14,7 @@ var processo = new Vue({
     methods: {
         buscaConferencias: function(){
             var _this = this;
-            axios.get("/api/conferencias").then(function (response) {
+            axios.get("/api/inscricao/conferencias").then(function (response) {
                 _this.conferencias = response.data;
             });
         },
@@ -25,7 +25,7 @@ var processo = new Vue({
                 conferencia_id: this.conferencia_id
             };
 
-            axios.post("/api/relatorios/cidades", params).then(function (response) {
+            axios.post("/api/inscricao/relatorios/cidades", params).then(function (response) {
                 _this.registros = response.data;
             });
         },

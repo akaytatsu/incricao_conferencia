@@ -34,7 +34,7 @@ var dependentes = new Vue({
         getData: function(){
             _this = this;
             let inscricao_id = document.getElementById("inscricao_id").value;
-            axios.get("/api/inscricao", { params: { inscricao_id: inscricao_id } }).then((response) => {
+            axios.get("/api/inscricao/inscricao", { params: { inscricao_id: inscricao_id } }).then((response) => {
                 _this.inscricao = response.data;
             });
         },
@@ -52,7 +52,7 @@ var dependentes = new Vue({
                 conferencia: parseInt(conferencia_id)
             };
 
-            axios.post("/api/contato", params ).then((response) => {
+            axios.post("/api/inscricao/contato", params ).then((response) => {
                 _this.getData();
                 _this.cleanErrors();
                 alert("Recebemos seus dados. Em breve entraremos em contato.");

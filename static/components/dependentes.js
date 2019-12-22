@@ -29,7 +29,7 @@ var dependentes = new Vue({
         getAllDependentes: function(){
             _this = this;
             let inscricao_id = document.getElementById("inscricao_id").value;
-            axios.get("/api/dependentes", { params: { inscricao_id: inscricao_id } }).then((response) => {
+            axios.get("/api/inscricao/dependentes", { params: { inscricao_id: inscricao_id } }).then((response) => {
                 _this.dependentes = response.data;
             });
         },
@@ -51,7 +51,7 @@ var dependentes = new Vue({
             };
 
             if(confirm("Deseja remover esse dependente?")){
-                axios.delete("/api/dependente", { params: params }).then((response) => {
+                axios.delete("/api/inscricao/dependente", { params: params }).then((response) => {
                     _this.getAllDependentes();
                 });
             }
@@ -63,7 +63,7 @@ var dependentes = new Vue({
                 inscricao_id: inscricao_id,
                 id: id
             }
-            axios.get("/api/dependente", { params: params }).then((response) => {
+            axios.get("/api/inscricao/dependente", { params: params }).then((response) => {
                 _this.dependente = response.data;
                 _this.dependente.data_nascimento = _this.usToBr(_this.dependente.data_nascimento);
                 $("#dependente_form").modal();
@@ -86,7 +86,7 @@ var dependentes = new Vue({
                 params['id'] = this.dependente.id;
             }
 
-            axios.post("/api/dependente", params).then((response) => { 
+            axios.post("/api/inscricao/dependente", params).then((response) => { 
 
                 if(response.status == 200){
                     _this.getAllDependentes();

@@ -24,7 +24,7 @@ var pagamento = new Vue({
                 conferencia: parseInt(conferencia_id)
             };
 
-            axios.post('/api/pagamento', params).then(response => {
+            axios.post('/api/inscricao/pagamento', params).then(response => {
                 _this.lightBox( response.data.code );
             });
         },
@@ -39,7 +39,7 @@ var pagamento = new Vue({
                 pagseguro_transaction_id: codigoTransacao
 
             };
-            axios.post('/api/transacao_pagseguro', params).then(response => {
+            axios.post('//inscricaotransacao_pagseguro', params).then(response => {
                 if(atualiza == true){
                     document.location.reload(true);
                 }

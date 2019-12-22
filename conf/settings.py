@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'apps.data',
     'apps.inscricao',
     'apps.relatorios',
+    'apps.financeiro',
 ]
 
 MIDDLEWARE = [
