@@ -31,6 +31,7 @@ class Conferencia(models.Model):
     endereco = models.CharField(max_length=320, blank=True, verbose_name="Endereço (googlemaps)")
     informacoes = models.TextField(blank=True, verbose_name="Informações Gerais")
     inscricoes_abertas = models.BooleanField(default=True, verbose_name="Inscrições Abertas?")
+    informacoes_arquivo = models.FileField(upload_to="informacoes/arquivos/", null=True, blank=True, verbose_name="Arquivo de Informações")
 
     class Meta:
         db_table = "conferencia"
