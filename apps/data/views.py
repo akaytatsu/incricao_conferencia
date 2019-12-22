@@ -46,7 +46,10 @@ class DependenteApiView(APIView):
 
         
         if serializer.is_valid():
-            serializer.save()
+            dependente = serializer.save()
+            inscricao = dependente.inscricao
+            inscricao.atualiza_valor_total()
+
             return Response( serializer.data, status=200 )
 
         return Response(serializer.errors, status=400)
@@ -58,6 +61,8 @@ class DependenteApiView(APIView):
         except Dependente.DoesNotExist:
             return Response({}, status=400)
 
+        inscricao = dependente.inscricao
+        inscricao.atualiza_valor_total()
         dependente.delete()
 
         return Response({}, status=200 )

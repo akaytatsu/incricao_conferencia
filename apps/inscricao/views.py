@@ -84,7 +84,8 @@ class inscricaoView(RedirectMixin, UpdateView):
         form = InscricaoForm(conferencia, data=data_copy, instance=self.get_object())
 
         if form.is_valid():
-            form.save()
+            inscricao = form.save()
+            inscricao.atualiza_valor_total()
 
         context['form'] = form
         return super().render_to_response(context)
@@ -182,6 +183,8 @@ class NovaInscricaoView(FormView):
             inscricao.save()
 
             user = inscricao.create_account()
+
+            inscricao.atualiza_valor_total()
 
             rest = login(request, user)
 

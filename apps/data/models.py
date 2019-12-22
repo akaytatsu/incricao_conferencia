@@ -198,6 +198,10 @@ class Inscricao(models.Model):
     def num_dependentes(self):
         return Dependente.objects.filter(inscricao=self).count()
 
+    def atualiza_valor_total(self):
+        self.valor_total = self.busca_valor_total()
+        self.save()
+
     def busca_valor_total(self):
         total = 0
         total = self.valor
