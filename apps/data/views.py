@@ -28,7 +28,7 @@ class DependentesApiView(APIView):
         return Response(serializer.data)
 
 class DependenteApiView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated] 
 
     def get(self, request, format=None):
         queryset = Dependente.objects.get(id=request.GET.get("id"), inscricao_id=request.GET.get("inscricao_id"))
