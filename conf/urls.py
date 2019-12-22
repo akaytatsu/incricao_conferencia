@@ -13,8 +13,8 @@ admin.site.index_title = "Sistema de Inscrição Igreja em Contagem"
 
 urlpatterns = [
     path('', StartView.as_view(), name="start"),
-    path('api/financeiro', include('apps.financeiro.urls')),
-    path('api/inscricao', include('apps.data.urls')),
+    path('api/financeiro/', include('apps.financeiro.urls')),
+    path('api/inscricao/', include('apps.data.urls')),
     path('admin/', admin.site.urls),
     path('<conferencia>/', include('apps.inscricao.urls')),
 ]
