@@ -2,7 +2,13 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import escape, mark_safe
 
-from .models import CategoriaDespesa, Despesas
+from .models import CategoriaDespesa, Despesas, Receitas
+
+@admin.register(Receitas)
+class ReceitasAdmin(admin.ModelAdmin):
+
+    list_display = ('tipo_receita', 'valor', 'data_receita', )
+    list_filter = ( 'tipo_receita', )
 
 @admin.register(CategoriaDespesa)
 class CategoriaDespesaAdmin(admin.ModelAdmin):

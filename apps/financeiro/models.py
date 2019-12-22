@@ -2,6 +2,23 @@ from django.db import models
 from apps.accounts.models import Account
 from apps.data.models import Conferencia
 
+class Receitas(models.Model):
+
+    _TIPO_RECEITA = (
+        (1, 'PagSeguro'),
+        (2, 'Oferta'),
+        (3, 'Outro'),
+    )
+
+    tipo_receita = models.IntegerField(choices=_TIPO_RECEITA, default=1, verbose_name="Tipo de Receita")
+    valor = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor")
+    data_receita = models.DateTimeField(auto_now_add=True, verbose_name="Data Receita", null=True)
+
+    class Meta:
+        verbose_name = "Receita"
+        verbose_name_plural = "Receitas"
+
+
 class CategoriaDespesa(models.Model):
 
     nome = models.CharField(max_length=80, verbose_name="Nome")

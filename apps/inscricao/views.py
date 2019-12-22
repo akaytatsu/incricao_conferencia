@@ -212,7 +212,7 @@ class NovaInscricaoView(FormView):
         return context
 
 class PagarView(RedirectMixin, TemplateView):
-    template_name = 'inscricao/pagar.html'
+    template_name = 'inscricao/pagar.html' 
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

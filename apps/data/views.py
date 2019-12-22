@@ -134,7 +134,7 @@ class PagamentoApiView(APIView):
         inscricao_pk = request.data.get("inscricao")
 
         inscricao = Inscricao.objects.get(pk=inscricao_pk, conferencia_id=conferencia_pk)
-        conferencia = inscricao.conferencia 
+        conferencia = inscricao.conferencia  
 
         config = { 'sandbox': False }
 

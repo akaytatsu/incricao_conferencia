@@ -6,8 +6,8 @@ volumes:
 services:
   db:
     image: postgres:10
-    # volumes:
-    # - ./db/:/db
+    volumes:
+    - ./db/:/db
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
