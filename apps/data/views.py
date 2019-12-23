@@ -10,6 +10,7 @@ from rest_framework import authentication, permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.views.decorators.csrf import csrf_exempt
 
 from .serializers import (ConferenciaSerializer, ContatoSerializer,
                           DependentesSerializer,
@@ -195,6 +196,7 @@ class PagamentoApiView(APIView):
             "reference": pg.reference,
         })
 
+@csrf_exempt
 def notification_view(request):
     notification_code = request.POST['notificationCode']
     pg = PagSeguro(email=settings.PAGSEGURO_EMAIL, token=settings.PAGSEGURO_TOKEN,)
