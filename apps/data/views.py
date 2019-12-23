@@ -130,7 +130,6 @@ class PagamentoApiView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
-
         conferencia_pk = request.data.get("conferencia")
         inscricao_pk = request.data.get("inscricao")
 
