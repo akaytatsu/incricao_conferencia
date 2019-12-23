@@ -12,7 +12,7 @@ from django.views.generic import FormView, TemplateView, UpdateView
 
 from apps.accounts.forms import LoginForm
 from apps.accounts.models import Account
-from apps.data.forms import InscricaoForm
+from apps.data.forms import InscricaoForm, AtualizaInscricaoForm
 from apps.data.models import Conferencia, Dependente, Inscricao
 
 
@@ -55,8 +55,10 @@ class HomeView(RedirectMixin, TemplateView):
         context = super().get_context_data(**kwargs)
 
         conferencia = Conferencia.objects.get(titulo_slug=kwargs.get('conferencia'))
-        inscricao = Inscricao.objects.get(conferencia=conferencia, cpf=self.request.user.cpf)
+        inscricao = Inscricao.objects.get(conferencia=conferencia, usuario=self.request.user)
         dependentes = Dependente.objects.filter(inscricao=inscricao)
+
+        inscricao.busca_valor_total()
 
         context['conferencia'] = conferencia
         context['inscricao'] = inscricao
@@ -70,18 +72,24 @@ class inscricaoView(RedirectMixin, UpdateView):
     redirect_field_name = 'redirect_to'
     model = Inscricao
     template_name = 'inscricao/inscricao.html'
-    form_class = InscricaoForm
+    form_class = AtualizaInscricaoForm
 
     def post(self, request, *args, **kwargs):
         conferencia = self.get_conferencia()
+        inscricao = self.get_object()
+
         context = {}
-        context['conferencia'] = conferencia
+        context['conferencia'] = self.get_conferencia()
+        context['inscricao'] = self.get_object()
         context['edicao'] = True
+        context['menu'] = "inscricao"
 
         data_copy = request.POST.copy()
-        data_copy['cpf'] = request.user.cpf
+        data_copy['cpf'] = inscricao.cpf
+        data_copy['email'] = inscricao.email
+        data_copy['conferencia'] = conferencia.pk
 
-        form = InscricaoForm(conferencia, data=data_copy, instance=self.get_object())
+        form = AtualizaInscricaoForm(conferencia, data=data_copy, instance=context['inscricao'])
 
         if form.is_valid():
             inscricao = form.save()
@@ -92,7 +100,7 @@ class inscricaoView(RedirectMixin, UpdateView):
 
     def get_form(self, form_class=None):
         conferencia = self.get_conferencia()
-        return InscricaoForm(conferencia.pk, **self.get_form_kwargs())
+        return AtualizaInscricaoForm(conferencia.pk, **self.get_form_kwargs())
 
     def get_conferencia(self):
         slug = self.kwargs.get("conferencia")
@@ -102,7 +110,7 @@ class inscricaoView(RedirectMixin, UpdateView):
 
     def get_object(self):
         conferencia = self.get_conferencia()
-        return Inscricao.objects.get(conferencia=conferencia, cpf=self.request.user.cpf)
+        return Inscricao.objects.get(conferencia=conferencia, usuario=self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -180,9 +188,8 @@ class NovaInscricaoView(FormView):
 
             inscricao = form.save(commit=False)
             inscricao.conferencia = self.get_conferencia()
-            inscricao.save()
-
             user = inscricao.create_account()
+            inscricao.save()
 
             inscricao.atualiza_valor_total()
 
@@ -218,8 +225,10 @@ class PagarView(RedirectMixin, TemplateView):
         context = super().get_context_data(**kwargs)
 
         conferencia = Conferencia.objects.get(titulo_slug=kwargs.get('conferencia'))
-        inscricao = Inscricao.objects.get(conferencia=conferencia, cpf=self.request.user.cpf)
+        inscricao = Inscricao.objects.get(conferencia=conferencia, usuario=self.request.user)
         dependentes = Dependente.objects.filter(inscricao=inscricao)
+
+        inscricao.busca_valor_total()
 
         context['conferencia'] = conferencia
         context['inscricao'] = inscricao

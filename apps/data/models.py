@@ -117,6 +117,7 @@ class Inscricao(models.Model):
     )
 
     conferencia = models.ForeignKey(Conferencia, on_delete=models.CASCADE, verbose_name="Conferência")
+    usuario = models.ForeignKey(Account, null=False, blank=False, verbose_name="Usuario", on_delete=models.DO_NOTHING)
     cpf = models.CharField(max_length=11, verbose_name="CPF")
     nome = models.CharField(max_length=100, verbose_name="Nome Completo")
     nome_cracha = models.CharField(max_length=100, verbose_name="Nome Crachá", blank=True)
@@ -154,7 +155,7 @@ class Inscricao(models.Model):
     def save(self, *args, **kwargs):
         self.idade = self.calc_idade()
         self.valor = busca_valor(self.idade, self.conferencia)
-        self.valor_total = self.busca_valor_total()
+
         super(Inscricao, self).save(*args, **kwargs)
     
     def unmask(self, value):
@@ -177,19 +178,17 @@ class Inscricao(models.Model):
 
     def create_account(self):
         try:
-            user = Account.objects.get(cpf=self.cleanned_cpf())
-            return user
+            user = Account.objects.get(email=self.email)
         except Account.DoesNotExist:
             user = Account()
-        
-        user.name = self.nome
-        user.email = self.email
-        user.username = self.cleanned_cpf()
-        user.cpf = self.cleanned_cpf()
-        user.data_nascimento = self.data_nascimento
-        user.save()
-        user.set_password("{}".format(self.cleanned_cpf))
-        user.save()
+            user.name = self.nome
+            user.email = self.email
+            user.username = self.cleanned_cpf()
+            user.save()
+            user.set_password("{}".format(self.cleanned_cpf))
+            user.save()
+
+        self.usuario = user
         
         return user
     
@@ -210,6 +209,7 @@ class Inscricao(models.Model):
         dependentes = Dependente.objects.filter(inscricao=self)
 
         for dep in dependentes:
+            dep.atualiza_valor_total()
             total = total + dep.valor
         
         return total
@@ -249,13 +249,16 @@ class Dependente(models.Model):
     
     def save(self, *args, **kwargs):
         self.idade = self.calc_idade()
-        self.valor = busca_valor(self.idade, self.inscricao.conferencia)
         super(Dependente, self).save(*args, **kwargs)
 
         self.inscricao.save()
     
     def calc_idade(self):
         return calculate_age(self.data_nascimento)
+    
+    def atualiza_valor_total(self):
+        self.valor = busca_valor(self.idade, self.inscricao.conferencia)
+        self.save()
     
     def grau_display(self):
         for g in self._GRAU:

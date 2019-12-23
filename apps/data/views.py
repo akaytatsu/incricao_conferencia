@@ -23,6 +23,7 @@ class DependentesApiView(APIView):
     def get(self, request, format=None):
         
         queryset = Dependente.objects.filter(inscricao_id=request.GET.get("inscricao_id"))
+        queryset = queryset.order_by('-idade')
         serializer = DependentesSerializer(queryset, many=True)
 
         return Response(serializer.data)
@@ -81,7 +82,7 @@ class InscricaoApiView(APIView):
 
     def get(self, request, format=None):
 
-        queryset = Inscricao.objects.get(id=request.GET.get("inscricao_id"), cpf=self.request.user.cpf, data_nascimento=self.request.user.data_nascimento)
+        queryset = Inscricao.objects.get(id=request.GET.get("inscricao_id"), data_nascimento=self.request.user.data_nascimento)
         
         serializer = InscricaoSerializer(queryset)
 
@@ -191,6 +192,8 @@ class PagamentoApiView(APIView):
             "payment_url": response.payment_url,
             "payment_link": response.payment_link,
             "errors": response.errors,
+            "pre_ref": pg.reference_prefix,
+            "reference": pg.reference,
         })
 
 def notification_view(request):
