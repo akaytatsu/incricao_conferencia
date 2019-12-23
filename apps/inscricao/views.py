@@ -257,7 +257,7 @@ class ContatoView(RedirectMixin, TemplateView):
         context['inscricao'] = inscricao
         context['menu'] = "contato"
         
-        return context
+        return context 
 
     def get_conferencia(self):
         slug = self.kwargs.get("conferencia")
