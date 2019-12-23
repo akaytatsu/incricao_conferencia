@@ -13169,6 +13169,10 @@ textarea.parsley-success:focus {
   @media (min-width: 992px) {
     .az-signup-wrapper {
       justify-content: flex-end; } }
+  @media (max-width: 800px) {
+    .az-signup-wrapper {
+      display: "flex";
+      flex-direction: column; } }
 
 .az-column-signup-left {
   flex: 1;
@@ -13181,6 +13185,9 @@ textarea.parsley-success:focus {
     .az-column-signup-left {
       padding: 40px; } }
   @media (min-width: 992px) {
+    .az-column-signup-left {
+      display: flex; } }
+  @media (min-width: 400px) {
     .az-column-signup-left {
       display: flex; } }
   .az-column-signup-left > div {
@@ -13221,6 +13228,11 @@ textarea.parsley-success:focus {
       width: 500px; } }
   @media (min-width: 992px) {
     .az-column-signup {
+      width: 50%;
+      border-left: 1px solid #ced4da; } }
+  @media (max-width: 800px) {
+    .az-column-signup {
+      width: 100%;
       border-left: 1px solid #ced4da; } }
 
 .az-signup-header h2 {

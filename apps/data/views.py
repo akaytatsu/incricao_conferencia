@@ -180,7 +180,7 @@ class PagamentoApiView(APIView):
 
         response = pg.checkout()
 
-        inscricao.payment_reference = "{}{}".format(pg.reference_prefix, pg.reference)
+        inscricao.payment_reference = pg.reference
         inscricao.status = 1
         inscricao.save()
 
