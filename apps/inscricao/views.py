@@ -154,7 +154,8 @@ class LoginView(TemplateView):
             data_nascimento = form.cleaned_data['data_nascimento']
 
             try:
-                user = Account.objects.get(cpf=cpf, data_nascimento=data_nascimento)
+                inscricao = Inscricao.objects.get(cpf=cpf, data_nascimento=data_nascimento, conferencia=conferencia)
+                user = inscricao.usuario
             except Account.DoesNotExist:
                 context['not_found'] = True
                 return super().render_to_response(context)
@@ -250,7 +251,7 @@ class ContatoView(RedirectMixin, TemplateView):
         context = super().get_context_data(**kwargs)
 
         conferencia = Conferencia.objects.get(titulo_slug=kwargs.get('conferencia'))
-        inscricao = Inscricao.objects.get(conferencia=conferencia, cpf=self.request.user.cpf, data_nascimento=self.request.user.data_nascimento)
+        inscricao = Inscricao.objects.get(conferencia=conferencia, usuario=self.request.user,)
 
         context['conferencia'] = conferencia
         context['inscricao'] = inscricao

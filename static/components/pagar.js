@@ -39,7 +39,7 @@ var pagamento = new Vue({
                 pagseguro_transaction_id: codigoTransacao
 
             };
-            axios.post('//inscricaotransacao_pagseguro', params).then(response => {
+            axios.post('/inscricao/transacao_pagseguro', params).then(response => {
                 if(atualiza == true){
                     document.location.reload(true);
                 }
