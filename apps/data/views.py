@@ -206,9 +206,10 @@ def notification_view(request):
     print("*************** notification_view ***************")
     print("*************************************************")
 
-    notification_code = request.POST.get('notificationCode')[0]
+    notification_code = request.POST.get('notificationCode')
 
     print(notification_code)
+    print(notification_code[0])
 
     pg = PagSeguro(email=settings.PAGSEGURO_EMAIL, token=settings.PAGSEGURO_TOKEN,)
     notification_data = pg.check_notification(notification_code)
