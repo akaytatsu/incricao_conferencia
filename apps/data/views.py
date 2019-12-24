@@ -121,7 +121,7 @@ class InscricaoStatusPagSeguroApiView(APIView):
 
         serializer = InscricaoPagSeguroTransactionSerializer(inscricao, data=data)
 
-        if inscricao.status == 1:
+        if inscricao.status != 1:
             return Response({}, status=200)
         
         if serializer.is_valid():
@@ -205,9 +205,8 @@ def notification_view(request):
     print("*************************************************")
     print("*************** notification_view ***************")
     print("*************************************************")
-    print(request.POST)
 
-    notification_code = request.POST['notificationCode']
+    notification_code = request.POST.get('notificationCode')[0]
     pg = PagSeguro(email=settings.PAGSEGURO_EMAIL, token=settings.PAGSEGURO_TOKEN,)
     notification_data = pg.check_notification(notification_code)
 
