@@ -209,22 +209,31 @@ def notification_view(request):
     notification_code = request.POST.get('notificationCode')
 
     print(notification_code)
-    print(notification_code[0])
 
     pg = PagSeguro(email=settings.PAGSEGURO_EMAIL, token=settings.PAGSEGURO_TOKEN,)
     notification_data = pg.check_notification(notification_code)
 
     print(notification_data)
     print(notification_data.reference)
+    print(notification_data.status)
+
+    print("11111111111")
 
     inscricao = Inscricao.objects.get(payment_reference=notification_data.reference)
+
+    print("22222222222")
+    print(type(notification_data.status))
     
     inscricao.sit_pagseguro = notification_data.status
 
     if notification_data.status == 3:
+        print("3333333333")
         inscricao.status = 2
     
+    print("4444444444444")
     inscricao.save()
+
+    print("5555555555555")
 
     return Response({}, status=200)
 
