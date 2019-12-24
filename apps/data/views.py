@@ -207,8 +207,14 @@ def notification_view(request):
     print("*************************************************")
 
     notification_code = request.POST.get('notificationCode')[0]
+
+    print(notification_code)
+
     pg = PagSeguro(email=settings.PAGSEGURO_EMAIL, token=settings.PAGSEGURO_TOKEN,)
     notification_data = pg.check_notification(notification_code)
+
+    print(notification_data)
+    print(notification_data.get("reference"))
 
     inscricao = Inscricao.objects.get(payment_reference=notification_data.get("reference"))
     
