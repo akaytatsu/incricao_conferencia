@@ -120,6 +120,9 @@ class InscricaoStatusPagSeguroApiView(APIView):
         data['conferencia'] = conferencia.pk
 
         serializer = InscricaoPagSeguroTransactionSerializer(inscricao, data=data)
+
+        if inscricao.status == 1:
+            return Response({}, status=200)
         
         if serializer.is_valid():
             serializer.save()
@@ -198,6 +201,12 @@ class PagamentoApiView(APIView):
 
 @csrf_exempt
 def notification_view(request):
+
+    print("*************************************************")
+    print("*************** notification_view ***************")
+    print("*************************************************")
+    print(request.POST)
+
     notification_code = request.POST['notificationCode']
     pg = PagSeguro(email=settings.PAGSEGURO_EMAIL, token=settings.PAGSEGURO_TOKEN,)
     notification_data = pg.check_notification(notification_code)
