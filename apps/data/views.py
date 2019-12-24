@@ -221,7 +221,7 @@ def notification_view(request):
     
     inscricao.sit_pagseguro = notification_data.status
 
-    if notification_data.get("status") == 3:
+    if notification_data.status == 3:
         inscricao.status = 2
     
     inscricao.save()
