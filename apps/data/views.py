@@ -167,7 +167,7 @@ class PagamentoApiView(APIView):
             {
                 "id": "0001", 
                 "description": conferencia.titulo, 
-                "amount": inscricao.valor_total, 
+                "amount": inscricao.valor_total,  
                 "quantity": 1,
             },
         ]
