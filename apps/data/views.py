@@ -11,6 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
 
 from .serializers import (ConferenciaSerializer, ContatoSerializer,
                           DependentesSerializer,
@@ -226,7 +227,7 @@ def notification_view(request):
     
     inscricao.sit_pagseguro = notification_data.status
 
-    if notification_data.status == 3:
+    if notification_data.status == 3 or notification_data.status == "3":
         print("3333333333")
         inscricao.status = 2
     
@@ -235,7 +236,7 @@ def notification_view(request):
 
     print("5555555555555")
 
-    return Response({}, status=200)
+    return HttpResponse("")
 
 
 ################
