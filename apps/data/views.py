@@ -214,11 +214,11 @@ def notification_view(request):
     notification_data = pg.check_notification(notification_code)
 
     print(notification_data)
-    print(notification_data.get("reference"))
+    print(notification_data.reference)
 
-    inscricao = Inscricao.objects.get(payment_reference=notification_data.get("reference"))
+    inscricao = Inscricao.objects.get(payment_reference=notification_data.reference)
     
-    inscricao.sit_pagseguro = notification_data.get("status")
+    inscricao.sit_pagseguro = notification_data.status
 
     if notification_data.get("status") == 3:
         inscricao.status = 2
