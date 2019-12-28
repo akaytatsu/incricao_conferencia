@@ -13187,7 +13187,7 @@ textarea.parsley-success:focus {
   @media (min-width: 992px) {
     .az-column-signup-left {
       display: flex; } }
-  @media (min-width: 4350px) {
+  @media (min-width: 350px) {
     .az-column-signup-left {
       display: flex; } }
   .az-column-signup-left > div {
