@@ -13181,13 +13181,13 @@ textarea.parsley-success:focus {
   align-items: center;
   justify-content: center;
   display: none; }
-  @media (min-width: 350px) {
+  /* @media (min-width: 350px) {
     .az-column-signup-left {
-      padding: 40px; } }
+      padding: 40px; } } */
   @media (min-width: 992px) {
     .az-column-signup-left {
       display: flex; } }
-  @media (min-width: 400px) {
+  @media (min-width: 4350px) {
     .az-column-signup-left {
       display: flex; } }
   .az-column-signup-left > div {
