@@ -1,0 +1,68 @@
+{% extends "admin/change_list.html" %}
+{% load i18n admin_urls static %}
+{% block extrastyle %}
+    {{ block.super }}
+    <!-- <link rel="stylesheet" type="text/css" href="{% static 'admin/relatorio/css/style_rep_admin.css' %}"/> -->
+
+    <style>
+        [v-cloak] > * { display:none }
+        [v-cloak]::before { content: "loading…" }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    
+<main id="relatorio_idade" v-cloak>
+
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="form-group">
+                <select class="form-control" v-model="conferencia_id" v-on:change="buscaDados()">
+                    <option v-for="conf in conferencias" :value="conf.id" >[[ conf.titulo ]]</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-6"></div>
+    </div>
+
+    <br>
+    <br>
+
+    <div class="row" v-if="registros.length > 0">
+        <div class="col-sm-12">
+            <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <td>Idade</td>
+                        <td>Total</td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="reg in registros">
+                        <td>[[ reg.idade ]]</td>
+                        <td>[[ reg.count ]]</td>
+                        <td>
+                            
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row" v-else>
+        <div class="col-sm-12">
+            Selecione
+        </div>
+    </div>
+
+</main>
+
+<script src="{% static 'js/vue.js' %}"></script>
+<script src="{% static 'js/axios.js' %}"></script>
+<script src="{% static 'components/relatorio_idade.js' %}"></script>
+   
+{% endblock %}
+

@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core import serializers
-from django.db.models import Count
+from django.db.models import Count, Sum
 from django.urls import reverse_lazy
 
 from apps.data.models import Conferencia, Contato, Dependente, Inscricao
@@ -257,5 +257,64 @@ class RelatorioCidadesApiView(APIView):
             })
 
         response.sort(reverse=True, key=sortByQuantity)
+
+        return Response(response)
+
+
+class RelatorioIdadesApiView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, format=None):
+
+        response = {}
+
+        inscricao = Inscricao.objects.values('idade').annotate(icount=Count('idade'))
+        dependente = Dependente.objects.values('idade').annotate(icount=Count('idade'))
+
+        for i in inscricao:
+            idade = i.get("idade")
+            total = i.get("icount")
+            if response.get(idade, None):
+                response[idade] = response[idade] + total
+            else:
+                response[idade] = total
+
+        for i in dependente:
+            idade = i.get("idade")
+            total = i.get("icount")
+            if response.get(idade, None):
+                response[idade] = response[idade] + total
+            else:
+                response[idade] = total
+
+        response_arr = []
+        for reg in response.items():
+            response_arr.append(
+                {"idade": reg[0], "count": reg[1]}
+            )
+
+        return Response(response_arr)
+
+class RelatorioStatusPagamentoApiView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, format=None):
+
+        response = []
+
+        pendente = Inscricao.objects.filter(status=1).count()
+        pago = Inscricao.objects.filter(status=2).count()
+        cancelado = Inscricao.objects.filter(status=3).count()
+        aguardando = Inscricao.objects.filter(status=4).count()
+
+        valor_pendente = Inscricao.objects.filter(status=1).aggregate(total=Sum('valor_total')).get("total", 0)
+        valor_pago = Inscricao.objects.filter(status=2).aggregate(total=Sum('valor_total')).get("total", 0)
+        valor_cancelado = Inscricao.objects.filter(status=3).aggregate(total=Sum('valor_total')).get("total", 0)
+        valor_aguardando = Inscricao.objects.filter(status=4).aggregate(total=Sum('valor_total')).get("total", 0)
+
+        response.append({'status_code': 1, 'status': 'Pendente', 'quantidade': pendente, 'valor': 0 if valor_pendente is None else valor_pendente })
+        response.append({'status_code': 2, 'status': 'Pago', 'quantidade': pago, 'valor': 0 if valor_pago is None else valor_pago})
+        response.append({'status_code': 3, 'status': 'Cancelado', 'quantidade': cancelado, 'valor': 0 if valor_cancelado is None else valor_cancelado})
+        response.append({'status_code': 4, 'status': 'Aguardando Confirmação Pagamento', 'quantidade': aguardando, 'valor': 0 if valor_aguardando is None else valor_aguardando})
 
         return Response(response)
