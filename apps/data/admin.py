@@ -35,19 +35,19 @@ class ConferenciaAdmin(admin.ModelAdmin):
 @admin.register(Valores)
 class ValoresAdmin(admin.ModelAdmin):
     list_display = ('conferencia', 'idade_inicial', 'idade_final', 'valor', )
-    search_fields = ('conferencia', 'idade_inicial', )
+    search_fields = ('idade_inicial', )
     list_filter = ('conferencia', 'valor', )
 
 @admin.register(Hospedagem)
 class HospedagemAdmin(admin.ModelAdmin):
     list_display = ('conferencia', 'nome', 'limite', 'ativo', )
-    search_fields = ('conferencia', 'nome', )
+    search_fields = ('nome', )
     list_filter = ('conferencia', 'limite', )
 
 @admin.register(Inscricao)
 class InscricaoAdmin(admin.ModelAdmin):
     list_display = ('conferencia', 'cpf', 'nome', 'nome_cracha', 'data_nascimento', 'email', 'idade', 'cidade', 'hospedagem', 'valor', 'valor_total', 'status', 'payment_reference' )
-    search_fields = ('conferencia', 'cpf', 'nome', 'email')
+    search_fields = ('cpf', 'nome', 'email')
     list_filter = ('conferencia', 'hospedagem', 'status', 'cidade', )
 
     def get_readonly_fields(self, request, obj=None):
@@ -63,7 +63,7 @@ class InscricaoAdmin(admin.ModelAdmin):
 @admin.register(Dependente)
 class DependenteAdmin(admin.ModelAdmin):
     list_display = ('inscricao', 'nome', 'nome_cracha', 'data_nascimento', 'grau', 'valor', )
-    search_fields = ('inscricao', 'nome', )
+    search_fields = ('inscricao__nome', 'nome', )
     list_filter = ('inscricao', 'grau', )
 
 @admin.register(Contato)
