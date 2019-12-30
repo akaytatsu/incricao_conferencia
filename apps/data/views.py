@@ -84,7 +84,7 @@ class InscricaoApiView(APIView):
 
     def get(self, request, format=None):
 
-        queryset = Inscricao.objects.get(id=request.GET.get("inscricao_id"), data_nascimento=self.request.user.data_nascimento)
+        queryset = Inscricao.objects.get(id=request.GET.get("inscricao_id"), usuario=self.request.user)
         
         serializer = InscricaoSerializer(queryset)
 
