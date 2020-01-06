@@ -34,13 +34,16 @@ class Despesas(models.Model):
     _STATUS = (
         (1, 'Solicitação'),
         (2, 'Aprovada'),
-        (3, 'Comprovação'),
+        (3, 'Recurso Repassado'),
+        (4, 'Aguardando Comprovação'),
+        (5, 'Comprovação em Analise'),
+        (6, 'Comprovado'),
     )
 
     conferencia = models.ForeignKey(Conferencia, verbose_name="Conferencia", on_delete=models.DO_NOTHING)
     usuario_solicitacao = models.ForeignKey(Account, verbose_name="Usuario Solicitação", related_name="usuario_solicitacao", on_delete=models.DO_NOTHING)
-    usuario_aprovacao = models.ForeignKey(Account, verbose_name="Usuario Aprovação", related_name="usuario_aprovacao", on_delete=models.DO_NOTHING)
-    usuario_comprovacao = models.ForeignKey(Account, verbose_name="Usuario Comprovação", related_name="usuario_comprovacao", on_delete=models.DO_NOTHING)
+    usuario_aprovacao = models.ForeignKey(Account, verbose_name="Usuario Aprovação", related_name="usuario_aprovacao", on_delete=models.DO_NOTHING, null=True, blank=True)
+    usuario_comprovacao = models.ForeignKey(Account, verbose_name="Usuario Comprovação", related_name="usuario_comprovacao", on_delete=models.DO_NOTHING, null=True, blank=True)
     status = models.IntegerField(choices=_STATUS, default=1, verbose_name="Status")
     categoria = models.ForeignKey(CategoriaDespesa, null=True, blank=True, verbose_name="Categoria de Despesa", on_delete=models.DO_NOTHING)
     valor = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor")

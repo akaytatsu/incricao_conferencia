@@ -152,3 +152,21 @@ BASE_URL=config('BASE_URL')
 
 PAGSEGURO_EMAIL=config('PAGSEGURO_EMAIL')
 PAGSEGURO_TOKEN=config('PAGSEGURO_TOKEN')
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+    'COERCE_DECIMAL_TO_STRING': False,
+}
+
+JWT_AUTH = {
+
+    'JWT_VERIFY_EXPIRATION': False,
+
+}
