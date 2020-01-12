@@ -50,6 +50,7 @@ class Despesas(models.Model):
     justificativa = models.CharField(max_length=500, verbose_name="Justificativa")
     aprovado = models.BooleanField(default=False, verbose_name="Aprovado?")
     comprovado = models.BooleanField(default=False, verbose_name="Comprovado?")
+    data_solicitacao = models.DateTimeField(auto_now_add=True, null=True, blank=True, verbose_name="Data Solicitação", )
 
     class Meta:
         db_table = "despesas"

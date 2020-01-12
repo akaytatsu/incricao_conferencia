@@ -15,16 +15,19 @@ class FinanceiroViewSet(viewsets.GenericViewSet):
    
     @action(methods=['get'], detail=False, permission_classes=[IsAuthenticated])
     def solicitacoes(self, request):
-        if request.user.tp_user_financeiro == 0:
-            return Response({}, status=200)
+
+        solicitacoes = Despesas.objects
+
+        if request.user.can_aprove is True:
+            solicitacoes = solicitacoes
         
-        elif request.user.tp_user_financeiro == 1:
-            despesas = Despesas.objects.filter(usuario_solicitacao=request.user)
+        elif request.user.can_pay is True:
+            solicitacoes = solicitacoes.filter(status=2)
+
+        elif request.user.can_request is True:
+            solicitacoes = solicitacoes.filter(usuario_solicitacao=request.user)
         
-        else:
-            despesas = Despesas.objects.all()
-        
-        serializer = DespesasSerializer(despesas, many=True)
+        serializer = DespesasSerializer(solicitacoes, many=True)
 
         return Response(serializer.data, status=200)
    
