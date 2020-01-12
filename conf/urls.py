@@ -10,6 +10,7 @@ from rest_framework_jwt.views import obtain_jwt_token
 from apps.inscricao.views import StartView
 
 from apps.financeiro.views import FinanceiroViewSet
+from apps.accounts.views import AccountViewSet
 
 admin.site.site_header = "Sistema de Inscrição Igreja em Contagem"
 admin.site.site_title = "Sistema de Inscrição Igreja em Contagem"
@@ -26,6 +27,7 @@ urlpatterns = [
 ]
 
 router = DefaultRouter()
+router.register(r'api/account', AccountViewSet, basename='api_account')
 router.register(r'api/financeiro', FinanceiroViewSet, basename='api_financeiro')
 
 urlpatterns = urlpatterns + router.urls

@@ -51,11 +51,13 @@ class Account(AbstractUser):
 
     name = models.CharField(max_length=120, verbose_name=_("name"))
     email = models.CharField(max_length=120, unique=True,verbose_name=_("email"), blank=True, null=True)
+    telefone = models.CharField(max_length=120,verbose_name=_("Telefone"), blank=True, null=True)
     username = models.CharField(max_length=120, unique=True, verbose_name=_("User Name"), blank=True, null=True)
     registration_date = models.DateTimeField(auto_now_add=True, verbose_name=_("registration date"))
     data_nascimento = models.DateField(verbose_name="Data Nascimento", null=True, default=None)
     can_request = models.BooleanField(default=False, verbose_name="Pode Solicitar?")
     can_aprove = models.BooleanField(default=False, verbose_name="Pode Aprovar?")
+    can_pay = models.BooleanField(default=False, verbose_name="Pode Repassar Recurso?")
     tp_user_financeiro = models.IntegerField(choices=_STATUS_FINANCEIRO, verbose_name="Tipo Usuario Financeiro", default=0)
 
     objects = UserManager()

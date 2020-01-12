@@ -12,7 +12,7 @@ class CustomUserAdmin(UserAdmin):
             'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
         }),
         (('Important dates'), {'fields': ('last_login', 'date_joined')}),
-        (('Financeiro'), {'fields': ('can_request', 'can_aprove', 'tp_user_financeiro', )}),     
+        (('Financeiro'), {'fields': ('can_request', 'can_aprove', 'can_pay', 'tp_user_financeiro',)}),     
     )
 
 
