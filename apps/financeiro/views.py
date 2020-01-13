@@ -38,8 +38,9 @@ class FinanceiroViewSet(viewsets.GenericViewSet):
 
         if serializer.is_valid():
             obj = serializer.save(usuario_solicitacao=request.user, status=1, usuario_aprovacao=None, usuario_comprovacao=None)
+            obj.notifica_nova_despesa()
 
-            return Response(DespesasSerializer(obj).data, status=200)
+            return Response(DespesasSerializer(obj).data, status=200) 
         
         return Response(serializer.errors, status=400)
    
@@ -61,6 +62,7 @@ class FinanceiroViewSet(viewsets.GenericViewSet):
 
         despesa.status = 2
         despesa.save()
+        despesa.notifica_aprovacao()
 
         return Response(DespesasSerializer(despesa).data, status=200)
    
@@ -82,6 +84,7 @@ class FinanceiroViewSet(viewsets.GenericViewSet):
 
         despesa.status = 4
         despesa.save()
+        despesa.notifica_repasse_recurso()
 
         return Response(DespesasSerializer(despesa).data, status=200)
    

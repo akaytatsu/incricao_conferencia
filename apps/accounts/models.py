@@ -3,7 +3,8 @@ from __future__ import absolute_import
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
+import onesignal as onesignal_sdk
+from django.conf import settings
 
 class UserManager(BaseUserManager):
     def create_user(self, email, name, password=None):
@@ -80,3 +81,22 @@ class Account(AbstractUser):
             self.username = self.email
 
         super(Account, self).save(*args, **kwargs)
+
+    @staticmethod
+    def notificate(title, message, onesignal_ids, params = None):
+        onesignal_client = onesignal_sdk.Client(user_auth_key=settings.ONESIGNAL_USER_AUTH_KEY,
+                                    app_auth_key=settings.ONESIGNAL_APP_AUTH_KEY,
+                                    app_id=settings.ONESIGNAL_APP_ID)
+
+        content = {"en": message}
+        headings = {"en": title}
+
+        new_notification = onesignal_sdk.Notification(post_body={"contents": {"en": message}})
+        new_notification.post_body["content"] = content
+        new_notification.post_body["headings"] = headings
+        new_notification.post_body["include_player_ids"] = onesignal_ids
+
+        if params is not None:
+            new_notification.post_body["data"] = params
+
+        onesignal_client.send_notification(new_notification)

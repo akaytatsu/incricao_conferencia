@@ -56,3 +56,52 @@ class Despesas(models.Model):
         db_table = "despesas"
         verbose_name = 'Despesa'
         verbose_name_plural = 'Despesas'
+    
+    def notifica_nova_despesa(self):
+
+        accounts = Account.objects.filter(can_aprove=True)
+
+        onesignal_ids = [ac.onesignal_id for ac in accounts]
+
+        titulo = "Nova solicitação de recurso"
+        mensagem = "{} solicitou R$ {}".format(self.usuario_solicitacao.name, self.valor)
+
+        response = Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})
+    
+    def notifica_aprovacao(self):
+
+        # Notifica solicitante
+        onesignal_ids = [self.usuario_solicitacao.onesignal_id]
+
+        titulo = "Solicitação de recurso Aprovada"
+        mensagem = "Sua solicitação de R$ {} foi aprovada".format(self.valor)
+
+        response = Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})
+
+        accounts = Account.objects.filter(can_pay=True)
+
+        onesignal_ids = [ac.onesignal_id for ac in accounts]
+
+        titulo = "Repasse de recurso pendente"
+        mensagem = "A solicitação de R$ {} para {} foi aprovada. Pendente o repasse do recurso".format(self.valor, self.usuario_solicitacao.name)
+
+        response = Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})
+    
+    def notifica_repasse_recurso(self):
+
+        # Notifica solicitante
+        onesignal_ids = [self.usuario_solicitacao.onesignal_id]
+
+        titulo = "Recurso repassado"
+        mensagem = "O recurso referente a solicitação de R$ {} foi repassado".format(self.valor)
+
+        response = Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})
+
+        accounts = Account.objects.filter(can_aprove=True)
+
+        onesignal_ids = [ac.onesignal_id for ac in accounts]
+
+        titulo = "Repasse de recurso excutado"
+        mensagem = "O recurso de R$ {} para {} foi repassado.".format(self.valor, self.usuario_solicitacao.name)
+
+        response = Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})
