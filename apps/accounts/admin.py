@@ -13,6 +13,7 @@ class CustomUserAdmin(UserAdmin):
         }),
         (('Important dates'), {'fields': ('last_login', 'date_joined')}),
         (('Financeiro'), {'fields': ('can_request', 'can_aprove', 'can_pay', 'tp_user_financeiro',)}),     
+        (('OneSignal'), {'fields': ('onesignal_id',)}),     
     )
 
 
