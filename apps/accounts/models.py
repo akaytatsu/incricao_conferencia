@@ -59,6 +59,7 @@ class Account(AbstractUser):
     can_aprove = models.BooleanField(default=False, verbose_name="Pode Aprovar?")
     can_pay = models.BooleanField(default=False, verbose_name="Pode Repassar Recurso?")
     tp_user_financeiro = models.IntegerField(choices=_STATUS_FINANCEIRO, verbose_name="Tipo Usuario Financeiro", default=0)
+    onesignal_id = models.CharField(max_length=120,verbose_name=_("ID OneSignal"), blank=True, null=True)
 
     objects = UserManager()
 

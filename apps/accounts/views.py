@@ -47,3 +47,14 @@ class AccountViewSet(viewsets.GenericViewSet):
         serializer = AccountSerializer(user_pk)
 
         return Response(serializer.data)
+
+    @action(methods=['put'], detail=False, permission_classes=[IsAuthenticated])
+    def updoate_onesignal_id(self, request):
+
+        one_signal_id = request.data.get("one_signal_id")
+
+        user = request.user
+        user.onesignal_id = one_signal_id
+        user.save()
+
+        return Response({}, status=200)
