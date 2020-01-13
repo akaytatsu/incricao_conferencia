@@ -49,7 +49,7 @@ class AccountViewSet(viewsets.GenericViewSet):
         return Response(serializer.data)
 
     @action(methods=['put'], detail=False, permission_classes=[IsAuthenticated])
-    def updoate_onesignal_id(self, request):
+    def update_onesignal_id(self, request):
 
         one_signal_id = request.data.get("one_signal_id")
 
