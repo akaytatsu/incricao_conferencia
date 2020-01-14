@@ -38,6 +38,7 @@ class Despesas(models.Model):
         (4, 'Aguardando Comprovação'),
         (5, 'Comprovação em Analise'),
         (6, 'Comprovado'),
+        (8, 'Reprovado'),
     )
 
     conferencia = models.ForeignKey(Conferencia, verbose_name="Conferencia", on_delete=models.DO_NOTHING)
@@ -51,6 +52,7 @@ class Despesas(models.Model):
     aprovado = models.BooleanField(default=False, verbose_name="Aprovado?")
     comprovado = models.BooleanField(default=False, verbose_name="Comprovado?")
     data_solicitacao = models.DateTimeField(auto_now_add=True, null=True, blank=True, verbose_name="Data Solicitação", )
+    comprovante = models.ImageField(upload_to='comprovantes/', null=True, blank=True)
 
     class Meta:
         db_table = "despesas"
@@ -69,7 +71,6 @@ class Despesas(models.Model):
         response = Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})
     
     def notifica_aprovacao(self):
-
         # Notifica solicitante
         onesignal_ids = [self.usuario_solicitacao.onesignal_id]
 
@@ -84,6 +85,15 @@ class Despesas(models.Model):
 
         titulo = "Repasse de recurso pendente"
         mensagem = "A solicitação de R$ {} para {} foi aprovada. Pendente o repasse do recurso".format(self.valor, self.usuario_solicitacao.name)
+
+        response = Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})
+    
+    def notifica_reprovacao(self):
+        # Notifica solicitante
+        onesignal_ids = [self.usuario_solicitacao.onesignal_id]
+
+        titulo = "Solicitação de recurso Reprovada"
+        mensagem = "Sua solicitação de R$ {} foi reprovada".format(self.valor)
 
         response = Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})
     
@@ -103,5 +113,35 @@ class Despesas(models.Model):
 
         titulo = "Repasse de recurso excutado"
         mensagem = "O recurso de R$ {} para {} foi repassado.".format(self.valor, self.usuario_solicitacao.name)
+
+        response = Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})
+    
+    def notifica_envio_comprovacao(self):
+        accounts = Account.objects.filter(can_aprove=True)
+
+        onesignal_ids = [ac.onesignal_id for ac in accounts]
+
+        titulo = "Envio de Comprovação"
+        mensagem = "{} envio comprovação referente ao valor de R$ {}.".format(self.usuario_solicitacao.name, self.valor)
+
+        response = Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})
+
+    def notifica_aprovacao_comprovacao(self):
+
+        # Notifica solicitante
+        onesignal_ids = [self.usuario_solicitacao.onesignal_id]
+
+        titulo = "Comprovação aprovada"
+        mensagem = "Sua comprovação referente a solicitação de R$ {} foi aprovada".format(self.valor)
+
+        response = Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})
+
+    def notifica_reprovacao_comprovacao(self):
+
+        # Notifica solicitante
+        onesignal_ids = [self.usuario_solicitacao.onesignal_id]
+
+        titulo = "Comprovação com pendencias"
+        mensagem = "Sua comprovação referente a solicitação de R$ {} foi reprovada. Por favor verifique.".format(self.valor)
 
         response = Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})

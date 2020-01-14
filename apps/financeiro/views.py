@@ -8,10 +8,18 @@ from rest_framework.views import APIView
 from datetime import datetime
 
 from apps.financeiro.models import Despesas
-from apps.financeiro.serializers import DespesasSerializer, NovaDespesaSerializer
+from apps.financeiro.serializers import DespesasSerializer, NovaDespesaSerializer, DespesaImageSerializer
 
 class FinanceiroViewSet(viewsets.GenericViewSet):
     permission_classes = (IsAuthenticated,)
+   
+    @action(methods=['get'], detail=False, permission_classes=[IsAuthenticated])
+    def solicitacao(self, request):
+        solicitacao = Despesas.objects.get(pk=request.GET.get("id"))
+        
+        serializer = DespesasSerializer(solicitacao)
+
+        return Response(serializer.data, status=200)
    
     @action(methods=['get'], detail=False, permission_classes=[IsAuthenticated])
     def solicitacoes(self, request):
@@ -61,8 +69,31 @@ class FinanceiroViewSet(viewsets.GenericViewSet):
             return Response({"error": "Status atual não permite aprovação"}, status=400)
 
         despesa.status = 2
+        despesa.aprovado = True
         despesa.save()
         despesa.notifica_aprovacao()
+
+        return Response(DespesasSerializer(despesa).data, status=200)
+   
+    @action(methods=['put'], detail=False, permission_classes=[IsAuthenticated])
+    def reprova_solicitacao(self, request):
+
+        pk = request.data.get("pk", None)
+
+        if pk is None:
+            return Response({"error": "Pk não informada"}, status=400)
+
+        try:
+            despesa = Despesas.objects.get(pk=pk)
+        except Despesas.DoesNotExist:
+            return Response({"error": "Registro não encontrado"}, status=400)
+
+        if despesa.status != 1:
+            return Response({"error": "Status atual não permite aprovação"}, status=400)
+
+        despesa.status = 8
+        despesa.save()
+        despesa.notifica_reprovacao()
 
         return Response(DespesasSerializer(despesa).data, status=200)
    
@@ -105,6 +136,46 @@ class FinanceiroViewSet(viewsets.GenericViewSet):
             return Response({"error": "Status atual não permite aprovação"}, status=400)
 
         despesa.status = 6
+        despesa.comprovado = True
         despesa.save()
+        despesa.notifica_aprovacao_comprovacao()
 
         return Response(DespesasSerializer(despesa).data, status=200)
+   
+    @action(methods=['put'], detail=False, permission_classes=[IsAuthenticated])
+    def reprova_aprovacao_solicitacao(self, request):
+
+        pk = request.data.get("pk", None)
+
+        if pk is None:
+            return Response({"error": "Pk não informada"}, status=400)
+
+        try:
+            despesa = Despesas.objects.get(pk=pk)
+        except Despesas.DoesNotExist:
+            return Response({"error": "Registro não encontrado"}, status=400)
+
+        if despesa.status != 5:
+            return Response({"error": "Status atual não permite aprovação"}, status=400)
+
+        despesa.status = 4
+        despesa.save()
+        despesa.notifica_reprovacao_comprovacao()
+
+        return Response(DespesasSerializer(despesa).data, status=200)
+   
+    @action(methods=['post'], detail=False, permission_classes=[IsAuthenticated])
+    def enviar_comprovante(self, request):
+        despesa = Despesas.objects.get(pk=request.data.get("id"))
+
+        serializer = DespesaImageSerializer(despesa, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            obj = serializer.save()
+            obj.status = 5
+            obj.save()
+            obj.notifica_envio_comprovacao()
+
+            return Response({}, status=200)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

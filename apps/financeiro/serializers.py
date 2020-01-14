@@ -2,6 +2,11 @@ from rest_framework import serializers
 from apps.financeiro.models import Despesas
 from apps.accounts.serializers import AccountSerializer
 
+class DespesaImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Despesas
+        fields = ("comprovante", )
+
 class DespesasSerializer(serializers.ModelSerializer):
 
     solicitante = serializers.SerializerMethodField()
