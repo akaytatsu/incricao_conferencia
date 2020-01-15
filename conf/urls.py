@@ -24,7 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('<conferencia>/', include('apps.inscricao.urls')),
     path(r'favicon.ico',RedirectView.as_view(url='/static/ico/favicon.ico')),
-]
+]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 router = DefaultRouter()
 router.register(r'api/account', AccountViewSet, basename='api_account')
