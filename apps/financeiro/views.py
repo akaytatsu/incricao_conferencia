@@ -79,6 +79,7 @@ class FinanceiroViewSet(viewsets.GenericViewSet):
     def reprova_solicitacao(self, request):
 
         pk = request.data.get("pk", None)
+        justificativa = request.data.get("justificativa", None)
 
         if pk is None:
             return Response({"error": "Pk não informada"}, status=400)
@@ -92,6 +93,8 @@ class FinanceiroViewSet(viewsets.GenericViewSet):
             return Response({"error": "Status atual não permite aprovação"}, status=400)
 
         despesa.status = 8
+        despesa.reprovado = True
+        despesa.justificativa_reprovacao = justificativa
         despesa.save()
         despesa.notifica_reprovacao()
 
