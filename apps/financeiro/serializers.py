@@ -22,10 +22,10 @@ class DespesasSerializer(serializers.ModelSerializer):
         return AccountSerializer(obj.usuario_solicitacao).data
 
     def get_comprovante(self, obj):
-        if obj.comprovante is None:
-            return None
+        if obj.comprovante and hasattr(self.comprovante, 'url'):
+            return settings.HOST + obj.comprovante.url
         
-        return settings.HOST + obj.comprovante.url
+        return None
 
 
 class NovaDespesaSerializer(serializers.ModelSerializer):
