@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from apps.financeiro.models import Despesas
 from apps.accounts.serializers import AccountSerializer
+from django.conf import settings
 
 class DespesaImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -10,6 +11,7 @@ class DespesaImageSerializer(serializers.ModelSerializer):
 class DespesasSerializer(serializers.ModelSerializer):
 
     solicitante = serializers.SerializerMethodField()
+    comprovante = serializers.SerializerMethodField()
     # data_solicitacao = serializers.SerializerMethodField()
 
     class Meta:
@@ -19,8 +21,11 @@ class DespesasSerializer(serializers.ModelSerializer):
     def get_solicitante(self, obj):
         return AccountSerializer(obj.usuario_solicitacao).data
 
-    # def get_data_solicitacao(self, obj):
-    #     return obj.data_solicitacao.strftime("%d/%m/%Y")
+    def get_comprovante(self, obj):
+        if obj.comprovante is None:
+            return None
+        
+        return settings.HOST + obj.comprovante.url
 
 
 class NovaDespesaSerializer(serializers.ModelSerializer):

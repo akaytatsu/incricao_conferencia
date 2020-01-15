@@ -49,8 +49,10 @@ class Despesas(models.Model):
     categoria = models.ForeignKey(CategoriaDespesa, null=True, blank=True, verbose_name="Categoria de Despesa", on_delete=models.DO_NOTHING)
     valor = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor")
     justificativa = models.CharField(max_length=500, verbose_name="Justificativa")
+    justificativa_reprovacao = models.CharField(max_length=500, verbose_name="Justificativa Reprovação")
     aprovado = models.BooleanField(default=False, verbose_name="Aprovado?")
     comprovado = models.BooleanField(default=False, verbose_name="Comprovado?")
+    reprovado = models.BooleanField(default=False, verbose_name="Reprovado?")
     data_solicitacao = models.DateTimeField(auto_now_add=True, null=True, blank=True, verbose_name="Data Solicitação", )
     comprovante = models.ImageField(upload_to='comprovantes/', null=True, blank=True)
 

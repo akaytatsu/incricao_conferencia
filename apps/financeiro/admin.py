@@ -19,6 +19,6 @@ class CategoriaDespesaAdmin(admin.ModelAdmin):
 
 @admin.register(Despesas)
 class DespesasAdmin(admin.ModelAdmin):
-    list_display = ('conferencia', 'aprovado', 'comprovado', 'valor', 'categoria', 'status', 'usuario_solicitacao', 'usuario_aprovacao', 'usuario_comprovacao')
+    list_display = ('conferencia', 'aprovado', 'comprovado', 'reprovado', 'valor', 'categoria', 'status', 'usuario_solicitacao', 'usuario_aprovacao', 'usuario_comprovacao')
     search_fields = ('nome', )
-    list_filter = ('conferencia', 'aprovado', 'comprovado', 'categoria', 'status')
+    list_filter = ('conferencia', 'aprovado', 'comprovado', 'reprovado', 'categoria', 'status')
