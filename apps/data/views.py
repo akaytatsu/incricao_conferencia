@@ -287,8 +287,12 @@ class RelatorioIdadesApiView(APIView):
             else:
                 response[idade] = total
 
+        response_sorted = {}
+        for i in sorted (response.keys()) :  
+            response_sorted[i] = response[i]
+
         response_arr = []
-        for reg in response.items():
+        for reg in response_sorted.items():
             response_arr.append(
                 {"idade": reg[0], "count": reg[1]}
             )

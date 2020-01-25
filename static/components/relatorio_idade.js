@@ -24,7 +24,7 @@ var processo = new Vue({
             var params = {
                 conferencia_id: this.conferencia_id
             };
-
+ 
             axios.post("/api/inscricao/relatorios/idade", params).then(function (response) {
                 _this.registros = response.data;
             });

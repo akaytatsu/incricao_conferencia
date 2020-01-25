@@ -118,7 +118,7 @@ class FinanceiroViewSet(viewsets.GenericViewSet):
 
         despesa.status = 4
         despesa.save()
-        despesa.notifica_repasse_recurso()
+        despesa.notifica_repasse_recurso() 
 
         return Response(DespesasSerializer(despesa).data, status=200)
    
