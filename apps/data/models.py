@@ -156,6 +156,46 @@ class Inscricao(models.Model):
         self.idade = self.calc_idade()
         self.valor = busca_valor(self.idade, self.conferencia)
 
+        try:
+            self.nome = self.nome.upper()
+        except:
+            pass
+
+        try:
+            self.nome_cracha = self.nome_cracha.upper()
+        except:
+            pass
+
+        try:
+            self.endereco = self.endereco.upper()
+        except:
+            pass
+
+        try:
+            self.complemento = self.complemento.upper()
+        except:
+            pass
+
+        try:
+            self.bairro = self.bairro.upper()
+        except:
+            pass
+
+        try:
+            self.cidade = self.cidade.upper()
+        except:
+            pass
+
+        try:
+            self.uf = self.uf.upper()
+        except:
+            pass
+
+        try:
+            self.observacoes = self.observacoes.upper()
+        except:
+            pass
+
         super(Inscricao, self).save(*args, **kwargs)
     
     def unmask(self, value):
@@ -249,6 +289,17 @@ class Dependente(models.Model):
     
     def save(self, *args, **kwargs):
         self.idade = self.calc_idade()
+        
+        try:
+            self.nome = self.nome.upper()
+        except:
+            pass
+        
+        try:
+            self.nome_cracha = self.nome_cracha.upper()
+        except:
+            pass
+
         super(Dependente, self).save(*args, **kwargs)
 
         self.inscricao.save()
