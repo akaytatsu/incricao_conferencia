@@ -30,7 +30,7 @@ class ComprovantesViewSet(viewsets.ModelViewSet):
 
         data = Comprovantes.objects.filter(pk=despesa_id)
 
-        serializer = UsuarioSerializer(data, many=True)
+        serializer = ComprovantesSerializer(data, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class FinanceiroViewSet(viewsets.GenericViewSet):
