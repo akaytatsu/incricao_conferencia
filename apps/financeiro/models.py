@@ -29,6 +29,7 @@ class CategoriaDespesa(models.Model):
         verbose_name = "Categoria Despesa"
         verbose_name_plural = "Categorias Despesa"
 
+
 class Despesas(models.Model):
 
     _STATUS = (
@@ -147,3 +148,15 @@ class Despesas(models.Model):
         mensagem = "Sua comprovação referente a solicitação de R$ {} foi reprovada. Por favor verifique.".format(self.valor)
 
         response = Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})
+
+
+class Comprovantes(models.Model):
+
+    despesa = models.ForeignKey(Despesas, verbose_name="Despesa", on_delete=models.DO_NOTHING)
+    comprovante = models.ImageField(upload_to='comprovantes/', null=True, blank=True)
+    data_comprovação = models.DateTimeField(auto_now_add=True, null=True, blank=True, verbose_name="Data Comprovação", )
+
+    class Meta:
+        db_table = "comprovantes_despesa"
+        verbose_name = "Comprovante Despesa"
+        verbose_name_plural = "Comprovantes Despesa"

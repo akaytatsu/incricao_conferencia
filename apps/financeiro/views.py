@@ -1,14 +1,37 @@
+from datetime import datetime
+
 from django.http import Http404
+
+from apps.financeiro.models import Comprovantes, Despesas
+from apps.financeiro.serializers import (ComprovantesSerializer,
+                                         DespesaImageSerializer,
+                                         DespesasSerializer,
+                                         NovaDespesaSerializer)
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.parsers import FormParser, JSONParser, MultiPartParser, FileUploadParser
+from rest_framework.parsers import (FileUploadParser, FormParser, JSONParser,
+                                    MultiPartParser)
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from datetime import datetime
 
-from apps.financeiro.models import Despesas
-from apps.financeiro.serializers import DespesasSerializer, NovaDespesaSerializer, DespesaImageSerializer
+
+class ComprovantesViewSet(viewsets.ModelViewSet):
+    queryset = Comprovantes.objects.all()
+    serializer_class = ComprovantesSerializer
+    http_method_names = ['get', 'post', 'put', 'delete']
+    
+    def list(self, request, *args, **kwargs):
+
+        despesa_id = request.GET.get('id', None)
+
+        if despesa_id is None:
+            return Response({}, status=status.HTTP_400_BAD_REQUEST)
+
+        data = Comprovantes.objects.filter(pk=despesa_id)
+
+        serializer = UsuarioSerializer(data, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class FinanceiroViewSet(viewsets.GenericViewSet):
     permission_classes = (IsAuthenticated,)

@@ -1,7 +1,12 @@
 from rest_framework import serializers
-from apps.financeiro.models import Despesas
+from apps.financeiro.models import Despesas, Comprovantes
 from apps.accounts.serializers import AccountSerializer
 from django.conf import settings
+
+class ComprovantesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comprovantes
+        fields = "__all__"
 
 class DespesaImageSerializer(serializers.ModelSerializer):
     class Meta:

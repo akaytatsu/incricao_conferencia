@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import escape, mark_safe
 
-from .models import CategoriaDespesa, Despesas, Receitas
+from .models import CategoriaDespesa, Despesas, Receitas, Comprovantes
 
 @admin.register(Receitas)
 class ReceitasAdmin(admin.ModelAdmin):
@@ -22,3 +22,9 @@ class DespesasAdmin(admin.ModelAdmin):
     list_display = ('conferencia', 'aprovado', 'comprovado', 'reprovado', 'valor', 'categoria', 'status', 'usuario_solicitacao', 'usuario_aprovacao', 'usuario_comprovacao')
     search_fields = ('nome', )
     list_filter = ('conferencia', 'aprovado', 'comprovado', 'reprovado', 'categoria', 'status')
+
+
+@admin.register(Comprovantes)
+class DespesasAdmin(admin.ModelAdmin):
+    list_display = ('despesa', 'comprovante', 'data_comprovação', )
+    list_filter = ('despesa__conferencia',)
