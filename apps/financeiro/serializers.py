@@ -25,11 +25,15 @@ class ComprovantesSerializer(serializers.ModelSerializer):
 class DespesasSerializer(serializers.ModelSerializer):
 
     solicitante = serializers.SerializerMethodField()
+    categoria = serializers.SerializerMethodField()
     # data_solicitacao = serializers.SerializerMethodField()
 
     class Meta:
         model = Despesas
         fields = '__all__'
+    
+    def get_categoria(self, obj):
+        return "{}".format(obj.categoria)
     
     def get_solicitante(self, obj):
         return AccountSerializer(obj.usuario_solicitacao).data
