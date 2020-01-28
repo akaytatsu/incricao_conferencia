@@ -33,7 +33,10 @@ class DespesasSerializer(serializers.ModelSerializer):
         fields = '__all__'
     
     def get_categoria(self, obj):
-        return None
+        if obj.categoria is None:
+            return None
+        
+        return obj.categoria.nome
     
     def get_solicitante(self, obj):
         return AccountSerializer(obj.usuario_solicitacao).data
