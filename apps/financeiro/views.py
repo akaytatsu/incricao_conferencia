@@ -4,7 +4,6 @@ from django.http import Http404
 
 from apps.financeiro.models import Comprovantes, Despesas
 from apps.financeiro.serializers import (ComprovantesSerializer,
-                                         DespesaImageSerializer,
                                          DespesasSerializer,
                                          NovaDespesaSerializer)
 from rest_framework import status, viewsets
@@ -15,11 +14,11 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-
 class ComprovantesViewSet(viewsets.ModelViewSet):
     queryset = Comprovantes.objects.all()
     serializer_class = ComprovantesSerializer
     http_method_names = ['get', 'post', 'put', 'delete']
+    permission_classes = [AllowAny]
     
     def list(self, request, *args, **kwargs):
 
@@ -28,7 +27,7 @@ class ComprovantesViewSet(viewsets.ModelViewSet):
         if despesa_id is None:
             return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
-        data = Comprovantes.objects.filter(pk=despesa_id)
+        data = Comprovantes.objects.filter(despesa_id=despesa_id)
 
         serializer = ComprovantesSerializer(data, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -190,18 +189,15 @@ class FinanceiroViewSet(viewsets.GenericViewSet):
 
         return Response(DespesasSerializer(despesa).data, status=200)
    
-    @action(methods=['post'], detail=False, permission_classes=[IsAuthenticated])
+    @action(methods=['put'], detail=False, permission_classes=[IsAuthenticated])
     def enviar_comprovante(self, request):
         despesa = Despesas.objects.get(pk=request.data.get("id"))
 
-        serializer = DespesaImageSerializer(despesa, data=request.data, partial=True)
+        if Comprovantes.objects.filter(despesa=despesa).count() < 1:
+            return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
-        if serializer.is_valid():
-            obj = serializer.save()
-            obj.status = 5
-            obj.save()
-            obj.notifica_envio_comprovacao()
+        despesa.status = 5
+        despesa.save()
+        despesa.notifica_envio_comprovacao()
 
-            return Response({}, status=200)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({}, status=200)

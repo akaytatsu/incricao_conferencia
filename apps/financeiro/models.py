@@ -55,7 +55,6 @@ class Despesas(models.Model):
     comprovado = models.BooleanField(default=False, verbose_name="Comprovado?")
     reprovado = models.BooleanField(default=False, verbose_name="Reprovado?")
     data_solicitacao = models.DateTimeField(auto_now_add=True, null=True, blank=True, verbose_name="Data Solicitação", )
-    comprovante = models.ImageField(upload_to='comprovantes/', null=True, blank=True)
 
     class Meta:
         db_table = "despesas"
