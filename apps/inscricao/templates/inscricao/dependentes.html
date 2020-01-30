@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static widget_tweaks render_helpers %}
+
+{% block content %}
+
+    {% include 'inscricao/_dependentes_form.html' %}
+ 
+{% endblock %}
+
+{% block js %}
+
+    {% include 'inscricao/mask_input.html' %}
+    {% if edicao and inscricao.status != 1 %}
+
+        <script>
+            
+            $('input').attr('disabled', true);
+            $('select').attr('disabled', true);
+            $('textarea').attr('disabled', true);
+            
+        </script>
+
+    {% endif %}
+
+{% endblock %}

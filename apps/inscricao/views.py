@@ -121,6 +121,30 @@ class inscricaoView(RedirectMixin, UpdateView):
 
         return context
 
+class DependentesView(RedirectMixin, TemplateView):
+    login_url = '/login'
+    redirect_field_name = 'redirect_to'
+    template_name = 'inscricao/dependentes.html'
+
+    def get_conferencia(self):
+        slug = self.kwargs.get("conferencia")
+        conferencia = Conferencia.objects.get(titulo_slug=slug)
+        
+        return conferencia
+
+    def get_object(self):
+        conferencia = self.get_conferencia()
+        return Inscricao.objects.get(conferencia=conferencia, usuario=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['conferencia'] = self.get_conferencia()
+        context['inscricao'] = self.get_object()
+        context['edicao'] = True
+        context['menu'] = "dependentes"
+
+        return context
+
 class LoginView(TemplateView):
     template_name = 'inscricao/login.html'
 
@@ -196,7 +220,7 @@ class NovaInscricaoView(FormView):
 
             rest = login(request, user)
 
-            return redirect( reverse_lazy('dashboard', kwargs={"conferencia": conferencia.titulo_slug}) )
+            return redirect( reverse_lazy('dependentes', kwargs={"conferencia": conferencia.titulo_slug}) )
 
         context['form'] = form
         return super().render_to_response(context)
