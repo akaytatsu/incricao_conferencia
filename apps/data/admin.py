@@ -31,6 +31,9 @@ class ConferenciaAdmin(admin.ModelAdmin):
     pagina_inicial.allow_tags = True
     pagina_inicial.short_description = "Página Inicial"
 
+    def has_delete_permission(self, request, obj=None):
+        return False
+
 
 @admin.register(Valores)
 class ValoresAdmin(admin.ModelAdmin):
@@ -43,6 +46,9 @@ class HospedagemAdmin(admin.ModelAdmin):
     list_display = ('conferencia', 'nome', 'limite', 'ativo', )
     search_fields = ('nome', )
     list_filter = ('conferencia', 'limite', )
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 @admin.register(Inscricao)
 class InscricaoAdmin(admin.ModelAdmin):
@@ -65,6 +71,9 @@ class DependenteAdmin(admin.ModelAdmin):
     list_display = ('inscricao', 'nome', 'nome_cracha', 'data_nascimento', 'grau', 'valor', )
     search_fields = ('inscricao__nome', 'nome', )
     list_filter = ('inscricao', 'grau', )
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 @admin.register(Contato)
 class ContatoAdmin(admin.ModelAdmin):

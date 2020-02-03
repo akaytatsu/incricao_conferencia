@@ -116,7 +116,7 @@ class Inscricao(models.Model):
         (4, 'Aguardando Confirmação Pagamento'),
     )
 
-    conferencia = models.ForeignKey(Conferencia, on_delete=models.CASCADE, verbose_name="Conferência")
+    conferencia = models.ForeignKey(Conferencia, on_delete=models.DO_NOTHING, verbose_name="Conferência")
     usuario = models.ForeignKey(Account, null=False, blank=False, verbose_name="Usuario", on_delete=models.DO_NOTHING)
     cpf = models.CharField(max_length=11, verbose_name="CPF")
     nome = models.CharField(max_length=100, verbose_name="Nome Completo")
@@ -133,7 +133,7 @@ class Inscricao(models.Model):
     ddd = models.CharField(max_length=3, verbose_name="DDD")
     telefone = models.CharField(max_length=30, verbose_name="Telefone")
     observacoes = models.CharField(max_length=400, verbose_name="Observações", blank=True)
-    hospedagem = models.ForeignKey(Hospedagem, on_delete=models.CASCADE, verbose_name="Hospedagem")
+    hospedagem = models.ForeignKey(Hospedagem, on_delete=models.DO_NOTHING, verbose_name="Hospedagem")
     valor = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor Inscrição", default=0)
     valor_total = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor Total Inscrição", default=0)
     idade = models.IntegerField(default=0, verbose_name="Idade")
