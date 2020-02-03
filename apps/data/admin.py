@@ -61,7 +61,7 @@ class InscricaoAdmin(admin.ModelAdmin):
         response = []
 
         for f in self.model._meta.fields:
-            if f.name not in [ "status", ]:
+            if f.name not in [ "status", 'hospedagem']:
                 response.append( f.name )
 
         return response
