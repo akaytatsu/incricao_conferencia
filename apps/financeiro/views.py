@@ -52,7 +52,7 @@ class FinanceiroViewSet(viewsets.GenericViewSet):
             solicitacoes = solicitacoes
         
         elif request.user.can_pay is True:
-            solicitacoes = solicitacoes.filter(status=2)
+            solicitacoes = solicitacoes.filter(status__gte=2).exclude(status=8)
 
         elif request.user.can_request is True:
             solicitacoes = solicitacoes.filter(usuario_solicitacao=request.user)
