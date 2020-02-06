@@ -29,6 +29,9 @@ class CategoriaDespesa(models.Model):
         verbose_name = "Categoria Despesa"
         verbose_name_plural = "Categorias Despesa"
 
+    def __str__(self):
+        return self.nome
+
 
 class Despesas(models.Model):
 
