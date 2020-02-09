@@ -1,17 +1,16 @@
+from apps.data.models import Conferencia, Contato, Dependente, Inscricao
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core import serializers
 from django.db.models import Count, Sum
+from django.http import HttpResponse
 from django.urls import reverse_lazy
-
-from apps.data.models import Conferencia, Contato, Dependente, Inscricao
+from django.views.decorators.csrf import csrf_exempt
 from pagseguro import PagSeguro
 from rest_framework import authentication, permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
 
 from .serializers import (ConferenciaSerializer, ContatoSerializer,
                           DependentesSerializer,
@@ -226,39 +225,106 @@ def notification_view(request):
 def sortByQuantity(e):
     return e['inscricao__count'] + e['dependentes__count']
 
+def sortByCidade(e):
+    return e['cidade'] + e['cidade']
+
 class RelatorioCidadesApiView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
 
-        querystr = """
-            select
-                1 as id,
-                i.cidade,
-                ( (select count(*) from dependente dep join inscricao subi on subi.id = dep.inscricao_id where subi.cidade = i.cidade) ) dependentes__count,
-                ( select count(*) from inscricao subi where subi.cidade = i.cidade  ) inscricao__count
-            from
-                inscricao i
-            where
-                i.conferencia_id = {}
-            group by
-                i.cidade
-        """.format(request.data.get("conferencia_id"))
+        response = {}
 
-        queryset = Inscricao.objects.raw(querystr)
+        for inscricao in Inscricao.objects.all():
 
-        response = []
+            if response.get(inscricao.cidade, None):
+                response[inscricao.cidade]['total'] = response[inscricao.cidade]['total'] + 1
+                response[inscricao.cidade]['pessoas'].append({
+                            'nome': inscricao.nome,
+                            'cidade': inscricao.cidade,
+                            'uf': inscricao.uf,
+                            'dependente': False,
+                            'idade': inscricao.idade,
+                })
+            else:
+                response[inscricao.cidade] = {
+                    'cidade': inscricao.cidade,
+                    'total': 1,
+                    'pessoas': [
+                        {
+                            'nome': inscricao.nome,
+                            'cidade': inscricao.cidade,
+                            'uf': inscricao.uf,
+                            'dependente': False,
+                            'idade': inscricao.idade
+                        }
+                    ]
+                }
 
-        for data in queryset:
-            response.append({
-                "cidade": data.cidade,
-                "dependentes__count": data.dependentes__count,
-                "inscricao__count": data.inscricao__count,
-            })
+        for inscricao in Dependente.objects.select_related('inscricao').all():
 
-        response.sort(reverse=True, key=sortByQuantity)
+            if response.get(inscricao.inscricao.cidade, None):
+                response[inscricao.inscricao.cidade]['total'] = response[inscricao.inscricao.cidade]['total'] + 1
+                response[inscricao.inscricao.cidade]['pessoas'].append({
+                            'nome': inscricao.nome,
+                            'cidade': inscricao.inscricao.cidade,
+                            'uf': inscricao.inscricao.uf,
+                            'dependente': True,
+                            'responsavel': inscricao.inscricao.nome,
+                            'idade': inscricao.inscricao.idade,
+                })
+            else:
+                response[inscricao.inscricao.cidade] = {
+                    'cidade': inscricao.inscricao.cidade,
+                    'total': 1,
+                    'pessoas': [
+                        {
+                            'nome': inscricao.nome,
+                            'cidade': inscricao.inscricao.cidade,
+                            'uf': inscricao.inscricao.uf,
+                            'dependente': True,
+                            'responsavel': inscricao.inscricao.nome,
+                            'idade': inscricao.inscricao.idade,
+                        }
+                    ]
+                }
 
-        return Response(response)
+        # querystr = """
+        #     select
+        #         1 as id,
+        #         i.cidade,
+        #         ( (select count(*) from dependente dep join inscricao subi on subi.id = dep.inscricao_id where subi.cidade = i.cidade) ) dependentes__count,
+        #         ( select count(*) from inscricao subi where subi.cidade = i.cidade  ) inscricao__count
+        #     from
+        #         inscricao i
+        #     where
+        #         i.conferencia_id = {}
+        #     group by
+        #         i.cidade
+        # """.format(request.data.get("conferencia_id"))
+
+        # queryset = Inscricao.objects.raw(querystr)
+
+        # response = []
+
+        # for data in queryset:
+        #     response.append({
+        #         "cidade": data.cidade,
+        #         "dependentes__count": data.dependentes__count,
+        #         "inscricao__count": data.inscricao__count,
+        #     })
+
+        response_sorted = {}
+        for i in sorted (response.keys()) :  
+            response_sorted[i] = response[i]
+
+        response_arr = []
+        for reg in response_sorted.items():
+            response_arr.append(
+                reg[1]
+            )
+
+        return Response(response_arr)
 
 
 class RelatorioIdadesApiView(APIView):
@@ -268,24 +334,55 @@ class RelatorioIdadesApiView(APIView):
 
         response = {}
 
-        inscricao = Inscricao.objects.values('idade').annotate(icount=Count('idade'))
-        dependente = Dependente.objects.values('idade').annotate(icount=Count('idade'))
+        for inscricao in Inscricao.objects.all():
 
-        for i in inscricao:
-            idade = i.get("idade")
-            total = i.get("icount")
-            if response.get(idade, None):
-                response[idade] = response[idade] + total
+            if response.get(inscricao.idade, None):
+                response[inscricao.idade]['total'] = response[inscricao.idade]['total'] + 1
+                response[inscricao.idade]['pessoas'].append({
+                            'nome': inscricao.nome,
+                            'cidade': inscricao.cidade,
+                            'uf': inscricao.uf,
+                            'dependente': False,
+                })
             else:
-                response[idade] = total
+                response[inscricao.idade] = {
+                    'idade': inscricao.idade,
+                    'total': 1,
+                    'pessoas': [
+                        {
+                            'nome': inscricao.nome,
+                            'cidade': inscricao.cidade,
+                            'uf': inscricao.uf,
+                            'dependente': False,
+                        }
+                    ]
+                }
 
-        for i in dependente:
-            idade = i.get("idade")
-            total = i.get("icount")
-            if response.get(idade, None):
-                response[idade] = response[idade] + total
+        for inscricao in Dependente.objects.select_related('inscricao').all():
+
+            if response.get(inscricao.idade, None):
+                response[inscricao.idade]['total'] = response[inscricao.idade]['total'] + 1
+                response[inscricao.idade]['pessoas'].append({
+                            'nome': inscricao.nome,
+                            'cidade': inscricao.inscricao.cidade,
+                            'uf': inscricao.inscricao.uf,
+                            'dependente': True,
+                            'responsavel': inscricao.inscricao.nome
+                })
             else:
-                response[idade] = total
+                response[inscricao.idade] = {
+                    'idade': inscricao.idade,
+                    'total': 1,
+                    'pessoas': [
+                        {
+                            'nome': inscricao.nome,
+                            'cidade': inscricao.inscricao.cidade,
+                            'uf': inscricao.inscricao.uf,
+                            'dependente': True,
+                            'responsavel': inscricao.inscricao.nome
+                        }
+                    ]
+                }
 
         response_sorted = {}
         for i in sorted (response.keys()) :  
@@ -294,7 +391,7 @@ class RelatorioIdadesApiView(APIView):
         response_arr = []
         for reg in response_sorted.items():
             response_arr.append(
-                {"idade": reg[0], "count": reg[1]}
+                reg[1]
             )
 
         return Response(response_arr)

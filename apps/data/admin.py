@@ -5,6 +5,8 @@ from django.utils.html import escape, mark_safe
 from .models import (Conferencia, Contato, Dependente, Hospedagem, Inscricao,
                      Valores)
 
+from django.utils.html import escape, mark_safe
+
 
 @admin.register(Conferencia)
 class ConferenciaAdmin(admin.ModelAdmin):
@@ -52,7 +54,7 @@ class HospedagemAdmin(admin.ModelAdmin):
 
 @admin.register(Inscricao)
 class InscricaoAdmin(admin.ModelAdmin):
-    list_display = ('conferencia', 'cpf', 'nome', 'nome_cracha', 'data_nascimento', 'email', 'idade', 'cidade', 'hospedagem', 'valor', 'valor_total', 'status', 'payment_reference' )
+    list_display = ('conferencia', 'cpf', 'nome', 'nome_cracha', 'data_nascimento', 'email', 'idade', 'cidade', 'hospedagem', 'valor', 'valor_total', 'status', 'payment_reference', 'ver_dependentes' )
     search_fields = ('cpf', 'nome', 'email')
     list_filter = ('conferencia', 'hospedagem', 'status', 'cidade', )
 
@@ -65,6 +67,15 @@ class InscricaoAdmin(admin.ModelAdmin):
                 response.append( f.name )
 
         return response
+
+    def ver_dependentes(self, obj):
+        if obj.num_dependentes() > 0:
+            return mark_safe('<a href="/admin/data/dependente/?inscricao_id={}" target="_blank">ver dependente</a>'.format(obj.pk))
+        else:
+            return ""
+
+    ver_dependentes.allow_tags = True
+    ver_dependentes.short_description = "Ver Dependentes"
 
 @admin.register(Dependente)
 class DependenteAdmin(admin.ModelAdmin):

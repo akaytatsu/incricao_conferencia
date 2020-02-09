@@ -32,21 +32,52 @@
     <div class="row" v-if="registros.length > 0">
         <div class="col-sm-12">
             <table class="table table-responsive">
-                <thead>
+                <!-- <thead>
                     <tr>
                         <td>Idade</td>
                         <td>Total</td>
-                        <td></td>
                     </tr>
-                </thead>
+                </thead> -->
                 <tbody>
-                    <tr v-for="reg in registros">
-                        <td>[[ reg.idade ]]</td>
-                        <td>[[ reg.count ]]</td>
-                        <td>
-                            
-                        </td>
-                    </tr>
+                    <template v-for="reg in registros">
+                        <tr>
+                            <td>
+                                <b>Idade de [[ reg.idade ]] ano(s)</b>
+                            </td>
+                            <td>
+                                <b>total nesta idade: [[ reg.total ]]</b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <table class="table table-responsive">
+                                    <thead>
+                                        <tr>
+                                            <td>Nome</td>
+                                            <td>Idade</td>
+                                            <td>Dependente?</td>
+                                            <td>Responsavel</td>
+                                            <td>Cidade</td>
+                                            <td>UF</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="p in reg.pessoas">
+                                            <td>[[p.nome]]</td>
+                                            <td>[[reg.idade]]</td>
+                                            <td>[[eDependente(p.dependente)]]</td>
+                                            <td>[[p.responsavel]]</td>
+                                            <td>[[p.cidade]]</td>
+                                            <td>[[p.uf]]</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                        <br>
+                        <br>
+                        <br>
+                    </template>
                 </tbody>
             </table>
         </div>

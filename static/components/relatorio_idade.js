@@ -8,7 +8,8 @@ var processo = new Vue({
         return {
             conferencias: [],
             registros: [],
-            conferencia_id: null
+            conferencia_id: null,
+
         }
     },
     methods: {
@@ -17,6 +18,13 @@ var processo = new Vue({
             axios.get("/api/inscricao/conferencias").then(function (response) {
                 _this.conferencias = response.data;
             });
+        },
+        eDependente: function(verif){
+            if(verif == true){
+                return "Sim";
+            }
+
+            return "Não";
         },
         buscaDados(loja_id = undefined) {
 

@@ -18,6 +18,13 @@ var processo = new Vue({
                 _this.conferencias = response.data;
             });
         },
+        eDependente: function(verif){
+            if(verif == true){
+                return "Sim";
+            }
+
+            return "Não";
+        },
         buscaDados(loja_id = undefined) {
 
             _this = this;
