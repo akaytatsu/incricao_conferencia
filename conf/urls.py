@@ -20,6 +20,7 @@ urlpatterns = [
     path('api/token/auth', obtain_jwt_token),
     # path('api/financeiro/', include('apps.financeiro.urls')),
     path('api/inscricao/', include('apps.data.urls')),
+    path('api/comprovante', ComprovantesViewSet.as_view()),
     path('admin/', admin.site.urls),
     path('<conferencia>/', include('apps.inscricao.urls')),
     path(r'favicon.ico',RedirectView.as_view(url='/static/ico/favicon.ico')),
@@ -28,7 +29,7 @@ urlpatterns = [
 router = DefaultRouter()
 router.register(r'api/account', AccountViewSet, basename='api_account')
 router.register(r'api/financeiro', FinanceiroViewSet, basename='api_financeiro')
-router.register(r'api/comprovante', ComprovantesViewSet.as_view(), basename='api_comprovantes')
+# router.register(r'api/comprovante', , basename='api_comprovantes')
 
 urlpatterns = urlpatterns + router.urls
 
