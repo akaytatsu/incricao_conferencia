@@ -43,8 +43,14 @@ class ComprovantesViewSet(APIView):
             return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
-        qs = self.get_object(pk)
+
+        try:
+            qs = Comprovantes.objects.get(pk=pk)
+        except:
+            Response(status=status.HTTP_200_OK)
+
         qs.delete()
+        
         return Response(status=status.HTTP_200_OK)
 
 class FinanceiroViewSet(viewsets.GenericViewSet):
