@@ -47,7 +47,7 @@ class ComprovantesViewSet(APIView):
         try:
             qs = Comprovantes.objects.get(pk=pk)
         except:
-            Response(status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_200_OK)
 
         qs.delete()
         
