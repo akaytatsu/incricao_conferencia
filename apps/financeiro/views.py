@@ -15,7 +15,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 class ComprovantesViewSet(viewsets.ModelViewSet):
-    queryset = Comprovantes.objects.all()
+    parser_classes = (MultiPartParser, FormParser)
+    queryset = Comprovantes.objects.all() 
     serializer_class = ComprovantesSerializer
     http_method_names = ['get', 'post', 'put', 'delete']
     permission_classes = [AllowAny]

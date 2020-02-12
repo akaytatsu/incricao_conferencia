@@ -8,7 +8,7 @@ class ComprovantesSerializer(serializers.ModelSerializer):
     comprovante = serializers.SerializerMethodField()
     
     class Meta:
-        model = Comprovantes
+        model = Comprovantes 
         fields = "__all__"
 
     def get_comprovante(self, obj):
