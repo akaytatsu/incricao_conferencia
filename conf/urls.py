@@ -21,6 +21,7 @@ urlpatterns = [
     # path('api/financeiro/', include('apps.financeiro.urls')),
     path('api/inscricao/', include('apps.data.urls')),
     path('api/comprovante/', ComprovantesViewSet.as_view()),
+    path('api/comprovante/<int:pk>/', ComprovantesViewSet.as_view()),
     path('admin/', admin.site.urls),
     path('<conferencia>/', include('apps.inscricao.urls')),
     path(r'favicon.ico',RedirectView.as_view(url='/static/ico/favicon.ico')),

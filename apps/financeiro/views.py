@@ -42,16 +42,9 @@ class ComprovantesViewSet(APIView):
         else:
             return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, format=None):
-
-        if request.GET.get('id', None):
-            try:
-                qs = Comprovantes.objects.get(pk=request.GET.get('id', None))
-            except:
-                return Response(status=status.HTTP_200_OK)
-
-            qs.delete()
-
+    def delete(self, request, pk, format=None):
+        qs = self.get_object(pk)
+        qs.delete()
         return Response(status=status.HTTP_200_OK)
 
 class FinanceiroViewSet(viewsets.GenericViewSet):
