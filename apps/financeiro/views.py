@@ -54,7 +54,7 @@ class FinanceiroViewSet(viewsets.GenericViewSet):
         elif request.user.can_pay is True:
             solicitacoes = solicitacoes.filter(status__gte=2).exclude(status=8)
 
-        elif request.user.can_request is True:
+        else:
             solicitacoes = solicitacoes.filter(usuario_solicitacao=request.user)
         
         serializer = DespesasSerializer(solicitacoes, many=True)
