@@ -28,7 +28,7 @@ urlpatterns = [
 router = DefaultRouter()
 router.register(r'api/account', AccountViewSet, basename='api_account')
 router.register(r'api/financeiro', FinanceiroViewSet, basename='api_financeiro')
-router.register(r'api/comprovante', ComprovantesViewSet, basename='api_comprovantes')
+router.register(r'api/comprovante', ComprovantesViewSet.as_view(), basename='api_comprovantes')
 
 urlpatterns = urlpatterns + router.urls
 

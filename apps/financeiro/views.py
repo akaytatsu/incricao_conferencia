@@ -22,7 +22,7 @@ class ComprovantesViewSet(APIView):
     serializer_class = ComprovantesSerializer
     permission_classes = [AllowAny]
     
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
 
         despesa_id = request.GET.get('id', None)
 
@@ -34,7 +34,7 @@ class ComprovantesViewSet(APIView):
         serializer = ComprovantesSerializer(data, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         file_serializer = DespesaImageSerializer(data=request.data)
         if file_serializer.is_valid():
             obj = file_serializer.save()
