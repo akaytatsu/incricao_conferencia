@@ -19,8 +19,8 @@ class ComprovantesSerializer(serializers.ModelSerializer):
 
 class DespesaImageSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Despesas
-        fields = ("comprovante", )
+        model = Comprovantes
+        fields = ("comprovante", "despesa")
 
 class DespesasSerializer(serializers.ModelSerializer):
 
