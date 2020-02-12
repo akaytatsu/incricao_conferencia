@@ -56,6 +56,8 @@ class FinanceiroViewSet(viewsets.GenericViewSet):
 
         else:
             solicitacoes = solicitacoes.filter(usuario_solicitacao=request.user)
+
+        solicitacoes = solicitacoes.order_by('status')
         
         serializer = DespesasSerializer(solicitacoes, many=True)
 
