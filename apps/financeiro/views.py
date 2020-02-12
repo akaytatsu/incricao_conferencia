@@ -1,11 +1,6 @@
 from datetime import datetime
 
 from django.http import Http404
-
-from apps.financeiro.models import Comprovantes, Despesas
-from apps.financeiro.serializers import (ComprovantesSerializer,
-                                         DespesasSerializer,
-                                         NovaDespesaSerializer)
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.parsers import (FileUploadParser, FormParser, JSONParser,
@@ -14,14 +9,20 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-class ComprovantesViewSet(viewsets.ModelViewSet):
+from apps.financeiro.models import Comprovantes, Despesas
+from apps.financeiro.serializers import (ComprovantesSerializer,
+                                         DespesaImageSerializer,
+                                         DespesasSerializer,
+                                         NovaDespesaSerializer)
+
+
+class ComprovantesViewSet(APIView):
     parser_classes = (MultiPartParser, FormParser)
     queryset = Comprovantes.objects.all() 
     serializer_class = ComprovantesSerializer
-    http_method_names = ['get', 'post', 'put', 'delete']
     permission_classes = [AllowAny]
     
-    def list(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
 
         despesa_id = request.GET.get('id', None)
 
@@ -32,6 +33,14 @@ class ComprovantesViewSet(viewsets.ModelViewSet):
 
         serializer = ComprovantesSerializer(data, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, *args, **kwargs):
+        file_serializer = DespesaImageSerializer(data=request.data)
+        if file_serializer.is_valid():
+            obj = file_serializer.save()
+            return Response({}, status=status.HTTP_201_CREATED)
+        else:
+            return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class FinanceiroViewSet(viewsets.GenericViewSet):
     permission_classes = (IsAuthenticated,)

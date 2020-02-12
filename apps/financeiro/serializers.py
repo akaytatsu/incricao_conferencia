@@ -17,10 +17,10 @@ class ComprovantesSerializer(serializers.ModelSerializer):
         
         return None
 
-# class DespesaImageSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Despesas
-#         fields = ("comprovante", )
+class DespesaImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Despesas
+        fields = ("comprovante", )
 
 class DespesasSerializer(serializers.ModelSerializer):
 
