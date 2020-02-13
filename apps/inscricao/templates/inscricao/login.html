@@ -45,8 +45,8 @@
                 <div class="az-signup-header">
                     <h5>Ainda não fez sua incrição? </h5>
                     <p>
-                        Você pode fazer clicando no botão abaixo. Lembre-se, as incrições estão abertas até o dia
-                        <b>{{ conferencia.data_encerramento|date:'d/m/Y' }}</b> <b>ou enquanto houver vagas</b>.
+                        Você pode fazer clicando no botão abaixo.
+                        <h5><b style="color: red;">As incrições estão abertas até o dia {{ conferencia.data_encerramento|date:'d/m/Y' }}</b></h5>.
                     </p>
                     <a href="{% url 'nova_inscricao' conferencia=conferencia.titulo_slug %}"
                         class="btn btn-outline-indigo btn-block">Realizar Nova Inscrição</a>
