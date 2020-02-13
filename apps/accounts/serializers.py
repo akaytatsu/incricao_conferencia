@@ -9,7 +9,7 @@ class AccountCreateSerializer(serializers.ModelSerializer):
     password_confirm = serializers.CharField(write_only=True, required=True)
     email = serializers.EmailField(required=True)
     name = serializers.CharField(max_length=80, required=True)
-    telefone = serializers.CharField(max_length=120, required=True)
+    telefone = serializers.CharField(max_length=120, required=False)
 
     def create(self, validated_data):
 
