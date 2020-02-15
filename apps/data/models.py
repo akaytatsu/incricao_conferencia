@@ -142,6 +142,7 @@ class Inscricao(models.Model):
     status = models.IntegerField(choices=_STATUS, default=1, verbose_name="Status")
     sit_pagseguro = models.IntegerField(verbose_name="Status PagSeguro", blank=True, null=True)
     pagseguro_transaction_id = models.CharField(max_length=120, verbose_name="Transação PagSeguro", blank=True, null=True)
+    hospedagem_detalhe = models.CharField(max_length=120, null=False, blank=True, default="", verbose_name="Detalhe Hospedagem")
     
     class Meta:
         unique_together = [['conferencia', 'cpf']]
@@ -197,6 +198,15 @@ class Inscricao(models.Model):
             pass
 
         super(Inscricao, self).save(*args, **kwargs)
+
+        self.replicateHost()
+
+    def replicateHost(self):
+        if len(self.hospedagem_detalhe) > 3:
+            for dep in Dependente.objects.filter(inscricao=self):
+                if dep.hospedagem_detalhe == "":
+                    dep.hospedagem_detalhe = self.hospedagem_detalhe
+                    dep.save()
     
     def unmask(self, value):
 
@@ -278,6 +288,7 @@ class Dependente(models.Model):
     data_nascimento = models.DateField(verbose_name="Data Nascimento")
     idade = models.IntegerField(default=0, verbose_name="Idade")
     valor = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor Inscrição", default=0)
+    hospedagem_detalhe = models.CharField(max_length=120, null=False, blank=True, default="", verbose_name="Detalhe Hospedagem")
 
     class Meta:
         db_table = "dependente"

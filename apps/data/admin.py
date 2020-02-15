@@ -54,7 +54,7 @@ class HospedagemAdmin(admin.ModelAdmin):
 
 @admin.register(Inscricao)
 class InscricaoAdmin(admin.ModelAdmin):
-    list_display = ('conferencia', 'cpf', 'nome', 'nome_cracha', 'data_nascimento', 'email', 'idade', 'cidade', 'hospedagem', 'valor', 'valor_total', 'status', 'payment_reference', 'ver_dependentes' )
+    list_display = ('conferencia', 'cpf', 'nome', 'nome_cracha', 'data_nascimento', 'email', 'idade', 'cidade', 'hospedagem', 'valor', 'valor_total', 'status', 'payment_reference', 'hospedagem_detalhe', 'ver_dependentes' )
     search_fields = ('cpf', 'nome', 'email')
     list_filter = ('conferencia', 'hospedagem', 'status', 'cidade', )
 
@@ -63,7 +63,7 @@ class InscricaoAdmin(admin.ModelAdmin):
         response = []
 
         for f in self.model._meta.fields:
-            if f.name not in [ "status", 'hospedagem']:
+            if f.name not in [ "status", 'hospedagem', 'hospedagem_detalhe', 'data_nascimento']:
                 response.append( f.name )
 
         return response
@@ -79,12 +79,22 @@ class InscricaoAdmin(admin.ModelAdmin):
 
 @admin.register(Dependente)
 class DependenteAdmin(admin.ModelAdmin):
-    list_display = ('inscricao', 'nome', 'nome_cracha', 'data_nascimento', 'grau', 'valor', )
+    list_display = ('inscricao', 'nome', 'nome_cracha', 'data_nascimento', 'grau', 'valor', 'hospedagem_detalhe')
     search_fields = ('inscricao__nome', 'nome', )
     list_filter = ('inscricao', 'grau', )
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+    def get_readonly_fields(self, request, obj=None):
+
+        response = []
+
+        for f in self.model._meta.fields:
+            if f.name not in ['data_nascimento', 'hospedagem_detalhe']:
+                response.append( f.name )
+
+        return response
 
 @admin.register(Contato)
 class ContatoAdmin(admin.ModelAdmin):

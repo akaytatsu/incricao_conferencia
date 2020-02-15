@@ -4,8 +4,9 @@ from django.urls import path
 from .views import (ConferenciaApiView, ContatoApiView, DependenteApiView,
                     DependentesApiView, InscricaoApiView,
                     InscricaoStatusPagSeguroApiView, PagamentoApiView,
-                    RelatorioCidadesApiView, RelatorioIdadesApiView,
-                    RelatorioStatusPagamentoApiView, notification_view)
+                    RelatorioCidadesApiView, RelatorioHospedagemApiView,
+                    RelatorioIdadesApiView, RelatorioStatusPagamentoApiView,
+                    notification_view)
 
 urlpatterns = [
     path('conferencias', ConferenciaApiView.as_view(), name="conferencias_api"),
@@ -21,4 +22,5 @@ urlpatterns = [
     path('relatorios/cidades', RelatorioCidadesApiView.as_view(), name="relatorio_cidades_api"),
     path('relatorios/idade', RelatorioIdadesApiView.as_view(), name="relatorio_idade_api"),
     path('relatorios/status_pagamento', RelatorioStatusPagamentoApiView.as_view(), name="relatorio_status_api"),
+    path('relatorios/hospedagem', RelatorioHospedagemApiView.as_view(), name="relatorio_hospedagem_api"),
 ]

@@ -419,3 +419,77 @@ class RelatorioStatusPagamentoApiView(APIView):
         response.append({'status_code': 4, 'status': 'Aguardando Confirmação Pagamento', 'quantidade': aguardando, 'valor': 0 if valor_aguardando is None else valor_aguardando})
 
         return Response(response)
+
+
+class RelatorioHospedagemApiView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, format=None):
+
+        response = {}
+
+        for inscricao in Inscricao.objects.all():
+
+            hospedagem_nome = inscricao.hospedagem.nome
+
+            if response.get(hospedagem_nome, None):
+                response[hospedagem_nome]['total'] = response[hospedagem_nome]['total'] + 1
+                response[hospedagem_nome]['pessoas'].append({
+                            'nome': inscricao.nome,
+                            'cidade': inscricao.cidade,
+                            'uf': inscricao.uf,
+                            'dependente': False,
+                            'detalhe': inscricao.hospedagem_detalhe
+                })
+            else:
+                response[hospedagem_nome] = {
+                    'hospedagem': hospedagem_nome,
+                    'total': 1,
+                    'pessoas': [
+                        {
+                            'nome': inscricao.nome,
+                            'cidade': inscricao.cidade,
+                            'uf': inscricao.uf,
+                            'dependente': False,
+                            'detalhe': inscricao.hospedagem_detalhe
+                        }
+                    ]
+                }
+
+        for inscricao in Dependente.objects.select_related('inscricao').all():
+
+            hospedagem_nome = inscricao.inscricao.hospedagem.nome
+
+            if response.get(hospedagem_nome, None):
+                response[hospedagem_nome]['total'] = response[hospedagem_nome]['total'] + 1
+                response[hospedagem_nome]['pessoas'].append({
+                            'nome': inscricao.inscricao.nome,
+                            'cidade': inscricao.inscricao.cidade,
+                            'uf': inscricao.inscricao.uf,
+                            'dependente': True,
+                            'responsavel': inscricao.inscricao.nome,
+                            'detalhe': inscricao.hospedagem_detalhe
+                })
+            else:
+                response[hospedagem_nome] = {
+                    'hospedagem': hospedagem_nome,
+                    'total': 1,
+                    'pessoas': [
+                        {
+                            'nome': inscricao.nome,
+                            'cidade': inscricao.inscricao.cidade,
+                            'uf': inscricao.inscricao.uf,
+                            'dependente': True,
+                            'responsavel': inscricao.inscricao.nome,
+                            'detalhe': inscricao.hospedagem_detalhe
+                        }
+                    ]
+                }
+
+        response_arr = []
+        for reg in response.items():
+            response_arr.append(
+                reg[1]
+            )
+
+        return Response(response_arr)

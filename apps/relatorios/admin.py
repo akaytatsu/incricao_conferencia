@@ -2,7 +2,8 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import escape, mark_safe
 
-from .models import RelatorioCidade, RelatorioIdade, RelatorioIdadeEspecifico, RelatorioStatusPagamento
+from .models import (RelatorioCidade, RelatorioHospedagem, RelatorioIdade,
+                     RelatorioIdadeEspecifico, RelatorioStatusPagamento)
 
 
 @admin.register(RelatorioCidade)
@@ -25,3 +26,10 @@ class RelatorioStatusPagamentoAdmin(admin.ModelAdmin):
 
     def changelist_view(self, request, extra_context=None):
         return super(RelatorioStatusPagamentoAdmin, self).changelist_view(request, extra_context)
+
+@admin.register(RelatorioHospedagem)
+class RelatorioHospedagemAdmin(admin.ModelAdmin):
+    change_list_template = "relatorios/relatorio_hospedagem.html"
+
+    def changelist_view(self, request, extra_context=None):
+        return super(RelatorioHospedagemAdmin, self).changelist_view(request, extra_context)

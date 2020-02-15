@@ -23,3 +23,9 @@ class RelatorioIdadeEspecifico(models.Model):
         db_table = "relatorio_idade_especifico"
         verbose_name = 'Relatório por Idade Especifico'
         verbose_name_plural = 'Relatório por Idades Especificas'
+
+class RelatorioHospedagem(models.Model):
+    class Meta:
+        db_table = "relatorio_hospedagem"
+        verbose_name = 'Relatório por Hospedagem'
+        verbose_name_plural = 'Relatório por Hospedagem'
