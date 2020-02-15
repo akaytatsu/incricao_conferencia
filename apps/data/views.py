@@ -463,7 +463,7 @@ class RelatorioHospedagemApiView(APIView):
                 if response.get(hospedagem_nome, None):
                     response[hospedagem_nome]['total'] = response[hospedagem_nome]['total'] + 1
                     response[hospedagem_nome]['pessoas'].append({
-                                'nome': dependente.inscricao.nome,
+                                'nome': dependente.nome,
                                 'cidade': dependente.inscricao.cidade,
                                 'uf': dependente.inscricao.uf,
                                 'dependente': True,

@@ -7,6 +7,14 @@
     <style>
         [v-cloak] > * { display:none }
         [v-cloak]::before { content: "loading…" }
+
+        .inscricaoClass{
+            background-color: #acf2c3;
+        }
+
+        .depedenteClass{
+            background-color: #edeba4;
+        }
     </style>
 {% endblock %}
 
@@ -63,7 +71,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="p in reg.pessoas">
+                                        <tr v-for="p in reg.pessoas" v-bind:class="[p.dependente == false ? 'inscricaoClass' : 'depedenteClass']">
                                             <td>[[p.nome]]</td>
                                             <td>[[reg.idade]]</td>
                                             <td>[[eDependente(p.dependente)]]</td>
