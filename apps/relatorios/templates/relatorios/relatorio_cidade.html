@@ -7,6 +7,14 @@
     <style>
         [v-cloak] > * { display:none }
         [v-cloak]::before { content: "loading…" }
+
+        .inscricaoClass{
+            background-color: #acf2c3;
+        }
+
+        .depedenteClass{
+            background-color: #edeba4;
+        }
     </style>
 {% endblock %}
 
@@ -35,10 +43,10 @@
                 <tbody>
                     <template v-for="reg in registros">
                         <tr>
-                            <td>
+                            <td colspan="3">
                                 <b>Cidade de: [[ reg.cidade ]]</b>
                             </td>
-                            <td>
+                            <td colspan="2">
                                 <b>total nesta cidade: [[ reg.total ]]</b>
                             </td>
                         </tr>
@@ -47,16 +55,16 @@
                                 <table class="table table-responsive">
                                     <thead>
                                         <tr>
-                                            <td>Nome</td>
+                                            <td style="width: 300px;">Nome</td>
                                             <td>Idade</td>
                                             <td>Dependente?</td>
-                                            <td>Responsavel</td>
-                                            <td>Cidade</td>
+                                            <td style="width: 300px;">Responsavel</td>
+                                            <td style="width: 250px;">Cidade</td>
                                             <td>UF</td>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="p in reg.pessoas">
+                                        <tr v-for="p in reg.pessoas" v-bind:class="[p.dependente == false ? 'inscricaoClass' : 'depedenteClass']">
                                             <td>[[p.nome]]</td>
                                             <td>[[p.idade]]</td>
                                             <td>[[eDependente(p.dependente)]]</td>

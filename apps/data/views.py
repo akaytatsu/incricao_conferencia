@@ -261,33 +261,33 @@ class RelatorioCidadesApiView(APIView):
                     ]
                 }
 
-        for inscricao in Dependente.objects.select_related('inscricao').all():
+            for dependente in Dependente.objects.select_related('inscricao').filter(inscricao=inscricao):
 
-            if response.get(inscricao.inscricao.cidade, None):
-                response[inscricao.inscricao.cidade]['total'] = response[inscricao.inscricao.cidade]['total'] + 1
-                response[inscricao.inscricao.cidade]['pessoas'].append({
-                            'nome': inscricao.nome,
-                            'cidade': inscricao.inscricao.cidade,
-                            'uf': inscricao.inscricao.uf,
-                            'dependente': True,
-                            'responsavel': inscricao.inscricao.nome,
-                            'idade': inscricao.inscricao.idade,
-                })
-            else:
-                response[inscricao.inscricao.cidade] = {
-                    'cidade': inscricao.inscricao.cidade,
-                    'total': 1,
-                    'pessoas': [
-                        {
-                            'nome': inscricao.nome,
-                            'cidade': inscricao.inscricao.cidade,
-                            'uf': inscricao.inscricao.uf,
-                            'dependente': True,
-                            'responsavel': inscricao.inscricao.nome,
-                            'idade': inscricao.inscricao.idade,
-                        }
-                    ]
-                }
+                if response.get(dependente.inscricao.cidade, None):
+                    response[dependente.inscricao.cidade]['total'] = response[dependente.inscricao.cidade]['total'] + 1
+                    response[dependente.inscricao.cidade]['pessoas'].append({
+                                'nome': dependente.nome,
+                                'cidade': dependente.inscricao.cidade,
+                                'uf': dependente.inscricao.uf,
+                                'dependente': True,
+                                'responsavel': dependente.inscricao.nome,
+                                'idade': dependente.inscricao.idade,
+                    })
+                else:
+                    response[dependente.inscricao.cidade] = {
+                        'cidade': dependente.inscricao.cidade,
+                        'total': 1,
+                        'pessoas': [
+                            {
+                                'nome': dependente.nome,
+                                'cidade': dependente.inscricao.cidade,
+                                'uf': dependente.inscricao.uf,
+                                'dependente': True,
+                                'responsavel': dependente.inscricao.nome,
+                                'idade': dependente.inscricao.idade,
+                            }
+                        ]
+                    }
 
         # querystr = """
         #     select
@@ -358,31 +358,31 @@ class RelatorioIdadesApiView(APIView):
                     ]
                 }
 
-        for inscricao in Dependente.objects.select_related('inscricao').all():
+            for dependente in Dependente.objects.select_related('inscricao').filter(inscricao=inscricao):
 
-            if response.get(inscricao.idade, None):
-                response[inscricao.idade]['total'] = response[inscricao.idade]['total'] + 1
-                response[inscricao.idade]['pessoas'].append({
-                            'nome': inscricao.nome,
-                            'cidade': inscricao.inscricao.cidade,
-                            'uf': inscricao.inscricao.uf,
-                            'dependente': True,
-                            'responsavel': inscricao.inscricao.nome
-                })
-            else:
-                response[inscricao.idade] = {
-                    'idade': inscricao.idade,
-                    'total': 1,
-                    'pessoas': [
-                        {
-                            'nome': inscricao.nome,
-                            'cidade': inscricao.inscricao.cidade,
-                            'uf': inscricao.inscricao.uf,
-                            'dependente': True,
-                            'responsavel': inscricao.inscricao.nome
-                        }
-                    ]
-                }
+                if response.get(dependente.idade, None):
+                    response[dependente.idade]['total'] = response[dependente.idade]['total'] + 1
+                    response[dependente.idade]['pessoas'].append({
+                                'nome': dependente.nome,
+                                'cidade': dependente.inscricao.cidade,
+                                'uf': dependente.inscricao.uf,
+                                'dependente': True,
+                                'responsavel': dependente.inscricao.nome
+                    })
+                else:
+                    response[dependente.idade] = {
+                        'idade': dependente.idade,
+                        'total': 1,
+                        'pessoas': [
+                            {
+                                'nome': dependente.nome,
+                                'cidade': dependente.inscricao.cidade,
+                                'uf': dependente.inscricao.uf,
+                                'dependente': True,
+                                'responsavel': dependente.inscricao.nome
+                            }
+                        ]
+                    }
 
         response_sorted = {}
         for i in sorted (response.keys()) :  
