@@ -271,7 +271,7 @@ class RelatorioCidadesApiView(APIView):
                                 'uf': dependente.inscricao.uf,
                                 'dependente': True,
                                 'responsavel': dependente.inscricao.nome,
-                                'idade': dependente.inscricao.idade,
+                                'idade': dependente.idade,
                     })
                 else:
                     response[dependente.inscricao.cidade] = {
@@ -284,35 +284,10 @@ class RelatorioCidadesApiView(APIView):
                                 'uf': dependente.inscricao.uf,
                                 'dependente': True,
                                 'responsavel': dependente.inscricao.nome,
-                                'idade': dependente.inscricao.idade,
+                                'idade': dependente.idade,
                             }
                         ]
                     }
-
-        # querystr = """
-        #     select
-        #         1 as id,
-        #         i.cidade,
-        #         ( (select count(*) from dependente dep join inscricao subi on subi.id = dep.inscricao_id where subi.cidade = i.cidade) ) dependentes__count,
-        #         ( select count(*) from inscricao subi where subi.cidade = i.cidade  ) inscricao__count
-        #     from
-        #         inscricao i
-        #     where
-        #         i.conferencia_id = {}
-        #     group by
-        #         i.cidade
-        # """.format(request.data.get("conferencia_id"))
-
-        # queryset = Inscricao.objects.raw(querystr)
-
-        # response = []
-
-        # for data in queryset:
-        #     response.append({
-        #         "cidade": data.cidade,
-        #         "dependentes__count": data.dependentes__count,
-        #         "inscricao__count": data.inscricao__count,
-        #     })
 
         response_sorted = {}
         for i in sorted (response.keys()) :  
@@ -439,7 +414,8 @@ class RelatorioHospedagemApiView(APIView):
                             'cidade': inscricao.cidade,
                             'uf': inscricao.uf,
                             'dependente': False,
-                            'detalhe': inscricao.hospedagem_detalhe
+                            'detalhe': inscricao.hospedagem_detalhe,
+                            'idade': inscricao.idade,
                 })
             else:
                 response[hospedagem_nome] = {
@@ -451,7 +427,8 @@ class RelatorioHospedagemApiView(APIView):
                             'cidade': inscricao.cidade,
                             'uf': inscricao.uf,
                             'dependente': False,
-                            'detalhe': inscricao.hospedagem_detalhe
+                            'detalhe': inscricao.hospedagem_detalhe,
+                            'idade': inscricao.idade,
                         }
                     ]
                 }
@@ -468,7 +445,8 @@ class RelatorioHospedagemApiView(APIView):
                                 'uf': dependente.inscricao.uf,
                                 'dependente': True,
                                 'responsavel': dependente.inscricao.nome,
-                                'detalhe': dependente.hospedagem_detalhe
+                                'detalhe': dependente.hospedagem_detalhe,
+                                'idade': dependente.idade,
                     })
                 else:
                     response[hospedagem_nome] = {
@@ -481,7 +459,8 @@ class RelatorioHospedagemApiView(APIView):
                                 'uf': dependente.dependente.uf,
                                 'dependente': True,
                                 'responsavel': dependente.inscricao.nome,
-                                'detalhe': dependente.hospedagem_detalhe
+                                'detalhe': dependente.hospedagem_detalhe,
+                                'idade': dependente.idade,
                             }
                         ]
                     }
