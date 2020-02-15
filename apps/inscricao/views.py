@@ -180,7 +180,7 @@ class LoginView(TemplateView):
             try:
                 inscricao = Inscricao.objects.get(cpf=cpf, data_nascimento=data_nascimento, conferencia=conferencia)
                 user = inscricao.usuario
-            except Account.DoesNotExist:
+            except:
                 context['not_found'] = True
                 return super().render_to_response(context)
 
