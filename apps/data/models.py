@@ -200,6 +200,7 @@ class Inscricao(models.Model):
         super(Inscricao, self).save(*args, **kwargs)
 
         self.replicateHost()
+        self.replicateHospedagem()
 
     def replicateHost(self):
         if len(self.hospedagem_detalhe) > 3:
@@ -207,6 +208,12 @@ class Inscricao(models.Model):
                 if dep.hospedagem_detalhe == "":
                     dep.hospedagem_detalhe = self.hospedagem_detalhe
                     dep.save()
+
+    def replicateHospedagem(self):
+        for dep in Dependente.objects.filter(inscricao=self):
+            if dep.hospedagem == None:
+                dep.hospedagem = self.hospedagem
+                dep.save()
     
     def unmask(self, value):
 
