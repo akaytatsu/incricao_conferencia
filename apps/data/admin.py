@@ -77,9 +77,12 @@ class InscricaoAdmin(admin.ModelAdmin):
     ver_dependentes.allow_tags = True
     ver_dependentes.short_description = "Ver Dependentes"
 
+    def has_delete_permission(self, request, obj=None):
+        return False
+
 @admin.register(Dependente)
 class DependenteAdmin(admin.ModelAdmin):
-    list_display = ('inscricao', 'nome', 'nome_cracha', 'data_nascimento', 'grau', 'valor', 'hospedagem_detalhe')
+    list_display = ('inscricao', 'nome', 'nome_cracha', 'data_nascimento', 'grau', 'valor', 'hospedagem', 'hospedagem_detalhe')
     search_fields = ('inscricao__nome', 'nome', )
     list_filter = ('inscricao', 'grau', )
 
@@ -91,10 +94,13 @@ class DependenteAdmin(admin.ModelAdmin):
         response = []
 
         for f in self.model._meta.fields:
-            if f.name not in ['data_nascimento', 'hospedagem_detalhe']:
+            if f.name not in ['data_nascimento', 'hospedagem', 'hospedagem_detalhe']:
                 response.append( f.name )
 
         return response
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 @admin.register(Contato)
 class ContatoAdmin(admin.ModelAdmin):
