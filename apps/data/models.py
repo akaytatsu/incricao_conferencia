@@ -295,7 +295,7 @@ class Dependente(models.Model):
     data_nascimento = models.DateField(verbose_name="Data Nascimento")
     idade = models.IntegerField(default=0, verbose_name="Idade")
     valor = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor Inscrição", default=0)
-    hospedagem = models.ForeignKey(Hospedagem, on_delete=models.DO_NOTHING, verbose_name="Hospedagem", null=True)
+    hospedagem = models.ForeignKey(Hospedagem, on_delete=models.DO_NOTHING, verbose_name="Hospedagem", null=True, blank=True)
     hospedagem_detalhe = models.CharField(max_length=120, null=False, blank=True, default="", verbose_name="Detalhe Hospedagem")
 
     class Meta:
