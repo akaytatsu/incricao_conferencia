@@ -435,7 +435,7 @@ class RelatorioHospedagemApiView(APIView):
 
             for dependente in Dependente.objects.select_related('inscricao').filter(inscricao=inscricao):
 
-                hospedagem_nome = dependente.inscricao.hospedagem.nome
+                hospedagem_nome = dependente.hospedagem.nome
 
                 if response.get(hospedagem_nome, None):
                     response[hospedagem_nome]['total'] = response[hospedagem_nome]['total'] + 1

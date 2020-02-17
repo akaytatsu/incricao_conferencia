@@ -205,7 +205,7 @@ class Inscricao(models.Model):
     def replicateHost(self):
         if len(self.hospedagem_detalhe) > 3:
             for dep in Dependente.objects.filter(inscricao=self):
-                if dep.hospedagem_detalhe == "":
+                if dep.hospedagem_detalhe == "" or dep.hospedagem_detalhe is None:
                     dep.hospedagem_detalhe = self.hospedagem_detalhe
                     dep.save()
 
