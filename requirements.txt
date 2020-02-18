@@ -5,6 +5,7 @@ gunicorn
 requests
 pillow
 unidecode
+boto3
 # https://github.com/darklow/django-suit/tarball/v2
 djangorestframework
 markdown
@@ -17,3 +18,4 @@ django-localflavor
 pagseguro
 djangorestframework-jwt
 onesignal_sdk
+django-storages
