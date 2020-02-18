@@ -155,12 +155,16 @@ AWS_REGION = config('AWS_REGION')
 AWS_ACCESS_KEY = config('AWS_ACCESS_KEY')
 AWS_SECRET_KEY = config('AWS_SECRET_KEY')
 
+# django-storages NÃO REMOVER
+AWS_ACCESS_KEY_ID = AWS_ACCESS_KEY
+AWS_SECRET_ACCESS_KEY = AWS_SECRET_KEY
+
 AWS_STATIC_LOCATION = 'static'
 AWS_PUBLIC_MEDIA_LOCATION = 'media/public'
 AWS_PRIVATE_MEDIA_LOCATION = 'media/private'
 
 
-STATICFILES_STORAGE = 'conf.storage_backends.PublicMediaStorage'
+STATICFILES_STORAGE = 'conf.storage_backends.StaticStorage'
 
 DEFAULT_FILE_STORAGE = 'conf.storage_backends.PublicMediaStorage'
 THUMBNAIL_DEFAULT_STORAGE = 'conf.storage_backends.PublicMediaStorage'
