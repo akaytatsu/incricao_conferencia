@@ -13,7 +13,7 @@ class ComprovantesSerializer(serializers.ModelSerializer):
 
     def get_comprovante(self, obj):
         if obj.comprovante and hasattr(obj.comprovante, 'url'):
-            return settings.HOST + obj.comprovante.url
+            return obj.comprovante.url
         
         return None
 
