@@ -86,8 +86,8 @@ class DependenteAdmin(admin.ModelAdmin):
     search_fields = ('inscricao__nome', 'nome', )
     list_filter = ('inscricao', 'grau', )
 
-    def has_delete_permission(self, request, obj=None):
-        return False
+    # def has_delete_permission(self, request, obj=None):
+    #     return False
 
     def get_readonly_fields(self, request, obj=None):
 
@@ -98,9 +98,6 @@ class DependenteAdmin(admin.ModelAdmin):
                 response.append( f.name )
 
         return response
-
-    def has_delete_permission(self, request, obj=None):
-        return False
 
 @admin.register(Contato)
 class ContatoAdmin(admin.ModelAdmin):
