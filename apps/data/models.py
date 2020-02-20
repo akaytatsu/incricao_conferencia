@@ -278,7 +278,6 @@ class Inscricao(models.Model):
         
         return ""
 
-
 class Dependente(models.Model):
 
     _GRAU = (

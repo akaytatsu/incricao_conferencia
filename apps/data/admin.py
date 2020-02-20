@@ -77,8 +77,8 @@ class InscricaoAdmin(admin.ModelAdmin):
     ver_dependentes.allow_tags = True
     ver_dependentes.short_description = "Ver Dependentes"
 
-    def has_delete_permission(self, request, obj=None):
-        return False
+    # def has_delete_permission(self, request, obj=None):
+    #     return False
 
 @admin.register(Dependente)
 class DependenteAdmin(admin.ModelAdmin):

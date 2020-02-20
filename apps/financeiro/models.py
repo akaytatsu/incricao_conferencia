@@ -63,6 +63,9 @@ class Despesas(models.Model):
         db_table = "despesas"
         verbose_name = 'Despesa'
         verbose_name_plural = 'Despesas'
+
+    def __str__(self):
+        return "{} - id: {} - R$: {}".format(self.usuario_solicitacao, self.id, self.valor)
     
     def notifica_nova_despesa(self):
 
@@ -162,3 +165,6 @@ class Comprovantes(models.Model):
         db_table = "comprovantes_despesa"
         verbose_name = "Comprovante Despesa"
         verbose_name_plural = "Comprovantes Despesa"
+    
+    def __str__(self):
+        return "{}".format(self.id)
