@@ -139,11 +139,11 @@ DATE_INPUT_FORMATS = ('%d-%m-%Y','%Y-%m-%d')
 
 # STATIC_URL = '/static/'
 
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static_collected')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, 'static'),
-# ]
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # MEDIA_URL = '/media/'
@@ -169,7 +169,7 @@ STATICFILES_STORAGE = 'conf.storage_backends.StaticStorage'
 DEFAULT_FILE_STORAGE = 'conf.storage_backends.PublicMediaStorage'
 THUMBNAIL_DEFAULT_STORAGE = 'conf.storage_backends.PublicMediaStorage'
 
-PRIVATE_FILE_STORAGE = 'conf.storage_backends.PrivateMediaStorage'
+PRIVATE_FILE_STORAGE = 'conf.storage_backends.StaticStorage'
 
 AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
 AWS_DEFAULT_ACL = None

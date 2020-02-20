@@ -19,3 +19,4 @@ pagseguro
 djangorestframework-jwt
 onesignal_sdk
 django-storages
+openpyxl

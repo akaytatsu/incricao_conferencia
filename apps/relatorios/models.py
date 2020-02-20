@@ -29,3 +29,9 @@ class RelatorioHospedagem(models.Model):
         db_table = "relatorio_hospedagem"
         verbose_name = 'Relatório por Hospedagem'
         verbose_name_plural = 'Relatório por Hospedagem'
+
+class RelatorioCracha(models.Model):
+    class Meta:
+        db_table = "relatorio_cach"
+        verbose_name = 'Relatório para Cracha'
+        verbose_name_plural = 'Relatórios para Crachas'

@@ -1,0 +1,50 @@
+{% extends "admin/change_list.html" %}
+{% load i18n admin_urls static %}
+{% block extrastyle %}
+    {{ block.super }}
+    <!-- <link rel="stylesheet" type="text/css" href="{% static 'admin/relatorio/css/style_rep_admin.css' %}"/> -->
+
+    <style>
+        [v-cloak] > * { display:none }
+        [v-cloak]::before { content: "loading…" }
+
+        .inscricaoClass{
+            background-color: #acf2c3;
+        }
+
+        .depedenteClass{
+            background-color: #edeba4;
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+    
+<main id="relatorio_cracha" v-cloak>
+
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="form-group">
+                <select class="form-control" v-model="conferencia_id" v-on:change="buscaDados()">
+                    <option v-for="conf in conferencias" :value="conf.id" >[[ conf.titulo ]]</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <a :href="'/gera_planilha_cracha/'+conferencia_id" class="btn btn-info" target="_blank">Gerar XLSX</a>
+        </div>
+        <div class="col-sm-4"></div>
+    </div>
+
+    <br>
+    <br>
+
+</main>
+
+<script src="{% static 'js/vue.js' %}"></script>
+<script src="{% static 'js/axios.js' %}"></script>
+<script src="{% static 'components/relatorio_hospedagem.js' %}"></script>
+   
+{% endblock %}
+
