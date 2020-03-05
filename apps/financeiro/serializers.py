@@ -6,6 +6,9 @@ from django.conf import settings
 class ComprovantesSerializer(serializers.ModelSerializer):
 
     comprovante = serializers.SerializerMethodField()
+    extension = serializers.SerializerMethodField()
+    is_image = serializers.SerializerMethodField()
+    
     
     class Meta:
         model = Comprovantes 
@@ -16,6 +19,24 @@ class ComprovantesSerializer(serializers.ModelSerializer):
             return obj.comprovante.url
         
         return None
+
+    def get_extension(self, obj):
+        url = self.get_comprovante(obj)
+
+        if url is None:
+            return None
+
+        aux = url.split(".")
+
+        return aux[len(aux) -1]
+
+    def get_is_image(self, obj):
+        extension = self.get_extension(obj)
+
+        if extension is None:
+            return False
+        
+        return extension in ['jpg', 'jpeg', 'png']
 
 class DespesaImageSerializer(serializers.ModelSerializer):
     class Meta:

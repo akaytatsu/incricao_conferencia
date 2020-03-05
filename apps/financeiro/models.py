@@ -158,7 +158,7 @@ class Despesas(models.Model):
 class Comprovantes(models.Model):
 
     despesa = models.ForeignKey(Despesas, verbose_name="Despesa", on_delete=models.CASCADE)
-    comprovante = models.ImageField(upload_to='comprovantes/', null=True, blank=True)
+    comprovante = models.FileField(upload_to='comprovantes/', null=True, blank=True)
     data_comprovação = models.DateTimeField(auto_now_add=True, null=True, blank=True, verbose_name="Data Comprovação", )
 
     class Meta:
