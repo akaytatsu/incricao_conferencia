@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'apps.inscricao',
     'apps.relatorios',
     'apps.financeiro',
+    'apps.pregacoes',
 ]
 
 MIDDLEWARE = [
