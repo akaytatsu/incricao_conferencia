@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'apps.relatorios',
     'apps.financeiro',
     'apps.pregacoes',
+    'apps.portal',
 
     # Django CMS
     'django.contrib.sites',

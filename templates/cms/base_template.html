@@ -1,12 +1,137 @@
-{% load cms_tags sekizai_tags %}
-<html>
-    <head>
-        <title>{% page_attribute "page_title" %}</title>
-        {% render_block "css" %}
-    </head>
-    <body>
+{% load cms_tags sekizai_tags static %}
+<!DOCTYPE HTML>
+<html class="no-js">
+
+<head>
+    <!-- Basic Page Needs
+  ================================================== -->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>{% page_attribute "page_title" %}</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="">
+    <!-- Mobile Specific Metas
+  ================================================== -->
+    <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <!-- CSS
+  ================================================== -->
+    <link href="{% static 'church/css/bootstrap.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'church/plugins/mediaelement/mediaelementplayer.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'church/css/style.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'church/plugins/prettyphoto/css/prettyPhoto.css' %}" rel="stylesheet" type="text/css">
+    <!--[if lte IE 8]><link rel="stylesheet" type="text/css" href="{% static 'church/css/ie8.css' %}" media="screen" /><![endif]-->
+    <!-- Color Style -->
+    <link href="{% static 'church/colors/color1.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'church/css/custom.css' %}" rel="stylesheet" type="text/css">
+    <!-- SCRIPTS
+  ================================================== -->
+    <script src="{% static 'church/js/modernizr.js' %}"></script><!-- Modernizr -->
+
+    {% render_block "css" %}
+</head>
+
+<body>
+    <!--[if lt IE 7]>
+	<p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
+<![endif]-->
+    <div class="body">
         {% cms_toolbar %}
-        {% placeholder "content" %}
-        {% render_block "js" %}
-    </body>
+
+        <!-- Start Site Header -->
+        <header class="site-header">
+            <div class="topbar">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-6 col-xs-8">
+                            <h1 class="logo"> <a href="/"><img src="{% static 'church/images/logo.png' %}"
+                                        alt="Logo"></a> </h1>
+                        </div>
+                        <div class="col-md-8 col-sm-6 col-xs-4">
+                            <!-- <ul class="top-navigation hidden-sm hidden-xs">
+                                <li><a href="plan-visit.html">Plan your visit</a></li>
+                                <li><a href="events-calendar.html">Calendar</a></li>
+                                <li><a href="donate.html">Donate Now</a></li>
+                            </ul> -->
+                            <a href="#" class="visible-sm visible-xs menu-toggle"><i class="fa fa-bars"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% include 'cms/_menu.html' %}
+        </header>
+        <!-- End Site Header -->
+
+        {% placeholder 'banner' %}
+
+        <!-- Start Content -->
+        <div class="main" role="main">
+            <div id="content" class="content full">
+                <div class="container">
+                    {% placeholder "content" %}
+                </div>
+            </div>
+        </div>
+        <!-- Start Footer -->
+        <footer class="site-footer">
+            <div class="container">
+                <div class="row">
+                    <!-- Start Footer Widgets -->
+                    <div class="col-md-4 col-sm-4 widget footer-widget">
+                        <h4 class="footer-widget-title">About our Church</h4>
+                        <img src="{% static 'church/images/logo.png' %}" alt="Logo">
+                        <div class="spacer-20"></div>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla convallis egestas rhoncus.
+                            Donec facilisis consectetur adipiscing elit. Nulla convallis egestas rhoncus</p>
+                    </div>
+                    <div class="col-md-4 col-sm-4 widget footer-widget">
+                        <h4 class="footer-widget-title">Blogroll</h4>
+                        <ul>
+                            <li><a href="index.html">Church Home</a></li>
+                            <li><a href="about.html">About Us</a></li>
+                            <li><a href="events.html">All Events</a></li>
+                            <li><a href="sermons.html">Sermons Archive</a></li>
+                            <li><a href="blog-masonry.html">Our Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4 col-sm-4 widget footer-widget">
+                        <h4 class="footer-widget-title">Our Church on twitter</h4>
+                        <ul class="twitter-widget" data-tweets-count="1">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <footer class="site-footer-bottom">
+            <div class="container">
+                <div class="row">
+                    <div class="copyrights-col-left col-md-6 col-sm-6">
+                        <p>&copy; Igreja em Contagem</p>
+                    </div>
+                    <div class="copyrights-col-right col-md-6 col-sm-6">
+                        <div class="social-icons"> <a href="https://www.youtube.com/channel/UCotKjWkCUT9IZVlpN2gVnlQ" target="_blank"><i
+                                    class="fa fa-youtube"></i></a> </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- End Footer -->
+        <a id="back-to-top"><i class="fa fa-angle-double-up"></i></a>
+    </div>
+    <script src="{% static 'church/js/jquery-2.0.0.min.js' %}"></script> <!-- Jquery Library Call -->
+    <script src="{% static 'church/plugins/prettyphoto/js/prettyphoto.js' %}"></script> <!-- PrettyPhoto Plugin -->
+    <script src="{% static 'church/js/helper-plugins.js' %}"></script> <!-- Plugins -->
+    <script src="{% static 'church/js/bootstrap.js' %}"></script> <!-- UI -->
+    <script src="{% static 'church/js/waypoints.js' %}"></script> <!-- Waypoints -->
+    <script src="{% static 'church/plugins/mediaelement/mediaelement-and-player.min.js' %}"></script>
+    <!-- MediaElements -->
+    <script src="{% static 'church/js/init.js' %}"></script> <!-- All Scripts -->
+    <script src="{% static 'church/plugins/flexslider/js/jquery.flexslider.js' %}"></script> <!-- FlexSlider -->
+    <script src="{% static 'church/plugins/countdown/js/jquery.countdown.min.js' %}"></script> <!-- Jquery Timer -->
+    <script src="{% static 'church/plugins/nivoslider/jquery.nivo.slider.js' %}"></script> <!-- NivoSlider -->
+    {% render_block "js" %}
+
+</body>
+
 </html>
