@@ -22,7 +22,7 @@ urlpatterns = [
     path('gera_planilha_cracha/<int:pk>', gen_report_cracha),
     path('admin/', admin.site.urls),
     path('sermons/', include('apps.pregacoes.urls')),
-    path('<conferencia>/', include('apps.inscricao.urls')),
+    path('conf/<conferencia>/', include('apps.inscricao.urls')),
     path(r'favicon.ico', RedirectView.as_view(url='/static/ico/favicon.ico')),
     path('', include('cms.urls')),
 ]

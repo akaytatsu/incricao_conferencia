@@ -1,6 +1,6 @@
 {% load cms_tags %}
 
-<div class="col-md-4 col-sm-6">
+<div class="row">
     {% for plugin in instance.child_plugin_instances %}
         {% render_plugin plugin %}
     {% endfor %}
