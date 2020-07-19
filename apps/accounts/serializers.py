@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from .models import Account
-from django.conf import settings
+
 
 class AccountCreateSerializer(serializers.ModelSerializer):
 
@@ -23,11 +23,11 @@ class AccountCreateSerializer(serializers.ModelSerializer):
         user.save()
 
         return user
-    
+
     def validate(self, data):
         if not data.get('password') or not data.get('password_confirm'):
             raise serializers.ValidationError("Please enter a password and "
-                "confirm it.")
+                                              "confirm it.")
 
         if data.get('password') != data.get('password_confirm'):
             raise serializers.ValidationError("Those passwords don't match.")
@@ -43,10 +43,11 @@ class AccountCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
         # Tuple of serialized model fields (see link [2])
-        fields = ( "id", "name", "password", "password_confirm", "email", 'telefone', )
+        fields = ("id", "name", "password", "password_confirm", "email", 'telefone', )
+
 
 class AccountSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = Account
         fields = ("id", "name", "email", "telefone", "can_request", "can_aprove", "can_pay", "tp_user_financeiro")

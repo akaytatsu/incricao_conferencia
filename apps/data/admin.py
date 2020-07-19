@@ -1,16 +1,13 @@
 from django.contrib import admin
-from django.urls import reverse
-from django.utils.html import escape, mark_safe
+from django.utils.html import mark_safe
 
-from .models import (Conferencia, Contato, Dependente, Hospedagem, Inscricao,
-                     Valores)
-
-from django.utils.html import escape, mark_safe
+from .models import Contato, Valores, Inscricao, Dependente, Hospedagem, Conferencia
 
 
 @admin.register(Conferencia)
 class ConferenciaAdmin(admin.ModelAdmin):
-    list_display = ('titulo', 'titulo_slug', 'max_inscr', 'data_abertura', 'data_encerramento', 'inscricoes_abertas', 'pagina_inicial', )
+    list_display = ('titulo', 'titulo_slug', 'max_inscr', 'data_abertura',
+                    'data_encerramento', 'inscricoes_abertas', 'pagina_inicial', )
     search_fields = ('titulo', )
     prepopulated_fields = {'titulo': ('titulo_slug',)}
 
@@ -43,6 +40,7 @@ class ValoresAdmin(admin.ModelAdmin):
     search_fields = ('idade_inicial', )
     list_filter = ('conferencia', 'valor', )
 
+
 @admin.register(Hospedagem)
 class HospedagemAdmin(admin.ModelAdmin):
     list_display = ('conferencia', 'nome', 'limite', 'ativo', )
@@ -52,9 +50,12 @@ class HospedagemAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
 
+
 @admin.register(Inscricao)
 class InscricaoAdmin(admin.ModelAdmin):
-    list_display = ('conferencia', 'cpf', 'nome', 'nome_cracha', 'data_nascimento', 'email', 'idade', 'cidade', 'hospedagem', 'valor', 'valor_total', 'status', 'payment_reference', 'hospedagem_detalhe', 'ver_dependentes' )
+    list_display = ('conferencia', 'cpf', 'nome', 'nome_cracha', 'data_nascimento', 'email', 'idade', 'cidade',
+                    'hospedagem', 'valor', 'valor_total', 'status', 'payment_reference',
+                    'hospedagem_detalhe', 'ver_dependentes')
     search_fields = ('cpf', 'nome', 'email')
     list_filter = ('conferencia', 'hospedagem', 'status', 'cidade', )
 
@@ -63,14 +64,15 @@ class InscricaoAdmin(admin.ModelAdmin):
         response = []
 
         for f in self.model._meta.fields:
-            if f.name not in [ "status", 'hospedagem', 'hospedagem_detalhe', 'data_nascimento', 'cidade']:
-                response.append( f.name )
+            if f.name not in ["status", 'hospedagem', 'hospedagem_detalhe', 'data_nascimento', 'cidade']:
+                response.append(f.name)
 
         return response
 
     def ver_dependentes(self, obj):
         if obj.num_dependentes() > 0:
-            return mark_safe('<a href="/admin/data/dependente/?inscricao_id={}" target="_blank">ver dependente</a>'.format(obj.pk))
+            url = f'<a href="/admin/data/dependente/?inscricao_id={obj.pk}" target="_blank">ver dependente</a>'
+            return mark_safe(url)
         else:
             return ""
 
@@ -80,9 +82,11 @@ class InscricaoAdmin(admin.ModelAdmin):
     # def has_delete_permission(self, request, obj=None):
     #     return False
 
+
 @admin.register(Dependente)
 class DependenteAdmin(admin.ModelAdmin):
-    list_display = ('inscricao', 'nome', 'nome_cracha', 'data_nascimento', 'grau', 'valor', 'hospedagem', 'hospedagem_detalhe')
+    list_display = ('inscricao', 'nome', 'nome_cracha', 'data_nascimento',
+                    'grau', 'valor', 'hospedagem', 'hospedagem_detalhe')
     search_fields = ('inscricao__nome', 'nome', )
     list_filter = ('inscricao', 'grau', )
 
@@ -95,9 +99,10 @@ class DependenteAdmin(admin.ModelAdmin):
 
         for f in self.model._meta.fields:
             if f.name not in ['data_nascimento', 'hospedagem', 'hospedagem_detalhe']:
-                response.append( f.name )
+                response.append(f.name)
 
         return response
+
 
 @admin.register(Contato)
 class ContatoAdmin(admin.ModelAdmin):

@@ -1,27 +1,22 @@
-from datetime import datetime
-
-from django.http import Http404
 from rest_framework import status, viewsets
-from rest_framework.decorators import action
-from rest_framework.parsers import (FileUploadParser, FormParser, JSONParser,
-                                    MultiPartParser)
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.response import Response
+from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from apps.financeiro.models import Comprovantes, Despesas
-from apps.financeiro.serializers import (ComprovantesSerializer,
-                                         DespesaImageSerializer,
-                                         DespesasSerializer,
-                                         NovaDespesaSerializer)
+from apps.financeiro.models import Despesas, Comprovantes
+from apps.financeiro.serializers import (
+    DespesasSerializer, NovaDespesaSerializer, ComprovantesSerializer, DespesaImageSerializer
+)
 
 
 class ComprovantesViewSet(APIView):
     parser_classes = (MultiPartParser, FormParser)
-    queryset = Comprovantes.objects.all() 
+    queryset = Comprovantes.objects.all()
     serializer_class = ComprovantesSerializer
     permission_classes = [AllowAny]
-    
+
     def get(self, request, *args, **kwargs):
 
         despesa_id = request.GET.get('id', None)
@@ -37,7 +32,7 @@ class ComprovantesViewSet(APIView):
     def post(self, request, *args, **kwargs):
         file_serializer = DespesaImageSerializer(data=request.data)
         if file_serializer.is_valid():
-            obj = file_serializer.save()
+            file_serializer.save()
             return Response({}, status=status.HTTP_201_CREATED)
         else:
             return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -50,20 +45,21 @@ class ComprovantesViewSet(APIView):
             return Response(status=status.HTTP_200_OK)
 
         qs.delete()
-        
+
         return Response(status=status.HTTP_200_OK)
+
 
 class FinanceiroViewSet(viewsets.GenericViewSet):
     permission_classes = (IsAuthenticated,)
-   
+
     @action(methods=['get'], detail=False, permission_classes=[IsAuthenticated])
     def solicitacao(self, request):
         solicitacao = Despesas.objects.get(pk=request.GET.get("id"))
-        
+
         serializer = DespesasSerializer(solicitacao)
 
         return Response(serializer.data, status=200)
-   
+
     @action(methods=['get'], detail=False, permission_classes=[IsAuthenticated])
     def solicitacoes(self, request):
 
@@ -71,7 +67,7 @@ class FinanceiroViewSet(viewsets.GenericViewSet):
 
         if request.user.can_aprove is True:
             solicitacoes = solicitacoes
-        
+
         elif request.user.can_pay is True:
             solicitacoes = solicitacoes.filter(status__gte=2).exclude(status=8)
 
@@ -79,24 +75,25 @@ class FinanceiroViewSet(viewsets.GenericViewSet):
             solicitacoes = solicitacoes.filter(usuario_solicitacao=request.user)
 
         solicitacoes = solicitacoes.order_by('status')
-        
+
         serializer = DespesasSerializer(solicitacoes, many=True)
 
         return Response(serializer.data, status=200)
-   
+
     @action(methods=['post'], detail=False, permission_classes=[IsAuthenticated])
     def nova_solicitacao(self, request):
 
-        serializer = NovaDespesaSerializer(data=request.data) 
+        serializer = NovaDespesaSerializer(data=request.data)
 
         if serializer.is_valid():
-            obj = serializer.save(usuario_solicitacao=request.user, status=1, usuario_aprovacao=None, usuario_comprovacao=None)
+            obj = serializer.save(usuario_solicitacao=request.user, status=1,
+                                  usuario_aprovacao=None, usuario_comprovacao=None)
             obj.notifica_nova_despesa()
 
-            return Response(DespesasSerializer(obj).data, status=200) 
-        
+            return Response(DespesasSerializer(obj).data, status=200)
+
         return Response(serializer.errors, status=400)
-   
+
     @action(methods=['put'], detail=False, permission_classes=[IsAuthenticated])
     def aprova_solicitacao(self, request):
 
@@ -119,7 +116,7 @@ class FinanceiroViewSet(viewsets.GenericViewSet):
         despesa.notifica_aprovacao()
 
         return Response(DespesasSerializer(despesa).data, status=200)
-   
+
     @action(methods=['put'], detail=False, permission_classes=[IsAuthenticated])
     def reprova_solicitacao(self, request):
 
@@ -144,7 +141,7 @@ class FinanceiroViewSet(viewsets.GenericViewSet):
         despesa.notifica_reprovacao()
 
         return Response(DespesasSerializer(despesa).data, status=200)
-   
+
     @action(methods=['put'], detail=False, permission_classes=[IsAuthenticated])
     def confirma_repasse_solicitacao(self, request):
 
@@ -163,10 +160,10 @@ class FinanceiroViewSet(viewsets.GenericViewSet):
 
         despesa.status = 4
         despesa.save()
-        despesa.notifica_repasse_recurso() 
+        despesa.notifica_repasse_recurso()
 
         return Response(DespesasSerializer(despesa).data, status=200)
-   
+
     @action(methods=['put'], detail=False, permission_classes=[IsAuthenticated])
     def confirma_aprovacao_solicitacao(self, request):
 
@@ -189,7 +186,7 @@ class FinanceiroViewSet(viewsets.GenericViewSet):
         despesa.notifica_aprovacao_comprovacao()
 
         return Response(DespesasSerializer(despesa).data, status=200)
-   
+
     @action(methods=['put'], detail=False, permission_classes=[IsAuthenticated])
     def reprova_aprovacao_solicitacao(self, request):
 
@@ -211,7 +208,7 @@ class FinanceiroViewSet(viewsets.GenericViewSet):
         despesa.notifica_reprovacao_comprovacao()
 
         return Response(DespesasSerializer(despesa).data, status=200)
-   
+
     @action(methods=['put'], detail=False, permission_classes=[IsAuthenticated])
     def enviar_comprovante(self, request):
         despesa = Despesas.objects.get(pk=request.data.get("id"))

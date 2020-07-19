@@ -1,17 +1,12 @@
-from datetime import datetime
-
-from django.http import Http404
+from rest_framework import viewsets
+from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
+from rest_framework.response import Response
+from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from apps.accounts.models import Account
-from rest_framework import status, viewsets
-from rest_framework.decorators import action
-from rest_framework.parsers import (FileUploadParser, FormParser, JSONParser,
-                                    MultiPartParser)
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.response import Response
-from rest_framework.views import APIView
 
-from .serializers import AccountCreateSerializer, AccountSerializer
+from .serializers import AccountSerializer, AccountCreateSerializer
 
 
 class AccountViewSet(viewsets.GenericViewSet):

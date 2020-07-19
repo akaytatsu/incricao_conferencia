@@ -1,19 +1,13 @@
-from django.conf import settings
-from django.contrib.auth import authenticate, login
-from django.contrib.auth import logout as logout_user
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.mail import send_mail
-from django.http import HttpResponse, JsonResponse
-from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from django.views.decorators.http import require_http_methods
-from django.views.generic import FormView, TemplateView, UpdateView
+from django.shortcuts import redirect
+from django.contrib.auth import login
+from django.contrib.auth import logout as logout_user
+from django.views.generic import FormView, UpdateView, TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-from apps.accounts.forms import LoginForm
-from apps.accounts.models import Account
 from apps.data.forms import InscricaoForm, AtualizaInscricaoForm
-from apps.data.models import Conferencia, Dependente, Inscricao
+from apps.data.models import Inscricao, Dependente, Conferencia
+from apps.accounts.forms import LoginForm
 
 
 class RedirectMixin(LoginRequiredMixin):
@@ -21,13 +15,14 @@ class RedirectMixin(LoginRequiredMixin):
     def get_conferencia(self):
         slug = self.kwargs.get("conferencia")
         conferencia = Conferencia.objects.get(titulo_slug=slug)
-        
+
         return conferencia
 
     def get_login_url(self, *args, **kwargs):
         conferencia = self.get_conferencia()
-        
+
         return reverse_lazy('home', kwargs={"conferencia": conferencia.titulo_slug})
+
 
 class StartView(TemplateView):
     template_name = 'pregacoes/home.html'
@@ -45,6 +40,7 @@ class StartView(TemplateView):
     # def get_context_data(self, **kwargs):
     #     context = super().get_context_data(**kwargs)
     #     return context
+
 
 class HomeView(RedirectMixin, TemplateView):
     template_name = 'inscricao/dashboard.html'
@@ -64,8 +60,9 @@ class HomeView(RedirectMixin, TemplateView):
         context['inscricao'] = inscricao
         context['dependentes'] = dependentes
         context['menu'] = "dashboard"
-        
+
         return context
+
 
 class inscricaoView(RedirectMixin, UpdateView):
     login_url = '/login'
@@ -105,7 +102,7 @@ class inscricaoView(RedirectMixin, UpdateView):
     def get_conferencia(self):
         slug = self.kwargs.get("conferencia")
         conferencia = Conferencia.objects.get(titulo_slug=slug)
-        
+
         return conferencia
 
     def get_object(self):
@@ -121,6 +118,7 @@ class inscricaoView(RedirectMixin, UpdateView):
 
         return context
 
+
 class DependentesView(RedirectMixin, TemplateView):
     login_url = '/login'
     redirect_field_name = 'redirect_to'
@@ -129,7 +127,7 @@ class DependentesView(RedirectMixin, TemplateView):
     def get_conferencia(self):
         slug = self.kwargs.get("conferencia")
         conferencia = Conferencia.objects.get(titulo_slug=slug)
-        
+
         return conferencia
 
     def get_object(self):
@@ -145,6 +143,7 @@ class DependentesView(RedirectMixin, TemplateView):
 
         return context
 
+
 class LoginView(TemplateView):
     template_name = 'inscricao/login.html'
 
@@ -157,13 +156,13 @@ class LoginView(TemplateView):
         context["form"] = form
         context["redirect_to"] = self.request.GET.get("redirect_to", "None")
         context["next"] = self.request.GET.get("next", "None")
-        
+
         return context
 
     def get_conferencia(self):
         slug = self.kwargs.get("conferencia")
         conferencia = Conferencia.objects.get(titulo_slug=slug)
-        
+
         return conferencia
 
     def post(self, request, *args, **kwargs):
@@ -186,14 +185,15 @@ class LoginView(TemplateView):
 
             login(request, user)
 
-            return redirect( reverse_lazy('dashboard', kwargs={"conferencia": conferencia.titulo_slug}) )
+            return redirect(reverse_lazy('dashboard', kwargs={"conferencia": conferencia.titulo_slug}))
 
         return super().render_to_response(context)
+
 
 class NovaInscricaoView(FormView):
     redirect_field_name = 'redirect_to'
     template_name = 'inscricao/nova_inscricao.html'
-    form_class = InscricaoForm 
+    form_class = InscricaoForm
 
     def post(self, request, *args, **kwargs):
         context = self.get_context_data()
@@ -218,9 +218,9 @@ class NovaInscricaoView(FormView):
 
             inscricao.atualiza_valor_total()
 
-            rest = login(request, user)
+            login(request, user)
 
-            return redirect( reverse_lazy('dependentes', kwargs={"conferencia": conferencia.titulo_slug}) )
+            return redirect(reverse_lazy('dependentes', kwargs={"conferencia": conferencia.titulo_slug}))
 
         context['form'] = form
         return super().render_to_response(context)
@@ -232,19 +232,20 @@ class NovaInscricaoView(FormView):
     def get_conferencia(self):
         slug = self.kwargs.get("conferencia")
         conferencia = Conferencia.objects.get(titulo_slug=slug)
-        
+
         return conferencia
 
     def get_context_data(self, **kwargs):
-        
+
         context = super().get_context_data(**kwargs)
 
         context['conferencia'] = self.get_conferencia()
 
         return context
 
+
 class PagarView(RedirectMixin, TemplateView):
-    template_name = 'inscricao/pagar.html' 
+    template_name = 'inscricao/pagar.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -259,14 +260,15 @@ class PagarView(RedirectMixin, TemplateView):
         context['inscricao'] = inscricao
         context['dependentes'] = dependentes
         context['menu'] = "pagar"
-        
+
         return context
 
     def get_conferencia(self):
         slug = self.kwargs.get("conferencia")
         conferencia = Conferencia.objects.get(titulo_slug=slug)
-        
+
         return conferencia
+
 
 class ContatoView(RedirectMixin, TemplateView):
     template_name = 'inscricao/contato.html'
@@ -280,23 +282,24 @@ class ContatoView(RedirectMixin, TemplateView):
         context['conferencia'] = conferencia
         context['inscricao'] = inscricao
         context['menu'] = "contato"
-        
-        return context 
+
+        return context
 
     def get_conferencia(self):
         slug = self.kwargs.get("conferencia")
         conferencia = Conferencia.objects.get(titulo_slug=slug)
-        
+
         return conferencia
+
 
 class LogoutView(TemplateView):
     template_name = 'inscricao/dashboard.html'
 
     def get(self, request, *args, **kwargs):
-        context = super().get_context_data(**kwargs)
+        super().get_context_data(**kwargs)
 
         logout_user(request)
 
         conferencia = Conferencia.objects.get(titulo_slug=kwargs.get('conferencia'))
-        
-        return redirect( reverse_lazy('home', kwargs={"conferencia": conferencia.titulo_slug}) )
+
+        return redirect(reverse_lazy('home', kwargs={"conferencia": conferencia.titulo_slug}))

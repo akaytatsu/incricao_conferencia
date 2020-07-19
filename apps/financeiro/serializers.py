@@ -1,23 +1,23 @@
 from rest_framework import serializers
+
 from apps.financeiro.models import Despesas, Comprovantes
 from apps.accounts.serializers import AccountSerializer
-from django.conf import settings
+
 
 class ComprovantesSerializer(serializers.ModelSerializer):
 
     comprovante = serializers.SerializerMethodField()
     extension = serializers.SerializerMethodField()
     is_image = serializers.SerializerMethodField()
-    
-    
+
     class Meta:
-        model = Comprovantes 
+        model = Comprovantes
         fields = "__all__"
 
     def get_comprovante(self, obj):
         if obj.comprovante and hasattr(obj.comprovante, 'url'):
             return obj.comprovante.url
-        
+
         return None
 
     def get_extension(self, obj):
@@ -28,20 +28,22 @@ class ComprovantesSerializer(serializers.ModelSerializer):
 
         aux = url.split(".")
 
-        return aux[len(aux) -1]
+        return aux[len(aux) - 1]
 
     def get_is_image(self, obj):
         extension = self.get_extension(obj)
 
         if extension is None:
             return False
-        
+
         return extension in ['jpg', 'jpeg', 'png']
+
 
 class DespesaImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comprovantes
         fields = ("comprovante", "despesa")
+
 
 class DespesasSerializer(serializers.ModelSerializer):
 
@@ -52,13 +54,13 @@ class DespesasSerializer(serializers.ModelSerializer):
     class Meta:
         model = Despesas
         fields = '__all__'
-    
+
     def get_categoria(self, obj):
         if obj.categoria is None:
             return None
-        
+
         return obj.categoria.nome
-    
+
     def get_solicitante(self, obj):
         return AccountSerializer(obj.usuario_solicitacao).data
 

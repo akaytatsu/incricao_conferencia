@@ -1,8 +1,8 @@
-from django.conf import settings
 from django.urls import path
 
-from .views import (ContatoView, DependentesView, HomeView, LoginView,
-                    LogoutView, NovaInscricaoView, PagarView, inscricaoView)
+from .views import (
+    HomeView, LoginView, PagarView, LogoutView, ContatoView, DependentesView, NovaInscricaoView, inscricaoView
+)
 
 urlpatterns = [
     path('', LoginView.as_view(), name="home"),

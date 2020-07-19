@@ -1,14 +1,14 @@
 from django.contrib import admin
-from django.urls import reverse
-from django.utils.html import escape, mark_safe
 
-from .models import CategoriaDespesa, Despesas, Receitas, Comprovantes
+from .models import Despesas, Receitas, Comprovantes, CategoriaDespesa
+
 
 @admin.register(Receitas)
 class ReceitasAdmin(admin.ModelAdmin):
 
     list_display = ('tipo_receita', 'valor', 'data_receita', )
-    list_filter = ( 'tipo_receita', )
+    list_filter = ('tipo_receita', )
+
 
 @admin.register(CategoriaDespesa)
 class CategoriaDespesaAdmin(admin.ModelAdmin):
@@ -19,12 +19,13 @@ class CategoriaDespesaAdmin(admin.ModelAdmin):
 
 @admin.register(Despesas)
 class DespesasAdmin(admin.ModelAdmin):
-    list_display = ('conferencia', 'aprovado', 'comprovado', 'reprovado', 'valor', 'categoria', 'status', 'usuario_solicitacao', 'usuario_aprovacao', 'usuario_comprovacao')
+    list_display = ('conferencia', 'aprovado', 'comprovado', 'reprovado', 'valor', 'categoria',
+                    'status', 'usuario_solicitacao', 'usuario_aprovacao', 'usuario_comprovacao')
     search_fields = ('nome', )
     list_filter = ('conferencia', 'aprovado', 'comprovado', 'reprovado', 'categoria', 'status')
 
 
 @admin.register(Comprovantes)
-class DespesasAdmin(admin.ModelAdmin):
+class ComprovantesAdmin(admin.ModelAdmin):
     list_display = ('despesa', 'comprovante', 'data_comprovação', )
     list_filter = ('despesa__conferencia',)

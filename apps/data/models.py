@@ -1,12 +1,17 @@
-from django.db import models
-from apps.accounts.models import Account
 from datetime import date, datetime
+
 import pytz
-utc=pytz.UTC
+from django.db import models
+
+from apps.accounts.models import Account
+
+utc = pytz.UTC
+
 
 def calculate_age(born):
     today = date.today()
     return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
+
 
 def busca_valor(idade, conferencia):
     valor = Valores.objects.filter(conferencia=conferencia)
@@ -16,14 +21,17 @@ def busca_valor(idade, conferencia):
     if valor.exists():
         valor = valor.first()
         return valor.valor
-    
+
     return 0
 
 # Create your models here.
+
+
 class Conferencia(models.Model):
 
     titulo = models.CharField(max_length=80, verbose_name="Titulo", help_text="Titulo do Evento")
-    titulo_slug = models.SlugField(verbose_name="Slug", unique=True, help_text="Esse campo é o codigo unico da conferencia, não alterar esse campo")
+    titulo_slug = models.SlugField(verbose_name="Slug", unique=True,
+                                   help_text="Esse campo é o codigo unico da conferencia, não alterar esse campo")
     max_inscr = models.IntegerField(default=500000, verbose_name="Maximo inscrições")
     data_abertura = models.DateTimeField(verbose_name="Data Abertura Inscrições")
     data_encerramento = models.DateTimeField(verbose_name="Data Encerramento Inscrições")
@@ -31,7 +39,8 @@ class Conferencia(models.Model):
     endereco = models.CharField(max_length=320, blank=True, verbose_name="Endereço (googlemaps)")
     informacoes = models.TextField(blank=True, verbose_name="Informações Gerais")
     inscricoes_abertas = models.BooleanField(default=True, verbose_name="Inscrições Abertas?")
-    informacoes_arquivo = models.FileField(upload_to="informacoes/arquivos/", null=True, blank=True, verbose_name="Arquivo de Informações")
+    informacoes_arquivo = models.FileField(upload_to="informacoes/arquivos/",
+                                           null=True, blank=True, verbose_name="Arquivo de Informações")
 
     class Meta:
         db_table = "conferencia"
@@ -40,7 +49,7 @@ class Conferencia(models.Model):
 
     def __str__(self):
         return self.titulo
-    
+
     def informacoes_as_html(self):
         return self.informacoes.replace("\n", "<br>")
 
@@ -53,7 +62,7 @@ class Conferencia(models.Model):
     def is_active(self):
         if self.total_inscricoes() >= self.max_inscr:
             return False
-        
+
         if self.inscricoes_abertas is False:
             return False
 
@@ -92,6 +101,7 @@ class Valores(models.Model):
     def __str__(self):
         return "{} - R$ {} de {} a {}".format(self.conferencia, self.valor, self.idade_inicial, self.idade_final)
 
+
 class Hospedagem(models.Model):
 
     conferencia = models.ForeignKey(Conferencia, on_delete=models.CASCADE, verbose_name="Conferência")
@@ -106,6 +116,7 @@ class Hospedagem(models.Model):
 
     def __str__(self):
         return "{}".format(self.nome)
+
 
 class Inscricao(models.Model):
 
@@ -141,9 +152,11 @@ class Inscricao(models.Model):
     payment_reference = models.CharField(max_length=120, verbose_name="Referencia Pagamento", blank=True)
     status = models.IntegerField(choices=_STATUS, default=1, verbose_name="Status")
     sit_pagseguro = models.IntegerField(verbose_name="Status PagSeguro", blank=True, null=True)
-    pagseguro_transaction_id = models.CharField(max_length=120, verbose_name="Transação PagSeguro", blank=True, null=True)
-    hospedagem_detalhe = models.CharField(max_length=120, null=False, blank=True, default="", verbose_name="Detalhe Hospedagem")
-    
+    pagseguro_transaction_id = models.CharField(
+        max_length=120, verbose_name="Transação PagSeguro", blank=True, null=True)
+    hospedagem_detalhe = models.CharField(max_length=120, null=False, blank=True,
+                                          default="", verbose_name="Detalhe Hospedagem")
+
     class Meta:
         unique_together = [['conferencia', 'cpf']]
         db_table = "inscricao"
@@ -211,27 +224,27 @@ class Inscricao(models.Model):
 
     def replicateHospedagem(self):
         for dep in Dependente.objects.filter(inscricao=self):
-            if dep.hospedagem == None:
+            if dep.hospedagem is None:
                 dep.hospedagem = self.hospedagem
                 dep.save()
-    
+
     def unmask(self, value):
 
         options = ["/", "-", " ", ".", ",", "_", "(", ")", "$", "*"]
-        
+
         for op in options:
             value = value.replace(op, "")
 
         return value
 
     def cleanned_cpf(self):
-        return self.unmask( self.cpf )
+        return self.unmask(self.cpf)
 
     def cleanned_cep(self):
-        return self.unmask( self.cep )
+        return self.unmask(self.cep)
 
     def cleanned_telefone(self):
-        return self.unmask( self.telefone )
+        return self.unmask(self.telefone)
 
     def create_account(self):
         try:
@@ -246,12 +259,12 @@ class Inscricao(models.Model):
             user.save()
 
         self.usuario = user
-        
+
         return user
-    
+
     def calc_idade(self):
         return calculate_age(self.data_nascimento)
-    
+
     def num_dependentes(self):
         return Dependente.objects.filter(inscricao=self).count()
 
@@ -268,15 +281,16 @@ class Inscricao(models.Model):
         for dep in dependentes:
             dep.atualiza_valor_total()
             total = total + dep.valor
-        
+
         return total
-    
+
     def status_display(self):
         for g in self._STATUS:
             if g[0] == self.status:
                 return g[1]
-        
+
         return ""
+
 
 class Dependente(models.Model):
 
@@ -294,8 +308,10 @@ class Dependente(models.Model):
     data_nascimento = models.DateField(verbose_name="Data Nascimento")
     idade = models.IntegerField(default=0, verbose_name="Idade")
     valor = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor Inscrição", default=0)
-    hospedagem = models.ForeignKey(Hospedagem, on_delete=models.DO_NOTHING, verbose_name="Hospedagem", null=True, blank=True)
-    hospedagem_detalhe = models.CharField(max_length=120, null=False, blank=True, default="", verbose_name="Detalhe Hospedagem")
+    hospedagem = models.ForeignKey(Hospedagem, on_delete=models.DO_NOTHING,
+                                   verbose_name="Hospedagem", null=True, blank=True)
+    hospedagem_detalhe = models.CharField(max_length=120, null=False, blank=True,
+                                          default="", verbose_name="Detalhe Hospedagem")
 
     class Meta:
         db_table = "dependente"
@@ -304,15 +320,15 @@ class Dependente(models.Model):
 
     def __str__(self):
         return "{} - {} - {}".format(self.inscricao, self.grau, self.nome)
-    
+
     def save(self, *args, **kwargs):
         self.idade = self.calc_idade()
-        
+
         try:
             self.nome = self.nome.upper()
         except:
             pass
-        
+
         try:
             self.nome_cracha = self.nome_cracha.upper()
         except:
@@ -321,20 +337,21 @@ class Dependente(models.Model):
         super(Dependente, self).save(*args, **kwargs)
 
         self.inscricao.save()
-    
+
     def calc_idade(self):
         return calculate_age(self.data_nascimento)
-    
+
     def atualiza_valor_total(self):
         self.valor = busca_valor(self.idade, self.inscricao.conferencia)
         self.save()
-    
+
     def grau_display(self):
         for g in self._GRAU:
             if g[0] == self.grau:
                 return g[1]
-        
+
         return ""
+
 
 class Contato(models.Model):
 
@@ -345,7 +362,7 @@ class Contato(models.Model):
     assunto = models.CharField(max_length=120, verbose_name="Assunto")
     data_contato = models.DateTimeField(auto_now_add=True, verbose_name="Data Contato")
     descricao = models.TextField(verbose_name="Descrição")
-    
+
     class Meta:
         db_table = "contato"
         verbose_name = 'Contato'

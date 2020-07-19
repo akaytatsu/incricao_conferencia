@@ -23,3 +23,5 @@ openpyxl
 django-cms
 onesignal
 onesignal-client
+flake8
+isort

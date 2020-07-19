@@ -1,6 +1,7 @@
 import pytest
 from pytest_factoryboy import register
 from django.contrib.auth import get_user_model
+
 from apps.main.tests.factories import SolicitacaoFactory, TotalEmpresaFactory
 from apps.sebrae.tests.factories import EmpresaSebraeFactory
 

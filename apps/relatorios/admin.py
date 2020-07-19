@@ -1,10 +1,6 @@
 from django.contrib import admin
-from django.urls import reverse
-from django.utils.html import escape, mark_safe
 
-from .models import (RelatorioCidade, RelatorioCracha, RelatorioHospedagem,
-                     RelatorioIdade, RelatorioIdadeEspecifico,
-                     RelatorioStatusPagamento)
+from .models import RelatorioIdade, RelatorioCidade, RelatorioCracha, RelatorioHospedagem, RelatorioStatusPagamento
 
 
 @admin.register(RelatorioCidade)
@@ -14,12 +10,14 @@ class RelatorioCidadeAdmin(admin.ModelAdmin):
     def changelist_view(self, request, extra_context=None):
         return super(RelatorioCidadeAdmin, self).changelist_view(request, extra_context)
 
+
 @admin.register(RelatorioIdade)
 class RelatorioIdadeAdmin(admin.ModelAdmin):
     change_list_template = "relatorios/relatorio_idade.html"
 
     def changelist_view(self, request, extra_context=None):
         return super(RelatorioIdadeAdmin, self).changelist_view(request, extra_context)
+
 
 @admin.register(RelatorioStatusPagamento)
 class RelatorioStatusPagamentoAdmin(admin.ModelAdmin):
@@ -28,12 +26,14 @@ class RelatorioStatusPagamentoAdmin(admin.ModelAdmin):
     def changelist_view(self, request, extra_context=None):
         return super(RelatorioStatusPagamentoAdmin, self).changelist_view(request, extra_context)
 
+
 @admin.register(RelatorioHospedagem)
 class RelatorioHospedagemAdmin(admin.ModelAdmin):
     change_list_template = "relatorios/relatorio_hospedagem.html"
 
     def changelist_view(self, request, extra_context=None):
         return super(RelatorioHospedagemAdmin, self).changelist_view(request, extra_context)
+
 
 @admin.register(RelatorioCracha)
 class RelatorioCrachaAdmin(admin.ModelAdmin):

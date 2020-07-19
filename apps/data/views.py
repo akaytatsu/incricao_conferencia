@@ -1,36 +1,35 @@
-from apps.data.models import Conferencia, Contato, Dependente, Inscricao
+from pagseguro import PagSeguro
 from django.conf import settings
-from django.contrib.auth.models import User
-from django.core import serializers
-from django.db.models import Count, Sum
 from django.http import HttpResponse
 from django.urls import reverse_lazy
-from django.views.decorators.csrf import csrf_exempt
-from pagseguro import PagSeguro
-from rest_framework import authentication, permissions
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
+from django.db.models import Sum
 from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.views.decorators.csrf import csrf_exempt
 
-from .serializers import (ConferenciaSerializer, ContatoSerializer,
-                          DependentesSerializer,
-                          InscricaoPagSeguroTransactionSerializer,
-                          InscricaoSerializer)
+from apps.data.models import Inscricao, Dependente, Conferencia
+
+from .serializers import (
+    ContatoSerializer, InscricaoSerializer, ConferenciaSerializer, DependentesSerializer,
+    InscricaoPagSeguroTransactionSerializer
+)
 
 
 class DependentesApiView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
-        
+
         queryset = Dependente.objects.filter(inscricao_id=request.GET.get("inscricao_id"))
         queryset = queryset.order_by('-idade')
         serializer = DependentesSerializer(queryset, many=True)
 
         return Response(serializer.data)
 
+
 class DependenteApiView(APIView):
-    permission_classes = [IsAuthenticated] 
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
         queryset = Dependente.objects.get(id=request.GET.get("id"), inscricao_id=request.GET.get("inscricao_id"))
@@ -41,18 +40,17 @@ class DependenteApiView(APIView):
     def post(self, request, format=None):
 
         if request.data.get("id") is None or request.data.get("id") == "":
-            serializer = DependentesSerializer( data=request.data )
+            serializer = DependentesSerializer(data=request.data)
         else:
             queryset = Dependente.objects.get(id=request.data.get("id"))
-            serializer = DependentesSerializer( queryset, data=request.data )
+            serializer = DependentesSerializer(queryset, data=request.data)
 
-        
         if serializer.is_valid():
             dependente = serializer.save()
             inscricao = dependente.inscricao
             inscricao.atualiza_valor_total()
 
-            return Response( serializer.data, status=200 )
+            return Response(serializer.data, status=200)
 
         return Response(serializer.errors, status=400)
 
@@ -67,7 +65,8 @@ class DependenteApiView(APIView):
         inscricao.atualiza_valor_total()
         dependente.delete()
 
-        return Response({}, status=200 )
+        return Response({}, status=200)
+
 
 class ConferenciaApiView(APIView):
     permission_classes = [IsAuthenticated]
@@ -78,16 +77,18 @@ class ConferenciaApiView(APIView):
 
         return Response(serializer.data)
 
+
 class InscricaoApiView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
 
         queryset = Inscricao.objects.get(id=request.GET.get("inscricao_id"), usuario=self.request.user)
-        
+
         serializer = InscricaoSerializer(queryset)
 
         return Response(serializer.data)
+
 
 class ContatoApiView(APIView):
     permission_classes = [IsAuthenticated]
@@ -99,12 +100,13 @@ class ContatoApiView(APIView):
         data['conferencia'] = Conferencia.objects.get(pk=data['conferencia']).pk
 
         serializer = ContatoSerializer(data=data)
-        
+
         if serializer.is_valid():
             serializer.save()
             return Response({}, status=200)
 
         return Response(serializer.errors, status=400)
+
 
 class InscricaoStatusPagSeguroApiView(APIView):
     permission_classes = [IsAuthenticated]
@@ -123,12 +125,13 @@ class InscricaoStatusPagSeguroApiView(APIView):
 
         if inscricao.status != 1:
             return Response({}, status=200)
-        
+
         if serializer.is_valid():
             serializer.save()
             return Response({}, status=200)
 
         return Response(serializer.errors, status=400)
+
 
 class PagamentoApiView(APIView):
     permission_classes = [IsAuthenticated]
@@ -138,9 +141,7 @@ class PagamentoApiView(APIView):
         inscricao_pk = request.data.get("inscricao")
 
         inscricao = Inscricao.objects.get(pk=inscricao_pk, conferencia_id=conferencia_pk)
-        conferencia = inscricao.conferencia  
-
-        config = { 'sandbox': False }
+        conferencia = inscricao.conferencia
 
         pg = PagSeguro(email=settings.PAGSEGURO_EMAIL, token=settings.PAGSEGURO_TOKEN,)
 
@@ -168,9 +169,9 @@ class PagamentoApiView(APIView):
 
         pg.items = [
             {
-                "id": "0001", 
-                "description": conferencia.titulo, 
-                "amount": inscricao.valor_total,  
+                "id": "0001",
+                "description": conferencia.titulo,
+                "amount": inscricao.valor_total,
                 "quantity": 1,
             },
         ]
@@ -199,6 +200,7 @@ class PagamentoApiView(APIView):
             "reference": pg.reference,
         })
 
+
 @csrf_exempt
 def notification_view(request):
     notification_code = request.POST.get('notificationCode')
@@ -207,26 +209,28 @@ def notification_view(request):
     notification_data = pg.check_notification(notification_code)
 
     inscricao = Inscricao.objects.get(payment_reference=notification_data.reference)
-    
+
     inscricao.sit_pagseguro = notification_data.status
 
     if notification_data.status == 3 or notification_data.status == "3":
         inscricao.status = 2
-    
+
     inscricao.save()
 
     return HttpResponse("")
 
 
 ################
-## RELATORIOS
+# RELATORIOS
 ################
 
 def sortByQuantity(e):
     return e['inscricao__count'] + e['dependentes__count']
 
+
 def sortByCidade(e):
     return e['cidade'] + e['cidade']
+
 
 class RelatorioCidadesApiView(APIView):
     permission_classes = [IsAuthenticated]
@@ -240,11 +244,11 @@ class RelatorioCidadesApiView(APIView):
             if response.get(inscricao.cidade, None):
                 response[inscricao.cidade]['total'] = response[inscricao.cidade]['total'] + 1
                 response[inscricao.cidade]['pessoas'].append({
-                            'nome': inscricao.nome,
-                            'cidade': inscricao.cidade,
-                            'uf': inscricao.uf,
-                            'dependente': False,
-                            'idade': inscricao.idade,
+                    'nome': inscricao.nome,
+                    'cidade': inscricao.cidade,
+                    'uf': inscricao.uf,
+                    'dependente': False,
+                    'idade': inscricao.idade,
                 })
             else:
                 response[inscricao.cidade] = {
@@ -266,12 +270,12 @@ class RelatorioCidadesApiView(APIView):
                 if response.get(dependente.inscricao.cidade, None):
                     response[dependente.inscricao.cidade]['total'] = response[dependente.inscricao.cidade]['total'] + 1
                     response[dependente.inscricao.cidade]['pessoas'].append({
-                                'nome': dependente.nome,
-                                'cidade': dependente.inscricao.cidade,
-                                'uf': dependente.inscricao.uf,
-                                'dependente': True,
-                                'responsavel': dependente.inscricao.nome,
-                                'idade': dependente.idade,
+                        'nome': dependente.nome,
+                        'cidade': dependente.inscricao.cidade,
+                        'uf': dependente.inscricao.uf,
+                        'dependente': True,
+                        'responsavel': dependente.inscricao.nome,
+                        'idade': dependente.idade,
                     })
                 else:
                     response[dependente.inscricao.cidade] = {
@@ -290,7 +294,7 @@ class RelatorioCidadesApiView(APIView):
                     }
 
         response_sorted = {}
-        for i in sorted (response.keys()) :  
+        for i in sorted(response.keys()):
             response_sorted[i] = response[i]
 
         response_arr = []
@@ -314,10 +318,10 @@ class RelatorioIdadesApiView(APIView):
             if response.get(inscricao.idade, None):
                 response[inscricao.idade]['total'] = response[inscricao.idade]['total'] + 1
                 response[inscricao.idade]['pessoas'].append({
-                            'nome': inscricao.nome,
-                            'cidade': inscricao.cidade,
-                            'uf': inscricao.uf,
-                            'dependente': False,
+                    'nome': inscricao.nome,
+                    'cidade': inscricao.cidade,
+                    'uf': inscricao.uf,
+                    'dependente': False,
                 })
             else:
                 response[inscricao.idade] = {
@@ -338,11 +342,11 @@ class RelatorioIdadesApiView(APIView):
                 if response.get(dependente.idade, None):
                     response[dependente.idade]['total'] = response[dependente.idade]['total'] + 1
                     response[dependente.idade]['pessoas'].append({
-                                'nome': dependente.nome,
-                                'cidade': dependente.inscricao.cidade,
-                                'uf': dependente.inscricao.uf,
-                                'dependente': True,
-                                'responsavel': dependente.inscricao.nome
+                        'nome': dependente.nome,
+                        'cidade': dependente.inscricao.cidade,
+                        'uf': dependente.inscricao.uf,
+                        'dependente': True,
+                        'responsavel': dependente.inscricao.nome
                     })
                 else:
                     response[dependente.idade] = {
@@ -360,7 +364,7 @@ class RelatorioIdadesApiView(APIView):
                     }
 
         response_sorted = {}
-        for i in sorted (response.keys()) :  
+        for i in sorted(response.keys()):
             response_sorted[i] = response[i]
 
         response_arr = []
@@ -370,6 +374,7 @@ class RelatorioIdadesApiView(APIView):
             )
 
         return Response(response_arr)
+
 
 class RelatorioStatusPagamentoApiView(APIView):
     permission_classes = [IsAuthenticated]
@@ -388,10 +393,14 @@ class RelatorioStatusPagamentoApiView(APIView):
         valor_cancelado = Inscricao.objects.filter(status=3).aggregate(total=Sum('valor_total')).get("total", 0)
         valor_aguardando = Inscricao.objects.filter(status=4).aggregate(total=Sum('valor_total')).get("total", 0)
 
-        response.append({'status_code': 1, 'status': 'Pendente', 'quantidade': pendente, 'valor': 0 if valor_pendente is None else valor_pendente })
-        response.append({'status_code': 2, 'status': 'Pago', 'quantidade': pago, 'valor': 0 if valor_pago is None else valor_pago})
-        response.append({'status_code': 3, 'status': 'Cancelado', 'quantidade': cancelado, 'valor': 0 if valor_cancelado is None else valor_cancelado})
-        response.append({'status_code': 4, 'status': 'Aguardando Confirmação Pagamento', 'quantidade': aguardando, 'valor': 0 if valor_aguardando is None else valor_aguardando})
+        response.append({'status_code': 1, 'status': 'Pendente', 'quantidade': pendente,
+                         'valor': 0 if valor_pendente is None else valor_pendente})
+        response.append({'status_code': 2, 'status': 'Pago', 'quantidade': pago,
+                         'valor': 0 if valor_pago is None else valor_pago})
+        response.append({'status_code': 3, 'status': 'Cancelado', 'quantidade': cancelado,
+                         'valor': 0 if valor_cancelado is None else valor_cancelado})
+        response.append({'status_code': 4, 'status': 'Aguardando Confirmação Pagamento',
+                         'quantidade': aguardando, 'valor': 0 if valor_aguardando is None else valor_aguardando})
 
         return Response(response)
 
@@ -410,12 +419,12 @@ class RelatorioHospedagemApiView(APIView):
             if response.get(hospedagem_nome, None):
                 response[hospedagem_nome]['total'] = response[hospedagem_nome]['total'] + 1
                 response[hospedagem_nome]['pessoas'].append({
-                            'nome': inscricao.nome,
-                            'cidade': inscricao.cidade,
-                            'uf': inscricao.uf,
-                            'dependente': False,
-                            'detalhe': inscricao.hospedagem_detalhe,
-                            'idade': inscricao.idade,
+                    'nome': inscricao.nome,
+                    'cidade': inscricao.cidade,
+                    'uf': inscricao.uf,
+                    'dependente': False,
+                    'detalhe': inscricao.hospedagem_detalhe,
+                    'idade': inscricao.idade,
                 })
             else:
                 response[hospedagem_nome] = {
@@ -440,13 +449,13 @@ class RelatorioHospedagemApiView(APIView):
                 if response.get(hospedagem_nome, None):
                     response[hospedagem_nome]['total'] = response[hospedagem_nome]['total'] + 1
                     response[hospedagem_nome]['pessoas'].append({
-                                'nome': dependente.nome,
-                                'cidade': dependente.inscricao.cidade,
-                                'uf': dependente.inscricao.uf,
-                                'dependente': True,
-                                'responsavel': dependente.inscricao.nome,
-                                'detalhe': dependente.hospedagem_detalhe,
-                                'idade': dependente.idade,
+                        'nome': dependente.nome,
+                        'cidade': dependente.inscricao.cidade,
+                        'uf': dependente.inscricao.uf,
+                        'dependente': True,
+                        'responsavel': dependente.inscricao.nome,
+                        'detalhe': dependente.hospedagem_detalhe,
+                        'idade': dependente.idade,
                     })
                 else:
                     response[hospedagem_nome] = {

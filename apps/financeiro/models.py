@@ -1,6 +1,8 @@
 from django.db import models
-from apps.accounts.models import Account
+
 from apps.data.models import Conferencia
+from apps.accounts.models import Account
+
 
 class Receitas(models.Model):
 
@@ -46,14 +48,21 @@ class Despesas(models.Model):
     )
 
     conferencia = models.ForeignKey(Conferencia, verbose_name="Conferencia", on_delete=models.DO_NOTHING)
-    usuario_solicitacao = models.ForeignKey(Account, verbose_name="Usuario Solicitação", related_name="usuario_solicitacao", on_delete=models.DO_NOTHING)
-    usuario_aprovacao = models.ForeignKey(Account, verbose_name="Usuario Aprovação", related_name="usuario_aprovacao", on_delete=models.DO_NOTHING, null=True, blank=True)
-    usuario_comprovacao = models.ForeignKey(Account, verbose_name="Usuario Comprovação", related_name="usuario_comprovacao", on_delete=models.DO_NOTHING, null=True, blank=True)
+    usuario_solicitacao = models.ForeignKey(Account, verbose_name="Usuario Solicitação",
+                                            related_name="usuario_solicitacao", on_delete=models.DO_NOTHING)
+    usuario_aprovacao = models.ForeignKey(Account, verbose_name="Usuario Aprovação",
+                                          related_name="usuario_aprovacao", on_delete=models.DO_NOTHING, null=True,
+                                          blank=True)
+    usuario_comprovacao = models.ForeignKey(Account, verbose_name="Usuario Comprovação",
+                                            related_name="usuario_comprovacao", on_delete=models.DO_NOTHING, null=True,
+                                            blank=True)
     status = models.IntegerField(choices=_STATUS, default=1, verbose_name="Status")
-    categoria = models.ForeignKey(CategoriaDespesa, null=True, blank=True, verbose_name="Categoria de Despesa", on_delete=models.DO_NOTHING)
+    categoria = models.ForeignKey(CategoriaDespesa, null=True, blank=True,
+                                  verbose_name="Categoria de Despesa", on_delete=models.DO_NOTHING)
     valor = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Valor")
     justificativa = models.CharField(max_length=500, verbose_name="Justificativa")
-    justificativa_reprovacao = models.CharField(max_length=500, verbose_name="Justificativa Reprovação", null=True, blank=True)
+    justificativa_reprovacao = models.CharField(
+        max_length=500, verbose_name="Justificativa Reprovação", null=True, blank=True)
     aprovado = models.BooleanField(default=False, verbose_name="Aprovado?")
     comprovado = models.BooleanField(default=False, verbose_name="Comprovado?")
     reprovado = models.BooleanField(default=False, verbose_name="Reprovado?")
@@ -66,7 +75,7 @@ class Despesas(models.Model):
 
     def __str__(self):
         return "{} - id: {} - R$: {}".format(self.usuario_solicitacao, self.id, self.valor)
-    
+
     def notifica_nova_despesa(self):
 
         accounts = Account.objects.filter(can_aprove=True)
@@ -76,8 +85,8 @@ class Despesas(models.Model):
         titulo = "Nova solicitação de recurso"
         mensagem = "{} solicitou R$ {}".format(self.usuario_solicitacao.name, self.valor)
 
-        response = Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})
-    
+        Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})
+
     def notifica_aprovacao(self):
         # Notifica solicitante
         onesignal_ids = [self.usuario_solicitacao.onesignal_id]
@@ -85,17 +94,18 @@ class Despesas(models.Model):
         titulo = "Solicitação de recurso Aprovada"
         mensagem = "Sua solicitação de R$ {} foi aprovada".format(self.valor)
 
-        response = Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})
+        Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})
 
         accounts = Account.objects.filter(can_pay=True)
 
         onesignal_ids = [ac.onesignal_id for ac in accounts]
 
         titulo = "Repasse de recurso pendente"
-        mensagem = "A solicitação de R$ {} para {} foi aprovada. Pendente o repasse do recurso".format(self.valor, self.usuario_solicitacao.name)
+        mensagem = "A solicitação de R$ {} para {} foi aprovada. Pendente o repasse do recurso".format(
+            self.valor, self.usuario_solicitacao.name)
 
-        response = Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})
-    
+        Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})
+
     def notifica_reprovacao(self):
         # Notifica solicitante
         onesignal_ids = [self.usuario_solicitacao.onesignal_id]
@@ -103,8 +113,8 @@ class Despesas(models.Model):
         titulo = "Solicitação de recurso Reprovada"
         mensagem = "Sua solicitação de R$ {} foi reprovada".format(self.valor)
 
-        response = Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})
-    
+        Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})
+
     def notifica_repasse_recurso(self):
 
         # Notifica solicitante
@@ -113,7 +123,7 @@ class Despesas(models.Model):
         titulo = "Recurso repassado"
         mensagem = "O recurso referente a solicitação de R$ {} foi repassado".format(self.valor)
 
-        response = Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})
+        Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})
 
         accounts = Account.objects.filter(can_aprove=True)
 
@@ -122,8 +132,8 @@ class Despesas(models.Model):
         titulo = "Repasse de recurso excutado"
         mensagem = "O recurso de R$ {} para {} foi repassado.".format(self.valor, self.usuario_solicitacao.name)
 
-        response = Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})
-    
+        Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})
+
     def notifica_envio_comprovacao(self):
         accounts = Account.objects.filter(can_aprove=True)
 
@@ -132,7 +142,7 @@ class Despesas(models.Model):
         titulo = "Envio de Comprovação"
         mensagem = "{} envio comprovação referente ao valor de R$ {}.".format(self.usuario_solicitacao.name, self.valor)
 
-        response = Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})
+        Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})
 
     def notifica_aprovacao_comprovacao(self):
 
@@ -142,7 +152,7 @@ class Despesas(models.Model):
         titulo = "Comprovação aprovada"
         mensagem = "Sua comprovação referente a solicitação de R$ {} foi aprovada".format(self.valor)
 
-        response = Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})
+        Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})
 
     def notifica_reprovacao_comprovacao(self):
 
@@ -150,9 +160,10 @@ class Despesas(models.Model):
         onesignal_ids = [self.usuario_solicitacao.onesignal_id]
 
         titulo = "Comprovação com pendencias"
-        mensagem = "Sua comprovação referente a solicitação de R$ {} foi reprovada. Por favor verifique.".format(self.valor)
+        mensagem = "Sua comprovação referente a solicitação de R$ {} foi reprovada. Por favor verifique.".format(
+            self.valor)
 
-        response = Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})
+        Account.notificate(titulo, mensagem, onesignal_ids, params={"id": self.id})
 
 
 class Comprovantes(models.Model):
@@ -165,6 +176,6 @@ class Comprovantes(models.Model):
         db_table = "comprovantes_despesa"
         verbose_name = "Comprovante Despesa"
         verbose_name_plural = "Comprovantes Despesa"
-    
+
     def __str__(self):
         return "{}".format(self.id)

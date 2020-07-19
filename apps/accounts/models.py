@@ -1,10 +1,10 @@
 from __future__ import absolute_import
 
-from django.contrib.auth.models import AbstractUser, BaseUserManager
-from django.db import models
-from django.utils.translation import ugettext_lazy as _
 import onesignal as onesignal_sdk
+from django.db import models
 from django.conf import settings
+from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 
 
 class UserManager(BaseUserManager):

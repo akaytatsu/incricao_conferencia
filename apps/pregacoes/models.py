@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Local(models.Model):
 
     nome = models.CharField(max_length=120, verbose_name="Nome do Local", null=False, blank=False)
@@ -12,6 +13,7 @@ class Local(models.Model):
 
     def __str__(self):
         return "{}".format(self.nome)
+
 
 class Preletor(models.Model):
 
@@ -26,9 +28,11 @@ class Preletor(models.Model):
     def __str__(self):
         return "{}".format(self.nome)
 
+
 class ArquivoReferencia(models.Model):
 
-    pregacao = models.ForeignKey('pregacoes.Pregacao', verbose_name="Pregação", on_delete=models.CASCADE, related_name="pregacao_arquivo_referencia")
+    pregacao = models.ForeignKey('pregacoes.Pregacao', verbose_name="Pregação",
+                                 on_delete=models.CASCADE, related_name="pregacao_arquivo_referencia")
     nome = models.CharField(max_length=120, verbose_name="Nome do Arquivo Referencia", null=False, blank=False)
     arquivo = models.FileField(upload_to='pregacoes/arquivos/', null=False, blank=False)
 
@@ -39,6 +43,7 @@ class ArquivoReferencia(models.Model):
 
     def __str__(self):
         return "{}".format(self.nome)
+
 
 class Pregacao(models.Model):
 

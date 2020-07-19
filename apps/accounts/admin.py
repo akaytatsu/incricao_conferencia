@@ -1,7 +1,9 @@
 from django.contrib import admin
-from apps.accounts.models import Account
 from django.contrib.auth.admin import UserAdmin
-from django.utils.translation import gettext, gettext_lazy as _
+
+from apps.accounts.models import Account
+
+
 class CustomUserAdmin(UserAdmin):
     model = Account
 
@@ -12,9 +14,9 @@ class CustomUserAdmin(UserAdmin):
             'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
         }),
         (('Important dates'), {'fields': ('last_login', 'date_joined')}),
-        (('Financeiro'), {'fields': ('can_request', 'can_aprove', 'can_pay', 'tp_user_financeiro',)}),     
-        (('Contato'), {'fields': ('name', 'telefone',)}),     
-        (('OneSignal'), {'fields': ('onesignal_id',)}),     
+        (('Financeiro'), {'fields': ('can_request', 'can_aprove', 'can_pay', 'tp_user_financeiro',)}),
+        (('Contato'), {'fields': ('name', 'telefone',)}),
+        (('OneSignal'), {'fields': ('onesignal_id',)}),
     )
 
 
