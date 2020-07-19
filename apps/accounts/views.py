@@ -22,14 +22,14 @@ class AccountViewSet(viewsets.GenericViewSet):
 
     @action(methods=['post'], detail=False, permission_classes=[AllowAny])
     def create_account(self, request):
-        
-        serializer = AccountCreateSerializer(data=request.data) 
+
+        serializer = AccountCreateSerializer(data=request.data)
 
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=200)
-        
-        return Response(serializer.errors, status=400)    
+
+        return Response(serializer.errors, status=400)
 
     @action(methods=['get'], detail=False, permission_classes=[IsAuthenticated])
     def me(self, request):

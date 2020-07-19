@@ -29,10 +29,15 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+SITE_ID = 1
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 # Application definition
 
 INSTALLED_APPS = [
+    'djangocms_admin_style',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -50,6 +55,13 @@ INSTALLED_APPS = [
     'apps.relatorios',
     'apps.financeiro',
     'apps.pregacoes',
+
+    # Django CMS
+    'django.contrib.sites',
+    'cms',
+    'menus',
+    'treebeard',
+    'sekizai',
 ]
 
 MIDDLEWARE = [
@@ -60,6 +72,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'cms.middleware.utils.ApphookReloadMiddleware',
+    'cms.middleware.user.CurrentUserMiddleware',
+    'cms.middleware.page.CurrentPageMiddleware',
+    'cms.middleware.toolbar.ToolbarMiddleware',
+    'cms.middleware.language.LanguageCookieMiddleware',
 ]
 
 ROOT_URLCONF = 'conf.urls'
@@ -69,14 +87,18 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             os.path.join(BASE_DIR, 'templates'),
+            'templates',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.i18n',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'sekizai.context_processors.sekizai',
+                'cms.context_processors.cms_settings',
             ],
         },
     },
@@ -133,21 +155,22 @@ USE_L10N = True
 
 USE_TZ = True
 
-DATE_INPUT_FORMATS = ('%d-%m-%Y','%Y-%m-%d')
+DATE_INPUT_FORMATS = ('%d-%m-%Y', '%Y-%m-%d')
+
+LANGUAGES = [
+    ('pt-br', 'Portugues'),
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-# STATIC_URL = '/static/'
+LOCAL_STATIC = config('LOCAL_STATIC', cast=bool, default=False)
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
-
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-# MEDIA_URL = '/media/'
 
 
 # STORAGEAWS_PRELOAD_METADATA = True
@@ -160,41 +183,45 @@ AWS_SECRET_KEY = config('AWS_SECRET_KEY')
 AWS_ACCESS_KEY_ID = AWS_ACCESS_KEY
 AWS_SECRET_ACCESS_KEY = AWS_SECRET_KEY
 
-AWS_STATIC_LOCATION = 'static'
-AWS_PUBLIC_MEDIA_LOCATION = 'media/public'
-AWS_PRIVATE_MEDIA_LOCATION = 'media/private'
-
-
-STATICFILES_STORAGE = 'conf.storage_backends.StaticStorage'
-
-DEFAULT_FILE_STORAGE = 'conf.storage_backends.PublicMediaStorage'
-THUMBNAIL_DEFAULT_STORAGE = 'conf.storage_backends.PublicMediaStorage'
-
-PRIVATE_FILE_STORAGE = 'conf.storage_backends.StaticStorage'
-
-AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
-AWS_DEFAULT_ACL = None
-AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
-
-AWS_S3_OBJECT_PARAMETERS = {
-    'CacheControl': 'max-age=86400',
-}
-
-MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN,
-                                AWS_PUBLIC_MEDIA_LOCATION)
-
-STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_STATIC_LOCATION)
-
 boto3_session = Session(aws_access_key_id=AWS_ACCESS_KEY,
                         aws_secret_access_key=AWS_SECRET_KEY,
                         region_name=AWS_REGION)
 
+if LOCAL_STATIC:
+    STATIC_URL = '/static/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+    MEDIA_URL = '/media/'
 
-NOTIFICATION_URL=config('NOTIFICATION_URL')
-BASE_URL=config('BASE_URL')
+else:
 
-PAGSEGURO_EMAIL=config('PAGSEGURO_EMAIL')
-PAGSEGURO_TOKEN=config('PAGSEGURO_TOKEN')
+    AWS_STATIC_LOCATION = 'static'
+    AWS_PUBLIC_MEDIA_LOCATION = 'media/public'
+    AWS_PRIVATE_MEDIA_LOCATION = 'media/private'
+
+    STATICFILES_STORAGE = 'conf.storage_backends.StaticStorage'
+
+    DEFAULT_FILE_STORAGE = 'conf.storage_backends.PublicMediaStorage'
+    THUMBNAIL_DEFAULT_STORAGE = 'conf.storage_backends.PublicMediaStorage'
+
+    PRIVATE_FILE_STORAGE = 'conf.storage_backends.StaticStorage'
+
+    AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
+    AWS_DEFAULT_ACL = None
+    AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+
+    AWS_S3_OBJECT_PARAMETERS = {
+        'CacheControl': 'max-age=86400',
+    }
+
+    MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_PUBLIC_MEDIA_LOCATION)
+    STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_STATIC_LOCATION)
+
+
+NOTIFICATION_URL = config('NOTIFICATION_URL')
+BASE_URL = config('BASE_URL')
+
+PAGSEGURO_EMAIL = config('PAGSEGURO_EMAIL')
+PAGSEGURO_TOKEN = config('PAGSEGURO_TOKEN')
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
@@ -214,7 +241,11 @@ JWT_AUTH = {
 
 }
 
-ONESIGNAL_USER_AUTH_KEY=config('ONESIGNAL_USER_AUTH_KEY')
-ONESIGNAL_APP_AUTH_KEY=config('ONESIGNAL_APP_AUTH_KEY')
-ONESIGNAL_APP_ID=config('ONESIGNAL_APP_ID')
-HOST=config('HOST')
+ONESIGNAL_USER_AUTH_KEY = config('ONESIGNAL_USER_AUTH_KEY')
+ONESIGNAL_APP_AUTH_KEY = config('ONESIGNAL_APP_AUTH_KEY')
+ONESIGNAL_APP_ID = config('ONESIGNAL_APP_ID')
+HOST = config('HOST')
+
+CMS_TEMPLATES = [
+    ('cms/base_template.html', 'Template Padrão'),
+]

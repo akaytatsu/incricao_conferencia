@@ -1,4 +1,4 @@
-django>=2.2.8
+django>=3.0.8
 python-decouple==3.1
 psycopg2
 gunicorn
@@ -20,3 +20,6 @@ djangorestframework-jwt
 onesignal_sdk
 django-storages
 openpyxl
+django-cms
+onesignal
+onesignal-client
